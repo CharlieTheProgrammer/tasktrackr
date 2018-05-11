@@ -1,10 +1,11 @@
 <template>
-  <div id="app">
-      <app-header></app-header>
+  <div>
+      <app-header :isAuthenticated="isAuthenticated"></app-header>
+      <router-view></router-view>
     <div>
-        <app-loginscreen :errorMsg="LoginScreen.errorMsg" :displayError="LoginScreen.displayError"></app-loginscreen>
+        <!-- <app-loginscreen :errorMsg="LoginScreen.errorMsg" :displayError="LoginScreen.displayError" v-if="true"></app-loginscreen> -->
         <!-- TIMER -->
-         <section id="timerRow" class="py-4 d-none">
+         <!-- <section id="timerRow" class="py-4">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-6 col-md-6 d-flex justify-content-center align-items-center">
@@ -15,18 +16,23 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> -->
     </div>
-    <app-projectnav :currentProjectID="currentProjectID" :currentProjectName="currentProjectName" :projects="projects" v-if="false"></app-projectnav>
-    <section class="">
-        <button @click="loadProjects">Testing</button>
+    <!-- <app-projectnav :currentProjectID="currentProjectID" :currentProjectName="currentProjectName" :projects="projects" v-if="true"></app-projectnav> -->
+
+    <!-- <section class="">
+        <button @click="loadCategories">Get Categories</button>
+        <button @click="loadProjectList">Get Project List</button>
+        <button @click="loadEntries">Load Saved Entries</button>
+        <button @click="logState">Log State to Console</button>
+        <a class="btn btn-primary" href="/login">Auth0 Login</a>
         <h3>Testing</h3>
         <p class="display-2">{{ userID }}</p>
         <ul v-for="(item, index) in projects" :key="index">
             <li>{{ item.project_name }}</li>
         </ul>
         <h1>Spacer</h1>
-    </section>
+    </section> -->
     <footer class="footer">
       <div class="container text-center">
         <span class="text-muted">&copy; 2018 Charlie The Programmer</span>
@@ -37,21 +43,22 @@
 
 <script>
   import Header from './components/Header'
-  import LoginScreen from './components/LoginScreen'
+  import Login from './components/Login'
   import AppController from './components/AppController'
   import Timer from './components/Timer.vue'
-  import ProjectNav from './components/ProjectNav.vue'
-  import EntryContainer from './components/EntryContainer.vue'
-  import Entry from './components/Entry.vue'
+  import ProjectNav from './components/project/ProjectNav.vue'
+  import EntryContainer from './components/project/EntryContainer.vue'
+  import Entry from './components/project/Entry.vue'
 
   import { MainBus } from './main'
   import { ServerComm } from './mixins/serverComm'
 
+    import axios from 'axios'
 
 export default {
     components: {
         'app-header': Header,
-        'app-loginscreen': LoginScreen,
+        'app-loginscreen': Login,
         'app-controller': AppController,
         'app-timer': Timer,
         'app-projectnav': ProjectNav
@@ -59,136 +66,125 @@ export default {
     mixins: [ServerComm],
     data: function() {
         return {
-            // I can move this to the entries components.
-            entries: [
-                //  SAMPLE
-                // {
-                //     entry_id: 3,
-                //     category_id: "1",
-                //     entry_date: "11/20/2017",
-                //     entry_description: "Sample entry",
-                //     start_time: "10:22 AM",
-                //     end_time: "11:00 AM",
-                //     total_time: "130 mins",
-                // },
-            ],
-            // I can move this to the relevant component(s).
-            projectCategories : [
-                // This isn't a required field. User can set to blank.
-                {
-                    category_id: "",
-                    category_name: "",
-                    hidden: ""
-                },
-            ],
-            // I can move this to the relevant component(s).
-            projects: [
-                // TEMPLATE
-                {
-                    project_id: 1,
-                    project_name: "Testing Project Loads",
-                    created_date: "",
-                }
-            ],
-            userID: 1,
-            currentProjectID: 1,
-            currentProjectName: 'Project Nav Testing',
-            LoginScreen: {
-                errorMsg: 'Login Failedddddd',
-                displayError: false
-            }
+
         }
     },
-    beforeCreate: function() {
-        console.log("Before Create");
-        var localProjectID = localStorage.getItem("currentProjectsID");
-
-        if (localProjectID !== null || localProjectID !== undefined) {
-            this.currentProjectID = localStorage.getItem("currentProjectID");
+    computed: {
+        isAuthenticated: function() {
+            return this.$store.getters.isAuthenticated;
         }
-        console.log(this.currentProjectID);
-
     },
-    created: function() {
-        this.loadCategories();
+    // beforeCreate: function() {
+    //     var localProjectID = localStorage.getItem("currentProjectsID");
 
-        MainBus.$on('getSharedState', (dataPoint) => {
-            // Check if data point exists, if it doesn't send back error.
-            if (this[dataPoint]) {
-                MainBus.$emit('SharedStateUpdate', this[dataPoint]);
-                return;
-            }
+    //     if (localProjectID !== null || localProjectID !== undefined) {
+    //         this.currentProjectID = localStorage.getItem("currentProjectID");
+    //     }
+    //     console.log(this.currentProjectID);
+    // },
+    // created: function() {
+    //     window.onbeforeunload = function(){
+    //         alert("Dave, I'm afraid I cannot do that.")
+    //     };
+    //     this.loadCategories();
+    //     console.log(this.$route.query);
 
-            console.error(dataPoint + ": Does not exist.");
-        });
 
-        MainBus.$on('setSharedState', (dataPoint, value) => {
-            // Check if data point exists, if it doesn't send back error.
-            if (this[dataPoint]) {
-                this[dataPoint] = value;
-                MainBus.$emit('SharedStateUpdate', this[dataPoint]);
-                return;
-            }
+    //     MainBus.$on('getSharedState', (dataPoint) => {
+    //         // Check if data point exists, if it doesn't send back error.
+    //         if (this[dataPoint]) {
+    //             MainBus.$emit('SharedStateUpdate', this[dataPoint]);
+    //             return;
+    //         }
 
-            console.error(dataPoint + ": Does not exist.");
-        });
+    //         console.error(dataPoint + ": Does not exist.");
+    //     });
 
-        MainBus.$on('loginAttempt', (data) => {
+    //     MainBus.$on('setSharedState', (dataPoint, value) => {
+    //         // Check if data point exists, if it doesn't send back error.
+    //         if (this[dataPoint]) {
+    //             this[dataPoint] = value;
+    //             MainBus.$emit('SharedStateUpdate', this[dataPoint]);
+    //             return;
+    //         }
 
-            //this.LoginScreen.errorMsg = 'Login failedqweqwe';
+    //         console.error(dataPoint + ": Does not exist.");
+    //     });
 
-            var closure = this.LoginScreen.errorMsg;
+    //     MainBus.$on('loginAttempt', (data) => {
 
-            // Login
-            $.ajax({
-                type: "POST",
-                url: this.route_enum.new.loginAttempt,
-                data: {
-                    username: this.login,
-                    password: this.password,
-                    }
-            }).done(function(response) {
-                // if successful
-                if (response == "OK") {
-                    // Load Projects
-                    this.loadProjects();
+    //         //this.LoginScreen.errorMsg = 'Login failedqweqwe';
 
-                    // Load Categories
-                    console.log(this.projectCategories)
-                    this.loadCategories();
+    //         var closure = this.LoginScreen.errorMsg;
 
-                    // Load user data ???
-                        // userID: 1,       THIS ONE I'M NOT SUPPOSE TO BE USING
-                        // userFirstName: "Charlie",    IRRELEVANT FOR NOW
-                        // userLastName: "O",           IRRELEVANT FOR NOW
-                        // currentProjectID: 1,         CAN BE CHECKED LOCALLY
-                        // currentProjectName: 'Project Nav Testing',   CAN BE CHECKED LOCALLY
+    //         // Login
+    //         $.ajax({
+    //             type: "POST",
+    //             url: this.route_enum.new.loginAttempt,
+    //             data: {
+    //                 username: this.login,
+    //                 password: this.password,
+    //                 }
+    //         }).done(function(response) {
+    //             // if successful
+    //             if (response == "OK") {
+    //                 // Load Projects
+    //                 this.loadProjects();
 
-                    // Need to figure out what else I need to load. I'll need to make other function calls here
+    //                 // Load Categories
+    //                 console.log(this.projectCategories)
+    //                 this.loadCategories();
 
-                    console.log(this.projectCategories)
-                    // turn off processing screen
-                }
+    //                 // Load user data ???
+    //                     // userID: 1,       THIS ONE I'M NOT SUPPOSE TO BE USING
+    //                     // userFirstName: "Charlie",    IRRELEVANT FOR NOW
+    //                     // userLastName: "O",           IRRELEVANT FOR NOW
+    //                     // currentProjectID: 1,         CAN BE CHECKED LOCALLY
+    //                     // currentProjectName: 'Project Nav Testing',   CAN BE CHECKED LOCALLY
 
-                // if login failed
-                    // turn off processing screen
-                // Show login failure error message
-                // response.error or response.message from server
+    //                 // Need to figure out what else I need to load. I'll need to make other function calls here
 
-                //closure = error.msg;
-                if (closure != '') {
-                    this.LoginScreen.displayError = true;
-                } else if (closure == '') {
-                    this.LoginScreen.displayError = false;
-                }
-                // turn off processing screen.
+    //                 console.log(this.projectCategories)
+    //                 // turn off processing screen
+    //             }
 
-            });
-        });
+    //             // if login failed
+    //                 // turn off processing screen
+    //             // Show login failure error message
+    //             // response.error or response.message from server
 
-        MainBus.$on('createNewProject', (newProjectName) => {
-            this.createNewProject(newProjectName);
-        });
+    //             //closure = error.msg;
+    //             if (closure != '') {
+    //                 this.LoginScreen.displayError = true;
+    //             } else if (closure == '') {
+    //                 this.LoginScreen.displayError = false;
+    //             }
+    //             // turn off processing screen.
+
+    //         });
+    //     });
+
+    //     MainBus.$on('createNewProject', (newProjectName) => {
+    //         this.createNewProject(newProjectName);
+    //     });
+    // },
+    methods: {
+        loadCategories: function() {
+            this.$store.dispatch('loadCategories');
+
+            // axios.get('/testing')
+            //     .then(res => console.log(res))
+            //     .catch(error => console.log(error));
+        },
+        loadProjectList: function() {
+            this.$store.dispatch('loadProjectList');
+        },
+        loadEntries: function() {
+            this.$store.dispatch('loadAllEntries');
+        },
+        logState: function() {
+            console.log(this.$store.state);
+        }
     },
 }
 </script>

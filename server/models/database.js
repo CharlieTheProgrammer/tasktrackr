@@ -11,12 +11,14 @@ module.exports = {DataAPI};
 function DataAPI() {
     // What attributes will this object have?
     const sqlite3 = require('sqlite3').verbose();
-    var defaultDBFilePath = '/data/db/ProjectTT.db'
     var db;
 
     // What will this object do? What can be done to this object?
     this.initDB = function(path) {
-        path = path || defaultDBFilePath;
+        if (!path) {
+            throw new error("Database path must be provided,");
+        }
+
         db = new sqlite3.Database(path, (err) => {
             if (err){
                 console.error("Problem opening file " + path + "\n");
@@ -238,6 +240,10 @@ function DataAPI() {
         getAllQuery(sql, userID, _callback);
     }
 
+    this.getProjectsandEntries = function(userID, _callback) {
+        let sql = 'SELECT '
+    }
+
 
 
 
@@ -355,10 +361,18 @@ function DataAPI() {
         getAllQuery(sql, project_id, _callback);
     };
 
+    this.getEntriesByUser = function(user_id, _callback) {
+        let sql = 'SELECT entry_id, project_id, category_id, entry_date, entry_description, start_time, end_time, total_time '
+        sql += 'FROM v_EntriesAndProjects '
+        sql += 'WHERE user_id = ?'
+
+        getAllQuery(sql, user_id, _callback)
+    }
+
 
     // User Info Lookup
     this.findUserByLogin = function(user_login, _callback) {
-        let sql = 'SELECT user_id '
+        let sql = 'SELECT user_id, user_login '
         sql += 'FROM Users '
         sql += 'WHERE user_login = ? '
 
@@ -393,12 +407,12 @@ function DataAPI() {
 
         // Is this a good time to hash the password? When should this be hashed?
         // We may also want to lowercase the values here if queries are case sensitive
-        runquery(sql, [
+        runQuery(sql, [
             entryObj.user_first_name,
             entryObj.user_last_name,
-            entryObj.user_login,
-            entryObj.user_password,
-            entryObj.user_email] ,
+            entryObj.login,
+            entryObj.password,
+            entryObj.email] ,
             _callback);
     };
 
@@ -419,6 +433,5 @@ function DataAPI() {
 
         getQuery(sql, session_id, _callback);
     };
-
 
 };

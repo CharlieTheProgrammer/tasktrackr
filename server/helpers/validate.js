@@ -173,7 +173,7 @@ module.exports.hasEntryDescriptionError = function(entryDescription){
     // Custom ?
 module.exports.hasTimeFormatError = function(time){
     //Hours, minutes, and seconds, 12-hour clock:
-    var regex = new RegExp(/^(1[0-2]|0?[1-9]):([0-5]?[0-9]):([0-5]?[0-9])(●?[AP]M)?$/)
+    var regex = new RegExp(/^(1[0-2]|0?[1-9]):([0-5]?[0-9]):([0-5]?[0-9])(?[AP]M)?$/)
     if (!validator.matches(time, regex)) {
         var error = new Error();
         error.name = "Entry Error"

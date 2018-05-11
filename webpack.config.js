@@ -2,15 +2,15 @@ var path = require('path')
 var webpack = require('webpack')
 
 module.exports = {
-  plugins: [
-    new webpack.ProvidePlugin({
-      $: 'jquery'
-    })
-  ],
+  // plugins: [
+  //   new webpack.ProvidePlugin({
+  //     $: 'jquery'
+  //   })
+  // ],
   entry: './src/main.js',
   output: {
     path: path.resolve(__dirname, './dist'),
-    publicPath: '/dist/',
+    //publicPath: '/dist/',
     filename: 'build.js'
   },
   module: {
@@ -51,6 +51,7 @@ module.exports = {
     extensions: ['*', '.js', '.vue', '.json']
   },
   devServer: {
+    // contentBase: path.join(__dirname, "/dist"),
     historyApiFallback: true,
     noInfo: true,
     overlay: true,
@@ -72,7 +73,11 @@ module.exports = {
       '/get/project': "http://localhost:3000",
       '/get/projectlist': "http://localhost:3000",
       '/get/categories': "http://localhost:3000",
-      '/get/entries': "http://localhost:3000"
+      '/get/entries': "http://localhost:3000",
+      // Other Misc. Shit
+      '/login': "http://localhost:3000",
+      '/signup': "http://localhost:3000"
+      //'/testing': "http://localhost:3000"
     }
   },
   performance: {

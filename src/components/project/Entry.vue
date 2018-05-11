@@ -1,7 +1,7 @@
 <template>
-  <div>
-
-  </div>
+    <div>
+        <h3>This is the Entry component</h3>
+    </div>
 </template>
 
 <script>

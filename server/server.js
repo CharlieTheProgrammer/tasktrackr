@@ -1,71 +1,74 @@
 // server.js
-// From www file
-var appBackend = require('./appBackend');
-var debug = require('debug')('server:server');
-var http = require('http');
+
+// Stuff that should be arg'ed
+const cors         = true;
+const port         = process.env.PORT || 3000;
+const host         = '192.168.0.1'
+const DB_PATH      = './server/models/data/ProjectTT.db';
 
 // set up ======================================================================
-// get all the tools we need
-var express  = require('express');
-var appBackend      = express();
-var path     = require('path');
-var port     = process.env.PORT || 3000;
+const express      = require('express');
+const appBackend   = express();
+const path         = require('path');
+const morgan       = require('morgan');
+const bodyParser   = require('body-parser');
+const session      = require('express-session');
 
-var passport = require('passport');
-
-var morgan       = require('morgan');
-//var cookieParser = require('cookie-parser');      Check if this is still needed.
-var bodyParser   = require('body-parser');
-var session      = require('express-session');
-
-var DB = require('./models/database.js');
-var DBPath = './models/data/ProjectTT.db'
-
-const validator = require('./helpers/validate.js');
 
 // Database Config =============================================================
-let appDB = new DB.DataAPI();
-appDB.initDB(DBPath);
+const DB           = require('./models/database.js');
+const appDB        = new DB.DataAPI();
+appDB.initDB(DB_PATH);
 
-var authentication = require('./config/authentication.js')(appDB);
+// Passport Setup ==============================================================
+var passport = require('passport');
+require('./config/passport.js')(passport, appDB);
 
-// Express Application Config ==================================================
-appBackend.use(morgan('dev'));
-//app.user(cookieParser());
-appBackend.use(bodyParser.urlencoded({ extended: true }));
-// parse application/json
-appBackend.use(bodyParser.json());
-// Set Public folder
-appBackend.use(express.static(path.join(__dirname, 'public')));
-
-// Required for Passport =======================================================
-
-// Passport does not directly manage your session, it only uses the session.
-// So you configure session attributes (e.g. life of your session) via express
-var sessionOptions = {
+// Sessions Setup ==============================================================
+const SQLiteStore = require('connect-sqlite3')(session);
+const sessionOptions = {
     secret: 'awesomesauce',
     resave: false,
-    saveUninitialized: true,
-    //store:
-    cookie : { httpOnly: true, maxAge: 24192000 } // configure when sessions expires
+    saveUninitialized: false,   // This creates a cookie just by visiting the site. We only want to turn this on after login.
+    store: new SQLiteStore({
+        db: 'ProjectTT.db',
+        table: 'sessions',
+        dir: 'server/models/data',
+    }),
+    cookie : {
+        maxAge: null,  // configure when sessions expires
+        httpOnly: true,
+        secure: false
+    }
 };
 
+// File Exports ================================================================
+// My routes need the passport and appDB object and want to centralize the config here.
+// Not sure if there's another way of doing this. The line below is usually first or last in  a file.
+module.exports = { passport, appDB }
+
+// Route Imports ===============================================================
+const router = require('./appBackendRoutes')//(passport, appDB);
+const globalBeforeRouter = require('./globalroutehandlers_before');
+
+// Express Middleware Config ==================================================
+appBackend.use(bodyParser.urlencoded({ extended: true }));
+appBackend.use(bodyParser.json());
+appBackend.use(express.static(path.join(__dirname, '../dist')));
+// CORS
+if (cors === true) {
+    const corsSettings = require('./config/cors');
+    appBackend.use(corsSettings);
+}
 appBackend.use(session(sessionOptions));
-
-//app.use(passport.initialize());
-//app.use(passport.session());    // Persistent login sessions
-//appBackend.use(flash());                 // Used for messaging
+appBackend.use(passport.initialize());
+appBackend.use(passport.session());
 
 
-// app.use('/login', authentication.logIn);
-// app.use('/logout', authentication.logOut);
-//app.use(authentication.validateRequest);
+//appBackend.use(globalBeforeRouter)
+appBackend.use(router)
 
-// routes ======================================================================
-//require('./routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
-require('./appBackend.js')(appBackend, passport, appDB, validator);
-require('./config/passport.js') (passport, appDB);
-
-// launch ======================================================================
+// Launch ======================================================================
 appBackend.listen(port);
+//appBackend.listen(port, host); The host part means that it's required in order for the server to respond!!!
 console.log('The magic happens on port ' + port);

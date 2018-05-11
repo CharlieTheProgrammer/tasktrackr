@@ -3,14 +3,22 @@
     <!-- MAIN NAVIGATION -->
     <nav class="navbar navbar-dark bg-dark">
         <div class="container-fluid">
-            <a href="/" class="h2 text-uppercase text-muted mr-auto">Project TT</a>
-            <button href="#" class="btn btn-primary ml-auto m-2" data-toggle="modal" data-target="#addProject">Create Project</button>
-            <a href="" class="btn btn-primary m-2">Settings</a>
+            <router-link to="/" tag="a" class="h2 text-uppercase text-muted mr-auto">Project TT</router-link>
+            <button href="#" class="btn btn-primary m-2" data-toggle="modal" data-target="#addProject" v-if="isAuthenticated">Create Project</button>
+            <router-link to="/settings" tag="a" class="btn btn-primary m-2" v-if="isAuthenticated">Settings</router-link>
+            <router-link to="/login" class="btn btn-primary m-2 px-4" v-if="!isAuthenticated">Log In</router-link>
+            <button href="#" class="btn btn-primary m-2" @click.prevent="logout" v-else>Log Out</button>
         </div>
     </nav>
 
     <!-- NEW PROJECT MODAL -->
-    <div id="addProject" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static">
+    <div
+        id="addProject"
+        class="modal fade"
+        tabindex="-1"
+        role="dialog"
+        data-backdrop="static"
+        >
         <div class="modal-dialog" role="document">
             <div class="modal-content">
             <div class="modal-header">
@@ -31,7 +39,7 @@
                     </div>
                     <div class="d-flex justify-content-end">
                         <button type="button" class="btn btn-secondary mx-1" data-dismiss="modal" v-on:click="projectName=''">Close</button>
-                        <button type="button" class="btn btn-primary mx-1" v-on:click.prevent="createNewProject">Save changes</button>
+                        <button type="button" class="btn btn-primary mx-1" v-on:click="createNewProject">Save changes</button>
                     </div>
                 </form>
             </div>
@@ -46,26 +54,42 @@
 </template>
 
 <script>
-    import { MainBus } from '../main'
+import axios from 'axios'
 
     export default {
+        props: ['isAuthenticated'],
         data: function() {
             return {
                 projectName: '',
-                validated: false
+                validated: false,
+                loggedIn: false,
             }
         },
         methods: {
             createNewProject: function() {
                 if (this.projectName !== '') {
-                    // call ServerComm
-                    MainBus.$emit('createNewProject', this.projectName)
+                    this.$store.dispatch('createProject', this.projectName)
                     this.projectName = '';
                 } else if (this.projectName === '') {
                     this.validated = true;
                 }
 
                 return;
+            },
+            logout: function() {
+                axios.post('/logout')
+                    .then(res => {
+                        console.log(res);
+                        console.log(res.data);
+
+                        if (res.status === 200 && res.data.type !== "Error") {
+                            this.$store.dispatch('setIsAuthenticated', false)
+                            this.$router.push('QP');
+                        } else {
+                            this.errorMsg = res.data;
+                        }
+                    })
+                    .catch(error => console.log(error))
             }
         }
     }

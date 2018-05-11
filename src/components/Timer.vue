@@ -3,7 +3,6 @@
         <!-- TIMER -->
         <p class="text-center display-4">Timer</p>
         <p id="timer" class="text-center display-3">{{ timer.hour }}:{{ timer.minute }}:{{ timer.second }}</p>
-        <button class="btn btn-info w-100" @click="testFunc">Test</button>
     </div>
 </template>
 
