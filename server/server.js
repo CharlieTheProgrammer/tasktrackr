@@ -48,7 +48,10 @@ const sessionOptions = {
 module.exports = { passport, appDB }
 
 // Route Imports ===============================================================
-const router = require('./appBackendRoutes')//(passport, appDB);
+const usersRoutes = require('./routes/user');
+const projectRoutes = require('./routes/project');
+const entryRoutes= require('./routes/entry');
+const categoryRoutes= require('./routes/category');
 const globalBeforeRouter = require('./globalroutehandlers_before');
 
 // Express Middleware Config ==================================================
@@ -63,11 +66,20 @@ if (cors === true) {
 appBackend.use(session(sessionOptions));
 appBackend.use(passport.initialize());
 appBackend.use(passport.session());
+// For Testing =================================================================
+var TESTING = true;
 
-
+appBackend.use('/', function(req, res, next) {
+    if (TESTING) {
+        req.user_id = 1;
+    }
+    next();
+});
 //appBackend.use(globalBeforeRouter)
-appBackend.use(router)
-
+appBackend.use(usersRoutes);
+appBackend.use(entryRoutes);
+appBackend.use(projectRoutes);
+appBackend.use(categoryRoutes);
 // Launch ======================================================================
 appBackend.listen(port);
 //appBackend.listen(port, host); The host part means that it's required in order for the server to respond!!!

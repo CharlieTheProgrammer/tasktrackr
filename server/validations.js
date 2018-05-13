@@ -16,14 +16,14 @@ const v = {
             .matches('[0-9]').withMessage('Password must contain at least 1 number.')
             .matches('[a-z]').withMessage('Password must contain at least 1 lowercase letter.')
             .matches('[A-Z]').withMessage('Password must contain at least 1 uppercase letter.')
-            .custom((value, {req, loc, path}) => {
-                if (value !== req.body.confirmPassword) {
-                    // throw error if passwords do not match
-                    throw new Error("Passwords don't match");
-                } else {
-                    return value;
-                }
-            })
+                .custom((value, {req, loc, path}) => {
+                    if (value !== req.body.confirmPassword) {
+                        // throw error if passwords do not match
+                        throw new Error("Passwords don't match");
+                    } else {
+                        return value;
+                    }
+                })
     ],
     loginValidators: [
         check('username')
