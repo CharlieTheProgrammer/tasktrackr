@@ -8,9 +8,21 @@
 <script>
     export default {
         created: function() {
-            this.$store.dispatch('loadCategories');
-            this.$store.dispatch('loadProjectList');
-            this.$store.dispatch('loadAllEntries');
+            var p1 = this.$store.dispatch('loadCategories');
+
+            var p2 = this.$store.dispatch('loadProjectList');
+
+            var p3 = this.$store.dispatch('loadAllEntries');
+
+            Promise.all([p1, p2, p3])
+                .then(values => {
+                    console.log("All promises completed successfully.");
+                    this.$router.push('firstproject');
+                })
+                .catch(error => {
+                    console.log("Error occurred during loading");
+                    console.log(error);
+                })
         }
     }
 </script>

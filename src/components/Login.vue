@@ -39,24 +39,15 @@ import axios from 'axios'
         },
         methods: {
             login: function() {
-                console.log(this.username + " " + this.password);
                 this.errorMsg = null;
-
-                axios.post('/login', {'username': this.username, 'password': this.password})
-                    .then(res => {
-                        console.log(res);
-                        console.log(res.data);
-
-                        if (res.status === 200 && res.data.type !== "Error") {
-                            this.$store.dispatch('setIsAuthenticated', true)
-                            this.$router.push('Processing');
-                        } else {
-                            this.errorMsg = res.data;
-                        }
+                this.$store.dispatch('loginAttempt', this.username, this.password)
+                    .then(response => {
+                        this.$router.push('Processing');
                     })
-                    .catch(error => console.log(error))
+                    .catch(error => {
+                        this.errorMsg = error.response.data;
+                    })
             },
-
         }
     }
 </script>

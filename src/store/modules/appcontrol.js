@@ -40,49 +40,36 @@ const mutations = {
     },
 
     // Load categories
-    'GET_CATEGORIES' (state) {
-        axios.post('/get/categories')
-            .then(res => console.log(res.data))
-            .catch(error => console.log(error));
+    'GET_CATEGORIES' (state, data) {
+        console.log(data);
+        for (var category in data) {
+            state.projectCategories.push(data[category]);
+        }
     },
 
     // Load all projects
-    'GET_PROJECTLIST' (state) {
-        axios.post('/get/projectlist')
-            .then(res => {
-                var list = res.data;
-                for (var item in list) {
-                    //console.log(list[item].project_name)
-                    //state.projects[list[item].project_id] = {project_name: list[item].project_name, entries: {}}
-                    Vue.set(state.projects, list[item].project_id, {project_name: list[item].project_name, entries: {}} )
-                }
-                return "testing return"
-            })
-            .catch(error => console.log(error));
+    'GET_PROJECTLIST' (state, list) {
+        for (var item in list) {
+            Vue.set(state.projects, list[item].project_id, {project_name: list[item].project_name, entries: {}} )
+        }
     },
 
     // Load entries
-    'GET_ENTRIES' (state) {
-        axios.post('/get/allUserEntries')
-            .then(res => {
-                var table = res.data;
+    'GET_ENTRIES' (state, table) {
+        // Algorithm locates project object the entry belongs to and inserts entry under that project object.
+        for (var entry in table) {
+            var project_id = table[entry].project_id;
 
-                // Algorithm locates project object the entry belongs to and inserts entry under that project object.
-                for (var entry in table) {
-                    var project_id = table[entry].project_id;
+            if (!state.projects[project_id]) {
+                continue
+            }
 
-                    if (!state.projects[project_id]) {
-                        continue
-                    }
+            var key = table[entry].entry_id;
+            var value = table[entry];
+            delete table[entry].entry_id;
 
-                    var key = table[entry].entry_id;
-                    var value = table[entry];
-                    delete table[entry].entry_id;
-
-                    Vue.set(state.projects[project_id].entries, key, value)
-                }
-            })
-            .catch(error => console.log(error));
+            Vue.set(state.projects[project_id].entries, key, value)
+        }
     },
 
     'SET_CURRENT_PROJECT_ID' (state, newProjectId) {
@@ -133,17 +120,62 @@ const actions = {
 
         this.commit('SET_LOGGED_IN', isLoggedIn);
     },
+    loginAttempt: function(context, username, password) {
+        return new Promise((resolve, reject) => {
+            axios.post('/login', {'username': username, 'password': password})
+                .then(res => {
+                    console.log(res);
+                    console.log(res.data);
+                    if (res.status === 200 && res.data.type !== "Error") {
+                        this.commit('SET_LOGGED_IN', true);
+                        resolve(res);
+                    } else {
+                        reject(res);
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                    reject(error);
+                });
+        });
+    },
     loadCategories: function() {
         console.log("Action: loadCategories");
-        this.commit('GET_CATEGORIES')
+        return new Promise((resolve, reject) => {
+            axios.post('/get/categories')
+                .then(res => {
+                    //console.log(res.data)
+                    this.commit('GET_CATEGORIES', res.data);
+                    resolve(res.data);
+                })
+                .catch(error => {
+                    console.log(error)
+                });
+            });
     },
     loadProjectList: function() {
-        console.log("Action: loadProjectList");
-        this.commit('GET_PROJECTLIST');
+        return new Promise((resolve, reject) => {
+            console.log("Action: loadProjectList");
+            axios.post('/get/projectlist')
+                .then(res => {
+                    this.commit('GET_PROJECTLIST', res.data);
+                    resolve(res.data);
+                })
+                .catch(error => {
+                    reject(error);
+                })
+            })
     },
     loadAllEntries: function() {
         console.log("Action: loadAllEntries");
-        this.commit('GET_ENTRIES')
+        return new Promise((resolve, reject) => {
+            axios.post('/get/allUserEntries')
+                .then(res => {
+                    this.commit('GET_ENTRIES', res.data);
+                    resolve(res.data)
+                })
+                .catch(error => console.log(error));
+            });
     },
     // initAppData: function() {
     //     this.$store.dispatch()

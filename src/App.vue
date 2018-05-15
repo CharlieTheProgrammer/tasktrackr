@@ -2,7 +2,7 @@
     <div>
       <app-header :isAuthenticated="isAuthenticated"></app-header>
       <router-view></router-view>
-    
+
 
     <!-- <section class="">
         <button @click="loadCategories">Get Categories</button>
@@ -37,7 +37,7 @@
   import { MainBus } from './main'
   import { ServerComm } from './mixins/serverComm'
 
-    import axios from 'axios'
+import axios from 'axios'
 
 export default {
     components: {
@@ -59,22 +59,12 @@ export default {
         }
     },
     methods: {
-        // loadCategories: function() {
-        //     this.$store.dispatch('loadCategories');
-
-        //     // axios.get('/testing')
-        //     //     .then(res => console.log(res))
-        //     //     .catch(error => console.log(error));
-        // },
-        // loadProjectList: function() {
-        //     this.$store.dispatch('loadProjectList');
-        // },
-        // loadEntries: function() {
-        //     this.$store.dispatch('loadAllEntries');
-        // },
         logState: function() {
             console.log(this.$store.state);
-        }
+        },
+        // isAuthenticated: function() {
+
+        // }
     },
 }
 </script>
