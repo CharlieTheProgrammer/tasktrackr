@@ -15,7 +15,7 @@ var app = express.Router();
 // Add a category
 app.post(route_enum.new.category, v.newCategoryValidators, function (req, res) {
     // Validate req
-    if (!req.user_id) {
+    if (!req.user.user_id) {
         res.send(500);
         return;
     }
@@ -29,16 +29,15 @@ app.post(route_enum.new.category, v.newCategoryValidators, function (req, res) {
         res.json(errs)
         return;
     }
-    res.send(200);
-    return;
+    // res.send(200);
+    // return;
 
-    appDB.insertNewCategory(req.body.category_name, req.user_id, function (error, response) {
+    appDB.insertNewCategory(req.body.category_name, req.user.user_id, function (error, response) {
         if (error) {
             console.log(error);
             res.sendStatus(500);
         } else {
-            console.log("Inserted new category");
-            res.sendStatus(200);
+            res.json(response);
         }
     });
 });
@@ -54,17 +53,15 @@ app.post(route_enum.delete.category, v.deleteCategoryValidator, function (req, r
         res.json(errs)
         return;
     }
-    res.send(200);
-    return;
+    // res.send(200);
+    // return;
 
-    // TODO - Refactor to use a user ID for security purposes or anyone with a valid login can update a category.
-    appDB.deleteCategory(req.body.categoryID, function (error, response) {
+    appDB.hideCategory(req.body.category_id, req.user.user_id, function (error, response) {
         if (error) {
             console.log(error);
             res.sendStatus(500);
         } else {
-            console.log("Deleted a category.")
-            res.sendStatus(200);
+            res.json(response);
         }
     });
 });
@@ -80,16 +77,16 @@ app.post(route_enum.update.category, v.updateCategoryValidators, function (req, 
         res.json(errs)
         return;
     }
-    res.send(200);
-    return;
+    // res.send(200);
+    // return;
 
-    appDB.updateCategory(req.body.category_id, req.body.newCategoryName, function (error, response) {
+    appDB.updateCategory(req.body.category_id, req.body.new_category_name, req.user.user_id, function (error, response) {
         if (error) {
             console.log(error);
             res.sendStatus(500);
         } else {
             console.log("Updated a category.");
-            res.sendStatus(200);
+            res.json(response);
         }
     });
 });
@@ -97,17 +94,19 @@ app.post(route_enum.update.category, v.updateCategoryValidators, function (req, 
 // Get all categories
 app.post(route_enum.get.categories, function (req, res) {
     //Validate user ID, which should be added by custom middleware once user is logged in.
-    if (!req.user_id) {
+    if (!req.user.user_id) {
         res.send(500)
         return;
     }
+    // res.send(200);
+    // return;
 
-    appDB.getCategories(req.body.user_id, function (error, response) {
+    appDB.getCategories(req.user.user_id, function (error, response) {
         if (error) {
+            console.log(error);
             res.sendStatus(500);
         } else {
-            console.log("Got categories for User ID: " + req.body.user_id);
-            res.send(response);
+            res.json(response);
         }
     })
 });

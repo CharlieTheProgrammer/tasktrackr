@@ -11,8 +11,6 @@ var express = require('express');
 var app = express.Router();
 
 //      *** PROJECTS ****
-// Holds all routes related to projects. This may be moved into its own file later
-// to make it easier to manage.
 
 // Add new project
 app.post(route_enum.new.project, v.newProjectValidators, function (req, res) {
@@ -25,17 +23,16 @@ app.post(route_enum.new.project, v.newProjectValidators, function (req, res) {
         res.json(errs)
         return;
     }
-    res.send(200);
-    return;
+    // res.send(200);
+    // return;
 
-    // Assuming validation is fine
-    appDB.insertNewProject(req.body.project_name, req.user_id, req.body.created_date, function (error, response) {
+    appDB.insertNewProject(req.body.project_name, req.user.user_id, req.body.created_date, function (error, response) {
         if (error) {
             console.log(error);
             res.sendStatus(500);
         } else {
             console.log("Inserted new project: " + req.body.project_name);
-            res.send(response);
+            res.json({ newProjectID: response.newID });
         }
     });
 });
@@ -52,15 +49,15 @@ app.post(route_enum.update.project, v.updateProjectValidator, function (req, res
         res.json(errs)
         return;
     }
-    res.send(200);
-    return;
+    // res.send(200);
+    // return;
 
-    appDB.updateProject(req.body.projectID, req.body.projectName, function (error, response) {
+    appDB.updateProject(req.body.project_id, req.body.project_name, req.user.user_id, function (error, response) {
         if (error) {
+            console.log(error);
             res.sendStatus(500);
         } else {
-            console.log("Project name updated to: " + req.body.projectName);
-            res.sendStatus(200);
+            res.json(response);
         }
     });
 });
@@ -77,16 +74,15 @@ app.post(route_enum.delete.project, v.deleteProjectValidators, function (req, re
         res.json(errs)
         return;
     }
-    res.send(200);
-    return;
+    // res.send(200);
+    // return;
 
-    //var projectID = appDB.getProjectIDByName(req.body.project_name);
-    appDB.hideProject(req.body.projectID, function (error, response) {
+    appDB.hideProject(req.body.project_id, req.user.user_id, function (error, response) {
         if (error) {
+            console.log(error);
             res.sendStatus(500);
         } else {
-            console.log("Successfully deleted project.");
-            res.sendStatus(200);
+            res.json(response);
         }
     });
 });
@@ -94,20 +90,18 @@ app.post(route_enum.delete.project, v.deleteProjectValidators, function (req, re
 
 // Get a list of user's projects
 app.post(route_enum.get.projectList, function (req, res) {
-    //Validate user ID, which should be added by custom middleware once user is logged in.
-    if (!req.user_id) {
+    if (!req.user.user_id) {
         res.send(500)
         return;
     }
 
-    appDB.getProjectList(req.user_id, function (error, response) {
+    appDB.getProjectList(req.user.user_id, function (error, response) {
         if (error) {
             console.log(error);
             res.sendStatus(500);
         } else {
-            console.log("Got list of projects!");
             console.log(response);
-            res.send(response);
+            res.json(response);
         }
     });
 });

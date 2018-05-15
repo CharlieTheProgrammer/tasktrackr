@@ -34,28 +34,30 @@ const v = {
     ],
     newProjectValidators: [
         check('project_name')
-            .isLength({ min:1 }).withMessage('Project name is required.')
-            .matches("^[a-zA-Z ']*$")
-                .withMessage('Project name must only contain letters, numbers, spaces, and apostrophes.')
-            .isLength({ max: 50}).withMessage('Project name can be a max of 50 characters'),
+            .trim()
+            .isLength({ min:1, max: 50 }).withMessage('Project name must be between 1 and 50 characters.')
+            .matches("^[a-zA-Z 0-9']*$")
+                .withMessage('Project name must only contain letters, numbers, spaces, and apostrophes.'),
 
         check('created_date')
             .isLength({ min:1 }).withMessage('Internal Error: Created date is required.')
-            //.matches('^(0?[1-9]|1[012])[- \/.](0?[1-9]|[12][0-9]|3[01])[- \/.](19|20)\d\d').withMessage('Date format must be MM/DD/YYYY.'),
-            .matches('^(3[01]|[12][0-9]|0[1-9])/(1[0-2]|0[1-9])/[0-9]{4}$')
+            .matches(/^((0?[1-9]|1[012])[- /.](0?[1-9]|[12][0-9]|3[01])[- /.](19|20)?[0-9]{2})*$/)
                 .withMessage('Date format must be MM/DD/YYYY.'),
     ],
     updateProjectValidator: [
         check('project_name')
-            .exists().withMessage('Internal Error: New project name required.'),
+            .trim()
+            .isLength({ min:1, max: 50 }).withMessage('Project name must be between 1 and 50 characters.')
+            .matches("^[a-zA-Z 0-9']*$")
+                .withMessage('Project name must only contain letters, numbers, spaces, and apostrophes.'),
 
         check('project_id')
-            .exists().withMessage('Internall Error: Project ID is required.')
+            .isInt().withMessage('Internal Error: Project ID must be a number.')
 
     ],
     deleteProjectValidators: [
         check('project_id')
-            .exists().withMessage('Internal Error: Project ID is required.')
+            .isInt().withMessage('Internal Error: Project ID must be a number.')
     ],
     newCategoryValidators: [
         check('category_name')
@@ -83,12 +85,12 @@ const v = {
 
         check('start_time')
             .exists().withMessage('Internal Error: Start time is required.')
-            .matches('^(1[0-2]|0?[1-9]):([0-5]?[0-9]):([0-5]?[0-9])[ ]([AP]?M)?$')
-                .withMessage('Internal Error: Start time must be in HH:MM:SS AM/PM format'),
+            .matches('^(1[0-2]|0?[1-9]):([0-5]?[0-9])[ ]([AP]?M)?$')
+                .withMessage('Internal Error: Start time must be in HH:MM AM/PM format'),
 
         check('entry_date')
             .exists().withMessage('Internal Error: Entry date is required.')
-            .matches('^(3[01]|[12][0-9]|0[1-9])\/(1[0-2]|0[1-9])\/[0-9]{4}$')
+            .matches(/^((0?[1-9]|1[012])[- /.](0?[1-9]|[12][0-9]|3[01])[- /.](19|20)?[0-9]{2})*$/)
                 .withMessage('Internal Error: Date format must be MM/DD/YYYY.')
     ],
     // This on is tricky since it conditionally updates only the parts that are not empty.

@@ -66,16 +66,17 @@ if (cors === true) {
 appBackend.use(session(sessionOptions));
 appBackend.use(passport.initialize());
 appBackend.use(passport.session());
+
 // For Testing =================================================================
 var TESTING = true;
 
 appBackend.use('/', function(req, res, next) {
     if (TESTING) {
-        req.user_id = 1;
+        req.user = { user_id : 1 };
     }
     next();
 });
-//appBackend.use(globalBeforeRouter)
+appBackend.use(globalBeforeRouter);
 appBackend.use(usersRoutes);
 appBackend.use(entryRoutes);
 appBackend.use(projectRoutes);

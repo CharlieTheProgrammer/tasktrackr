@@ -23,10 +23,17 @@ app.post(route_enum.new.entry, v.newEntryValidators, function (req, res) {
         res.json(errs)
         return;
     }
-    res.send(200);
-    return;
+    // res.send(200);
+    // return;
 
-    appDB.insertNewEntry(req.body.project_id, req.body.start_time, req.body.entry_date, function (error, response) {
+    var params = {
+        project_id : req.body.project_id,
+        start_time: req.body.start_time,
+        entry_date: req.body.entry_date,
+        user_id: req.user.user_id
+    }
+
+    appDB.insertNewEntry(params, function (error, response) {
         if (error) {
             console.log(error);
             res.sendStatus(500);
@@ -44,7 +51,7 @@ app.post(route_enum.delete.entry, function (req, res) {
 });
 
 // Update entry
-app.post(route_enum.update.entry, v.updateEntryValidators, function (req, res) {
+app.post(route_enum.update.entry, function (req, res) {
     // Check for validation errors
     const errors= validationResult(req).formatWith(v.errorFormatters.genericFailure);
 
@@ -54,69 +61,71 @@ app.post(route_enum.update.entry, v.updateEntryValidators, function (req, res) {
         res.json(errs)
         return;
     }
-    res.send(200);
-    return;
+    // res.send(200);
+    // return;
 
     // Creating an object for this one since there are too many parameters.
-    var entryData = {
+    var params = {
         entry_id: req.body.entry_id,
         category_id: req.body.category_id,
         entry_description: req.body.entry_description,
         end_time: req.body.end_time,
         total_time: req.body.total_time,
+        user_id: req.user.user_id
     }
 
     // If a value is not provided, it will be set to null.
-    for (var key in entryData) {
-        if (entryData.hasOwnProperty(key)) {
-            if (entryData[key] === "") {
-                entryData[key] = null;
+    for (var key in params) {
+        if (params.hasOwnProperty(key)) {
+            if (params[key] === "") {
+                params[key] = null;
             }
         }
     }
-    res.send(200)
-    return;
+    // res.send(200)
+    // return;
 
-    appDB.updateEntry(entryData, function (error, response) {
+    appDB.updateEntry(params, function (error, response) {
         if (error) {
             console.log(error);
             res.sendStatus(500);
         } else {
             console.log("Entry successfully updated");
-            res.sendStatus(200);
+            res.json(response);
         }
     });
 });
 
+// All user entries
 app.post(route_enum.get.allUserEntries, function (req, res) {
-    appDB.getEntriesByUser(req.body.user_id, function (error, response) {
+    // Doesn't have validation because req.user.user_id is set internally and trusted
+    appDB.getEntriesByUser(req.user.user_id, function (error, response) {
         if (error) {
-            console.
-                res.sendStatus(500);
+            console.log(error);
+            res.sendStatus(500);
         } else {
-            res.send(response);
+            res.json(response);
         }
     });
 });
 
 // Get all entries - Maybe this should be part of load project below.
 app.post(route_enum.get.entries, function (req, res) {
-
-    //appDB.getCategories(1);
-    appDB.getCategories(1, function (error, response) {
+    // Doesn't have validation because req.user.user_id is set internally and trusted
+    appDB.getCategories(req.user.user_id, function (error, response) {
         if (error) {
-            //console.log(error);
+            console.log(error);
             res.sendStatus(500);
         } else {
             console.log("Callback was triggered\n" + response);
-            res.send(response);
+            res.json(response);
         }
     });
 });
 
 // Get Project. Project mainly consists of the table entries.
 app.post(route_enum.get.project, function (req, res) {
-    if (!req.body.projectID) {
+    if (!req.body.project_id) {
         res.send(500);
         console.log("Missing project ID");
         return;
@@ -127,11 +136,10 @@ app.post(route_enum.get.project, function (req, res) {
             res.send(500);
         } else {
             console.log("Got entries for project ID: " + req.body.projectID);
-            res.send(response);
+            res.json(response);
         }
     });
 });
-
 
 
 module.exports = app;

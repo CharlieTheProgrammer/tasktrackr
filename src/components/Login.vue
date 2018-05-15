@@ -49,7 +49,7 @@ import axios from 'axios'
 
                         if (res.status === 200 && res.data.type !== "Error") {
                             this.$store.dispatch('setIsAuthenticated', true)
-                            this.$router.push('QP');
+                            this.$router.push('Processing');
                         } else {
                             this.errorMsg = res.data;
                         }

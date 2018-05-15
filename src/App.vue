@@ -1,24 +1,8 @@
 <template>
-  <div>
+    <div>
       <app-header :isAuthenticated="isAuthenticated"></app-header>
       <router-view></router-view>
-    <div>
-        <!-- <app-loginscreen :errorMsg="LoginScreen.errorMsg" :displayError="LoginScreen.displayError" v-if="true"></app-loginscreen> -->
-        <!-- TIMER -->
-         <!-- <section id="timerRow" class="py-4">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-6 col-md-6 d-flex justify-content-center align-items-center">
-                        <app-timer></app-timer>
-                    </div>
-                    <div class="col-lg-6 col-md-6 d-flex justify-content-center align-items-center">
-                        <app-controller></app-controller>
-                    </div>
-                </div>
-            </div>
-        </section> -->
-    </div>
-    <!-- <app-projectnav :currentProjectID="currentProjectID" :currentProjectName="currentProjectName" :projects="projects" v-if="true"></app-projectnav> -->
+    
 
     <!-- <section class="">
         <button @click="loadCategories">Get Categories</button>
@@ -74,114 +58,20 @@ export default {
             return this.$store.getters.isAuthenticated;
         }
     },
-    // beforeCreate: function() {
-    //     var localProjectID = localStorage.getItem("currentProjectsID");
-
-    //     if (localProjectID !== null || localProjectID !== undefined) {
-    //         this.currentProjectID = localStorage.getItem("currentProjectID");
-    //     }
-    //     console.log(this.currentProjectID);
-    // },
-    // created: function() {
-    //     window.onbeforeunload = function(){
-    //         alert("Dave, I'm afraid I cannot do that.")
-    //     };
-    //     this.loadCategories();
-    //     console.log(this.$route.query);
-
-
-    //     MainBus.$on('getSharedState', (dataPoint) => {
-    //         // Check if data point exists, if it doesn't send back error.
-    //         if (this[dataPoint]) {
-    //             MainBus.$emit('SharedStateUpdate', this[dataPoint]);
-    //             return;
-    //         }
-
-    //         console.error(dataPoint + ": Does not exist.");
-    //     });
-
-    //     MainBus.$on('setSharedState', (dataPoint, value) => {
-    //         // Check if data point exists, if it doesn't send back error.
-    //         if (this[dataPoint]) {
-    //             this[dataPoint] = value;
-    //             MainBus.$emit('SharedStateUpdate', this[dataPoint]);
-    //             return;
-    //         }
-
-    //         console.error(dataPoint + ": Does not exist.");
-    //     });
-
-    //     MainBus.$on('loginAttempt', (data) => {
-
-    //         //this.LoginScreen.errorMsg = 'Login failedqweqwe';
-
-    //         var closure = this.LoginScreen.errorMsg;
-
-    //         // Login
-    //         $.ajax({
-    //             type: "POST",
-    //             url: this.route_enum.new.loginAttempt,
-    //             data: {
-    //                 username: this.login,
-    //                 password: this.password,
-    //                 }
-    //         }).done(function(response) {
-    //             // if successful
-    //             if (response == "OK") {
-    //                 // Load Projects
-    //                 this.loadProjects();
-
-    //                 // Load Categories
-    //                 console.log(this.projectCategories)
-    //                 this.loadCategories();
-
-    //                 // Load user data ???
-    //                     // userID: 1,       THIS ONE I'M NOT SUPPOSE TO BE USING
-    //                     // userFirstName: "Charlie",    IRRELEVANT FOR NOW
-    //                     // userLastName: "O",           IRRELEVANT FOR NOW
-    //                     // currentProjectID: 1,         CAN BE CHECKED LOCALLY
-    //                     // currentProjectName: 'Project Nav Testing',   CAN BE CHECKED LOCALLY
-
-    //                 // Need to figure out what else I need to load. I'll need to make other function calls here
-
-    //                 console.log(this.projectCategories)
-    //                 // turn off processing screen
-    //             }
-
-    //             // if login failed
-    //                 // turn off processing screen
-    //             // Show login failure error message
-    //             // response.error or response.message from server
-
-    //             //closure = error.msg;
-    //             if (closure != '') {
-    //                 this.LoginScreen.displayError = true;
-    //             } else if (closure == '') {
-    //                 this.LoginScreen.displayError = false;
-    //             }
-    //             // turn off processing screen.
-
-    //         });
-    //     });
-
-    //     MainBus.$on('createNewProject', (newProjectName) => {
-    //         this.createNewProject(newProjectName);
-    //     });
-    // },
     methods: {
-        loadCategories: function() {
-            this.$store.dispatch('loadCategories');
+        // loadCategories: function() {
+        //     this.$store.dispatch('loadCategories');
 
-            // axios.get('/testing')
-            //     .then(res => console.log(res))
-            //     .catch(error => console.log(error));
-        },
-        loadProjectList: function() {
-            this.$store.dispatch('loadProjectList');
-        },
-        loadEntries: function() {
-            this.$store.dispatch('loadAllEntries');
-        },
+        //     // axios.get('/testing')
+        //     //     .then(res => console.log(res))
+        //     //     .catch(error => console.log(error));
+        // },
+        // loadProjectList: function() {
+        //     this.$store.dispatch('loadProjectList');
+        // },
+        // loadEntries: function() {
+        //     this.$store.dispatch('loadAllEntries');
+        // },
         logState: function() {
             console.log(this.$store.state);
         }

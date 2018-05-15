@@ -41,14 +41,14 @@ const mutations = {
 
     // Load categories
     'GET_CATEGORIES' (state) {
-        axios.post('/get/categories', {user_id: 1})
+        axios.post('/get/categories')
             .then(res => console.log(res.data))
             .catch(error => console.log(error));
     },
 
     // Load all projects
     'GET_PROJECTLIST' (state) {
-        axios.post('/get/projectlist', {user_id: 1})
+        axios.post('/get/projectlist')
             .then(res => {
                 var list = res.data;
                 for (var item in list) {
@@ -56,13 +56,14 @@ const mutations = {
                     //state.projects[list[item].project_id] = {project_name: list[item].project_name, entries: {}}
                     Vue.set(state.projects, list[item].project_id, {project_name: list[item].project_name, entries: {}} )
                 }
+                return "testing return"
             })
             .catch(error => console.log(error));
     },
 
     // Load entries
     'GET_ENTRIES' (state) {
-        axios.post('/get/allUserEntries', {user_id: 1})
+        axios.post('/get/allUserEntries')
             .then(res => {
                 var table = res.data;
 
@@ -138,7 +139,7 @@ const actions = {
     },
     loadProjectList: function() {
         console.log("Action: loadProjectList");
-        this.commit('GET_PROJECTLIST')
+        this.commit('GET_PROJECTLIST');
     },
     loadAllEntries: function() {
         console.log("Action: loadAllEntries");

@@ -5,6 +5,7 @@
         <div class="container-fluid">
             <router-link to="/" tag="a" class="h2 text-uppercase text-muted mr-auto">Project TT</router-link>
             <button href="#" class="btn btn-primary m-2" data-toggle="modal" data-target="#addProject" v-if="isAuthenticated">Create Project</button>
+            <router-link to="/processing" tag="a" class="btn btn-primary m-2">Test Link</router-link>
             <router-link to="/settings" tag="a" class="btn btn-primary m-2" v-if="isAuthenticated">Settings</router-link>
             <router-link to="/login" class="btn btn-primary m-2 px-4" v-if="!isAuthenticated">Log In</router-link>
             <button href="#" class="btn btn-primary m-2" @click.prevent="logout" v-else>Log Out</button>

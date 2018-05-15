@@ -27,7 +27,7 @@ function DataAPI() {
                 console.log('Connected to ' + path + ' SQLite database.\n');
                 db.exec('PRAGMA foreign_keys = ON;', function(error){
                     if (error){
-                        console.error("Fucking Pragma statement didn't work.")
+                        console.error("Pragma statement didn't work.")
                     }
                 });
             }
@@ -61,11 +61,13 @@ function DataAPI() {
                 _callback(error);
             } else {
                 console.log("Query executed successfully");
-                console.log("Last inserted row: " + this.lastID);
+                console.log("Last modified row: " + this.lastID);
                 console.log("Number of rows affected: " + this.changes);
 
-                _callback(null, {newRowID : this.lastID});
-
+                _callback(null, {
+                    newID: this.lastID,
+                    rowChanges: this.changes
+                });
             }
         });
     }
@@ -169,12 +171,12 @@ function DataAPI() {
      * Deleting should only be done as an administrative task.
      * @param {integer} project_id
      */
-    this.deleteProject = function(project_id, _callback) {
-        let sql = 'DELETE FROM Projects '
-        sql += 'WHERE project_id = ?';
+    // this.deleteProject = function(project_id, user_id, _callback) {
+    //     let sql = 'DELETE FROM Projects '
+    //     sql += 'WHERE project_id = ? AND user_id = ?';
 
-        runQuery(sql, project_id, _callback);
-    };
+    //     runQuery(sql, [project_id, user_id], _callback);
+    // };
 
     // User Updates a Project Name
     /**
@@ -182,12 +184,12 @@ function DataAPI() {
      * @param {integer} project_id
      * @param {string} project_name
      */
-    this.updateProject = function(project_id, project_name, _callback) {
+    this.updateProject = function(project_id, project_name, user_id, _callback) {
         let sql = 'UPDATE Projects '
         sql += 'SET project_name =  ? '
-        sql += 'WHERE project_id = ? ;';
+        sql += 'WHERE project_id = ? AND user_id = ?';
 
-        runQuery(sql, [project_name, project_id], _callback);
+        runQuery(sql, [project_name, project_id, user_id], _callback);
     };
 
     // Hide Project
@@ -195,42 +197,42 @@ function DataAPI() {
      *
      * @param {integer} project_id
      */
-    this.hideProject = function(project_id, _callback) {
+    this.hideProject = function(project_id, user_id, _callback) {
         let sql = 'UPDATE Projects '
         sql += 'SET hidden = 1 '
-        sql += 'WHERE project_id = ? ;';
+        sql += 'WHERE project_id = ? AND user_id = ?;';
 
-        runQuery(sql, project_id, _callback);
+        runQuery(sql, [project_id, user_id], _callback);
     };
 
-    this.isProjectHidden = function(project_id, _callback){
-        let sql = 'SELECT hidden '
-        sql += 'FROM Projects '
-        sql += 'WHERE project_id = ? '
+    // this.isProjectHidden = function(project_id, user_id, _callback){
+    //     let sql = 'SELECT hidden '
+    //     sql += 'FROM Projects '
+    //     sql += 'WHERE project_id = ? AND user_id = ?;'
 
-        runQuery(sql, project_id, _callback);
-    }
+    //     runQuery(sql, [project_id, user_id], _callback);
+    // }
 
     // Get one Project row from DB
     /**
      * Dunno what I'm doing here. Skipping for now.
      * @param {integer} project_id
      */
-    this.getProjectRowByID = function(project_id, _callback) {
-        let sql = 'SELECT * '
-        sql += 'FROM Projects '
-        sql += 'WHERE project_id = ?';
+    // this.getProjectRowByID = function(project_id, _callback) {
+    //     let sql = 'SELECT * '
+    //     sql += 'FROM Projects '
+    //     sql += 'WHERE project_id = ?';
 
-        getQuery(sql, project_id, _callback);
-    }
+    //     getQuery(sql, project_id, _callback);
+    // }
 
-    this.getProjectIDByName = function(project_name, _callback){
-        let sql = 'SELECT project_id '
-        sql += 'FROM Projects '
-        sql += 'WHERE project_name = ? '
+    // this.getProjectIDByName = function(project_name, _callback){
+    //     let sql = 'SELECT project_id '
+    //     sql += 'FROM Projects '
+    //     sql += 'WHERE project_name = ? '
 
-        getQuery(sql, project_name, _callback);
-    }
+    //     getQuery(sql, project_name, _callback);
+    // }
 
     this.getProjectList = function(userID, _callback) {
         let sql = 'SELECT project_id, project_name '
@@ -239,12 +241,6 @@ function DataAPI() {
 
         getAllQuery(sql, userID, _callback);
     }
-
-    this.getProjectsandEntries = function(userID, _callback) {
-        let sql = 'SELECT '
-    }
-
-
 
 
     // Categories DB Actions
@@ -267,12 +263,12 @@ function DataAPI() {
      *
      * @param {integer} category_id
      */
-    this.deleteCategory = function(category_id, _callback) {
+    this.hideCategory = function(category_id, user_id, _callback) {
         let sql = 'UPDATE Categories '
         sql += 'SET hidden = 1 '
-        sql += 'WHERE category_id = ? ';
+        sql += 'WHERE category_id = ? AND user_id = ?';
 
-        runQuery(sql, category_id, _callback);
+        runQuery(sql, [category_id, user_id], _callback);
     };
 
 
@@ -282,12 +278,12 @@ function DataAPI() {
      * @param {integer} category_id
      * @param {string} new_category_name
      */
-    this.updateCategory = function(category_id, new_category_name, _callback) {
+    this.updateCategory = function(category_id, new_category_name, user_id, _callback) {
         let sql = 'UPDATE Categories '
         sql += 'SET category_name = ? '
-        sql += 'WHERE category_id = ?'
+        sql += 'WHERE category_id = ? AND user_id = ?'
 
-        runQuery(sql, [new_category_name, category_id], _callback);
+        runQuery(sql, [new_category_name, category_id, user_id], _callback);
     };
 
     // Get categories
@@ -297,9 +293,9 @@ function DataAPI() {
      * @param {string} user_id
      */
     this.getCategories = function(user_id, _callback) {
-        let sql = 'SELECT  * '
+        let sql = 'SELECT  category_id, category_name, hidden '
         sql += 'FROM Categories '
-        sql += 'WHERE user_id = (?) '
+        sql += 'WHERE user_id = ? '
 
        getAllQuery(sql, user_id, _callback);
     };
@@ -316,11 +312,17 @@ function DataAPI() {
      * @param {string} start_time - Format should be HH:MM
      * @param {string} entry_date - Format should be DD/MM/YYYY
      */
-    this.insertNewEntry = function(project_id, start_time, entry_date, _callback) {
-        let sql = 'INSERT INTO Entries (project_id, start_time, entry_date) '
-        sql += 'VALUES (?, ?, ?) '
+    this.insertNewEntry = function(params, _callback) {
+        let sql = 'INSERT INTO Entries (project_id, start_time, entry_date, user_id) '
+        sql += 'VALUES (?, ?, ?, ?) '
 
-        runQuery(sql, [project_id, start_time, entry_date], _callback);
+        runQuery(sql, [
+            params.project_id,
+            params.start_time,
+            params.entry_date,
+            params.user_id
+            ],
+             _callback);
     };
 
 
@@ -330,21 +332,23 @@ function DataAPI() {
      * @param {integer} entry_id
      * @param {string} entry_description
      */
-    this.updateEntry = function(entryObj, _callback) {
+    this.updateEntry = function(params, _callback) {
         let sql = 'UPDATE Entries '
         sql += 'SET category_id = ?, '
-        sql +=      'entry_description = ?, '
-        sql +=      'end_time = ?, '
-        sql +=      'total_time = ? '
-        sql += 'WHERE entry_id = ? '
+        sql +=     'entry_description = ?, '
+        sql +=     'end_time = ?, '
+        sql +=     'total_time = ? '
+        sql += 'WHERE entry_id = ? AND user_id = ? '
 
         runQuery(sql, [
-            entryObj.category_id,
-            entryObj.entry_description,
-            entryObj.end_time,
-            entryObj.total_time,
-            entryObj.entry_id] ,
-        _callback);
+            params.category_id,
+            params.entry_description,
+            params.end_time,
+            params.total_time,
+            params.entry_id,
+            params.user_id
+            ],
+            _callback);
     };
 
 
@@ -401,18 +405,18 @@ function DataAPI() {
     // Users DB Actions
 
     // Create New User
-    this.createNewUser = function(entryObj, _callback) {
+    this.createNewUser = function(params, _callback) {
         let sql = 'INSERT INTO Users(user_first_name, user_last_name, user_login, user_password, user_email) '
         sql += 'VALUES (?, ?, ?, ?, ?) '
 
         // Is this a good time to hash the password? When should this be hashed?
         // We may also want to lowercase the values here if queries are case sensitive
         runQuery(sql, [
-            entryObj.user_first_name,
-            entryObj.user_last_name,
-            entryObj.login,
-            entryObj.password,
-            entryObj.email] ,
+            params.user_first_name,
+            params.user_last_name,
+            params.login,
+            params.password,
+            params.email] ,
             _callback);
     };
 
