@@ -16,7 +16,9 @@
     export default {
         methods: {
             saveProject: function() {
-                return
+                return {
+                    projectName: ''
+                }
             }
         }
     }
