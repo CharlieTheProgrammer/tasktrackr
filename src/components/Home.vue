@@ -1,8 +1,5 @@
 <template>
     <div>
-        <h1>This is the Home Component</h1>
-        <p>Import the timer and the project components</p>
-
         <!-- TIMER -->
          <section id="timerRow" class="py-4">
             <div class="container-fluid">
@@ -16,12 +13,8 @@
                 </div>
             </div>
         </section>
+        <section>
             <app-project></app-project>
-        <section>
-        <section>
-            <app-firstprojectwelcome></app-firstprojectwelcome>
-        </section>
-
         </section>
     </div>
 
@@ -40,6 +33,6 @@
             'app-project': Project,
             'app-firstprojectwelcome': FirstProjectWelcome
         },
-        
+
     }
 </script>

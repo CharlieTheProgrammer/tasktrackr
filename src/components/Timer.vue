@@ -32,10 +32,6 @@
             MainBus.$on('resetTimer', () => {
                 this.resetTimer();
             });
-
-            MainBus.$on('SharedStateUpdate', (update) => {
-                console.log("Shared State Update: " + update);
-            });
         },
         methods: {
             setInterval: function() {
@@ -74,10 +70,6 @@
                     minute: '00',
                     second: '00'
                 }
-            },
-            testFunc: function() {
-                MainBus.$emit('getSharedState', 'userID')
-                MainBus.$emit('setSharedState', 'userID', 3);
             }
         }
     }

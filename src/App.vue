@@ -3,51 +3,23 @@
       <app-header :isAuthenticated="isAuthenticated"></app-header>
       <router-view></router-view>
 
-
-    <!-- <section class="">
-        <button @click="loadCategories">Get Categories</button>
-        <button @click="loadProjectList">Get Project List</button>
-        <button @click="loadEntries">Load Saved Entries</button>
-        <button @click="logState">Log State to Console</button>
-        <a class="btn btn-primary" href="/login">Auth0 Login</a>
-        <h3>Testing</h3>
-        <p class="display-2">{{ userID }}</p>
-        <ul v-for="(item, index) in projects" :key="index">
-            <li>{{ item.project_name }}</li>
-        </ul>
-        <h1>Spacer</h1>
-    </section> -->
-    <footer class="footer">
+    <!-- <footer class="footer">
       <div class="container text-center">
         <span class="text-muted">&copy; 2018 Charlie The Programmer</span>
       </div>
-    </footer>
+    </footer> -->
   </div>
 </template>
 
 <script>
   import Header from './components/Header'
-  import Login from './components/Login'
-  import AppController from './components/AppController'
-  import Timer from './components/Timer.vue'
-  import ProjectNav from './components/project/ProjectNav.vue'
-  import EntryContainer from './components/project/EntryContainer.vue'
-  import Entry from './components/project/Entry.vue'
 
-  import { MainBus } from './main'
-  import { ServerComm } from './mixins/serverComm'
-
-import axios from 'axios'
+  import axios from 'axios'
 
 export default {
     components: {
         'app-header': Header,
-        'app-loginscreen': Login,
-        'app-controller': AppController,
-        'app-timer': Timer,
-        'app-projectnav': ProjectNav
     },
-    mixins: [ServerComm],
     data: function() {
         return {
 
@@ -61,10 +33,7 @@ export default {
     methods: {
         logState: function() {
             console.log(this.$store.state);
-        },
-        // isAuthenticated: function() {
-
-        // }
+        }
     },
 }
 </script>
