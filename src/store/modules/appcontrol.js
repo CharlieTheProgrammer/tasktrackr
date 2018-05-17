@@ -34,6 +34,15 @@ const state = {
 
 
 const mutations = {
+    // Check for existing state in local storage
+    'initStore' (state) {
+        if (localStorage.getItem('store')) {
+            // Replace the state object with the stored item
+            var storedState = JSON.parse(localStorage.getItem('store'))
+            console.log(storedState);
+            this.$store.replaceState(Object.assign(state, storedState));
+        }
+    },
     // Login and signup
     'SET_LOGGED_IN' (state, isLoggedIn) {
         state.isAuthenticated = isLoggedIn;

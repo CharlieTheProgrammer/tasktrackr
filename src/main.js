@@ -9,7 +9,8 @@ import 'bootstrap';
 // This one imports the styles
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import store from './store/store'
+//import store from './store/store'
+import{ store } from './store/store'
 export const MainBus = new Vue();
 
 Vue.use(VueRouter);
@@ -21,10 +22,19 @@ const router = new VueRouter({
 axios.defaults.baseURL = 'http://localhost:3000'
 axios.defaults.withCredentials = true;
 
+store.subscribe((mutation, state) => {
+  localStorage.setItem('store', null);
+  console.log("Mutation detected: Saving state locally.")
+  localStorage.setItem('store', JSON.stringify(state));
+})
+
 new Vue({
   el: '#app',
   store: store,
   router: router,
-  render: h => h(App)
+  render: h => h(App),
+  beforeCreate: function() {
+    this.$store.commit('initStore');
+  }
 });
 
