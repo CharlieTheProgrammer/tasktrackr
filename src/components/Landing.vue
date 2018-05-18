@@ -53,6 +53,17 @@
     </div>
 </template>
 
+<script>
+    export default {
+        data: function() {
+            return {
+                projectName: ''
+            }
+        }
+    }
+</script>
+
+
 <style scoped>
     /* * {
     border: 1px solid red;

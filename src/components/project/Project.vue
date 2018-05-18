@@ -1,15 +1,12 @@
 <template>
     <div>
-        <h1>This is the Project Component</h1>
-        <p>Import the project sub-components</p>
-        <p v-if="!selectedProject">Select a project</p>
+        <!-- <p v-if="!selectedProject">Select a project</p> -->
 
         <section>
             <app-project-nav :selectedProject="selectedProject" :projects="projects"></app-project-nav>
             <app-entry-container
-                :projects="projects"
                 :selectedProject="selectedProject"
-                :categories="projectCategories"
+                :projectCategories="projectCategories"
                 ></app-entry-container>
             <button @click="log">Console log projects</button>
         </section>

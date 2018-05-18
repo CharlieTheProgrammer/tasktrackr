@@ -55,7 +55,7 @@
 
 <script>
     export default {
-        props: ['currentProjectID', 'projects'],
+        props: ['currentProjectID', 'selectedProject', 'projects'],
         methods: {
             setCurrrentProjectId: function(key) {
                 console.log(key);
