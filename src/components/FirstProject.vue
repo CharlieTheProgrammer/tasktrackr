@@ -14,11 +14,9 @@
 
 <script>
     export default {
-        methods: {
-            saveProject: function() {
-                return {
-                    projectName: ''
-                }
+        data: function() {
+            return {
+                projectName: ''
             }
         }
     }

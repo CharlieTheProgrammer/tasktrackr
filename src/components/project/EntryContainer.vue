@@ -1,7 +1,6 @@
 <template>
     <div>
-        <h2>This is the Entry Container Component</h2>
-        <table class="table">
+        <table class="table w-75 mx-auto" @blur="onChanged" @change="onChanged">
             <thead>
                 <tr>
                     <th id="category-column"     class="w-sm-5 w-md-10 w-lg-20 w-xl-20" scope="col">Category</th>
@@ -12,15 +11,16 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(entry, index) in selectedProject.entries" :key="index">
+                <tr v-for="entry in orderedTable" :key="entry.entry_id">
                     <td>
                         <select
                             class="custom-select w-100"
-                            :data-entry_id="entry.entry_id"
+                            :data-entryid="entry.entry_id"
                             data-cat="category_id"
                             >
                             <option
                                 v-for="(categoryItem, index) in projectCategories"
+                                :selected="entry.category_id == categoryItem.category_id ? 'selected' : null"
                                 :value="categoryItem.category_id" :key="index"
                                 >{{ categoryItem.category_name}}</option>
                         </select>
@@ -34,7 +34,7 @@
                             class="w-100 bg-transparent"
                             :data-entry_id="entry.entry_id"
                             data-cat="entry_description"
-                            v-model="entry.entry_description"
+                            :value="entry.entry_description"
                             >
                         </textarea>
                     </td>
@@ -47,40 +47,65 @@
                 </tr>
             </tbody>
         </table>
-        <app-entry></app-entry>
-        <p v-for="(project, projectID) in projects" :key="projectID" v-if="false">{{ project.project_name }} </p>
+        <!-- <p v-for="entry in orderedTable">{{entry.entry_date}}</p> -->
     </div>
 </template>
 
 <script>
     import Entry from './Entry.vue'
+    import { MainBus } from '../../main'
 
     export default {
-        props: ['projects', 'selectedProject'],
-        data() {
-            return {
-                entries: [
-                    {
-                        entry_id: 3,
-                        category_id: "1",
-                        entry_date: "11/20/2017",
-                        entry_description: "Sample entry",
-                        start_time: "10:22 AM",
-                        end_time: "11:00 AM",
-                        total_time: "130 mins",
-                    }
-                ],
-                projectCategories: [
-                    {
-                        category_id: "1",
-                        category_name: "Testing",
-                        hidden: "false"
-                    },
-                ]
-            }
-        },
+        props: ['selectedProject', 'projectCategories'],
         components: {
             'app-entry': Entry
+        },
+        computed: {
+            orderedTable: function(){
+                var orderedEntries = [];
+
+                Object.keys(this.selectedProject.entries).reverse().forEach(element => {
+                    orderedEntries.push(this.selectedProject.entries[element]);
+                    // console.log(element);
+                    // console.log(this.selectedProject.entries[element]);
+                });
+                // console.log(orderedEntries)
+                return orderedEntries;
+            }
+        },
+        methods: {
+            onChanged: function(event) {
+                console.log(event)
+                // this.$store.dispatch('updateEntry', event)
+                //     .catch(err => {
+                //         console.log(err)
+                //     })
+                this.$store.dispatch('newEntry')
+            }
+        },
+        created: function() {
+            // This is when a new entry is made
+            MainBus.$on('startTimer', () => {
+                // Send dispatch to store
+                this.$store.dispatch('newEntry')
+                    .then(res => {
+                        // Push new entry object to selected project with entry id received from db
+                    })
+                    .catch(err => console.log(err))
+            });
+
+            // This is when an entry is closed.
+            MainBus.$on('stopTimer', () => {
+                // Add total time to last entry
+                var time = new Date()
+
+                // This is wholly unnecessay since objects are passed by reference.
+                // var keysArray = Object.keys(this.selectedProject.entries)
+                // var entry = this.selectedProject.entries[keysArray[keysArray.length-1]]
+
+                // Send dispatch to store
+                this.$store.dispatch('updateEntry', entry)
+            });
         }
     }
 </script>

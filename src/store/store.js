@@ -76,7 +76,7 @@ const store = new Vuex.Store({
 
         // Load all projects
         'GET_PROJECTLIST' (state, list) {
-            state.projects = {};
+            //state.projects = {};  Do not do this, it causes bugs.
 
             for (var item in list) {
                 Vue.set(state.projects, list[item].project_id, {project_name: list[item].project_name, entries: {}} )
@@ -85,21 +85,35 @@ const store = new Vuex.Store({
 
         // Load entries
         'GET_ENTRIES' (state, table) {
-            state.project = {};
+            //state.projects = {};
             // Algorithm locates project object the entry belongs to and inserts entry under that project object.
             for (var entry in table) {
                 var project_id = table[entry].project_id;
 
+                // Hidden projects are not being returned. Skipping entries for hidden projects
                 if (!state.projects[project_id]) {
                     continue
                 }
 
                 var key = table[entry].entry_id;
                 var value = table[entry];
-                delete table[entry].entry_id;
+                //delete table[entry].entry_id;
 
                 Vue.set(state.projects[project_id].entries, key, value)
             }
+        },
+        'UPDATE_ENTRY' (state, eventData) {
+            var projectID = state.userInfo.currentProjectId
+            state.projects[projectID].entries[eventData.entry_id][eventData.fieldName] = eventData.value
+            //var entry_id = entry.entry_id
+        },
+        'PUSH_ENTRY' (state, entry) {
+            if (!entry.entry_id) {
+                throw Error("Entry ID is required!");
+                return;
+            }
+
+            Vue.set(state.projects[state.userInfo.currentProjectId].entries, entry.entry_id, entry);
         },
 
         'SET_CURRENT_PROJECT_ID' (state, newProjectId) {
@@ -140,7 +154,7 @@ const store = new Vuex.Store({
 
     },
     actions: {
-        // Everything under here is bassically everything under mutations
+        // Everything under here is basically everything under mutations
         setIsAuthenticated: function(context, isLoggedIn) {
             console.log("Action: setIsAuthenticated to " + isLoggedIn);
             if (typeof(isLoggedIn) !== 'boolean') {
@@ -206,37 +220,113 @@ const store = new Vuex.Store({
                     .catch(error => console.log(error));
                 });
         },
-        // initAppData: function() {
-        //     this.$store.dispatch()
-        // },
+        newEntry: function(context) {
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth()+1; //January is 0!
+
+            var yyyy = today.getFullYear();
+            if (dd < 10) {
+                dd ='0' + dd;
+            }
+
+            if (mm < 10) {
+                mm ='0' + mm;
+            }
+
+            var today = mm+'/'+dd+'/'+yyyy;
+            var start_time = '01:10 PM'
+
+            var entry = {
+                category_id: 0,
+                entry_id: null,
+                entry_date: today,
+                entry_description: "",
+                start_time: start_time,
+                end_time: "",
+                total_time: "",
+                project_id: context.state.userInfo.currentProjectId
+            }
+
+            return new Promise((resolve, reject) => {
+                axios.post('/new/entry', entry)
+                    .then(res => {
+                        if (!res.data.newID) {
+                            resolve(res)
+                        }
+
+                        entry.entry_id = res.data.newID
+                        this.commit('PUSH_ENTRY', entry);
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+            })
+        },
+        updateEntry: function(context, event) {
+            var eventData = {
+                fieldName: event.target.dataset.cat,
+                entry_id: event.target.dataset.entry_id,
+                value: event.target.value
+            }
+
+            this.commit('UPDATE_ENTRY', eventData);
+
+            // get entry
+            var currentProjectId = context.state.userInfo.currentProjectId;
+            var entry = context.state.projects[currentProjectId].entries[eventData.entry_id]
+
+            // console.log("Entry below should be the updated one, not the original entry")
+            // console.log(entry)
+
+            return new Promise((resolve, reject) => {
+                axios.post('/update/entry', entry)
+                    .then(res => {
+                        console.log("Successfuly update entry in server.")
+                        resolve(res.data);
+                    })
+                    .catch(err => {
+                        // Need to come up with way of handling network loss, perhaps a message queue with a process
+                        // that periodically tries to send the updates to the server.
+                        console.log("Error saving entry to server.")
+                        console.log(err)
+                        reject(err)
+                    })
+            });
+        },
         setCurrrentProjectId: function (context, newProjectId) {
 
-            const localProjectId = localStorage.getItem('currentProjectId');
-            // Local Storage	Function arg
+            // const localProjectId = localStorage.getItem('currentProjectId');
+            // // Local Storage	Function arg
 
-            // empty	not empty	use var
-            if (!localProjectId && newProjectId) {
-                localStorage.setItem('currentProjectId', newProjectId);
-                this.commit('SET_CURRENT_PROJECT_ID', newProjectId);
+            // // empty	not empty	use var
+            // if (!localProjectId && newProjectId) {
+            //     localStorage.setItem('currentProjectId', newProjectId);
+            //     this.commit('SET_CURRENT_PROJECT_ID', newProjectId);
+            //     return;
+            // };
+            // // not empty	not empty	use var
+            // if (localProjectId && newProjectId) {
+            //     localStorage.setItem('currentProjectId', newProjectId);
+            //     this.commit('SET_CURRENT_PROJECT_ID', newProjectId);
+            //     return;
+            // };
+            // // not empty	empty use local
+            // if (localProjectId && !newProjectId) {
+            //     console.log("Action: setCurrrentProjectId to " + localProjectId);
+            //     this.commit('SET_CURRENT_PROJECT_ID', localProjectId)
+            // } else {
+            //     // empty	empty	This is an error condition
+            //     console.error("setCurrrentProjectId Error")
+            // }
+
+            if (!newProjectId) {
+                throw Error("Action requires project id.")
                 return;
-            };
-            // not empty	not empty	use var
-            if (localProjectId && newProjectId) {
-                localStorage.setItem('currentProjectId', newProjectId);
-                this.commit('SET_CURRENT_PROJECT_ID', newProjectId);
-                return;
-            };
-            // not empty	empty use local
-            if (localProjectId && !newProjectId) {
-                console.log("Action: setCurrrentProjectId to " + localProjectId);
-                this.commit('SET_CURRENT_PROJECT_ID', localProjectId)
-            } else {
-                // empty	empty	This is an error condition
-                console.error("setCurrrentProjectId Error")
             }
 
             // console.log("Action: setCurrrentProjectId to " + newProjectId);
-            // this.commit('SET_CURRENT_PROJECT_ID', newProjectId)
+            this.commit('SET_CURRENT_PROJECT_ID', newProjectId)
         },
 
         createProject: function(context, newProjectName) {
@@ -253,20 +343,16 @@ const store = new Vuex.Store({
                 return undefined;
             }
             return state.projects[state.userInfo.currentProjectId];
-
-            // I find the below to be less readable than the above.
-            //return state.userInfo.currentProjectId ? state.projects[state.userInfo.currentProjectId] : undefined
         },
         projectCategories: function(state) {
             return state.projectCategories;
         },
         currentProjectId: function(state) {
-            return state.currentProjectId;
+            return state.userInfo.currentProjectId;
         },
         isAuthenticated: function(state) {
             return state.isAuthenticated;
         }
-
     }
 })
 
