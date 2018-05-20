@@ -6,6 +6,8 @@
 </template>
 
 <script>
+import { ErrorsBus } from '../main'
+
     export default {
         created: function() {
             var p1 = this.$store.dispatch('loadCategories');
@@ -15,12 +17,24 @@
             var p3 = this.$store.dispatch('loadAllEntries');
             var Vuee = this;
 
-            Promise.all([p1, p2, p3])
+            Promise.all([
+                    p1.catch(error => ErrorsBus.$emit("errorEvent", error)),
+                    p2.catch(error => ErrorsBus.$emit("errorEvent", error)),
+                    p3
+                ])
+                // If I catch all the errors above, the 'then' is triggered which is odd
+                // since if all promises fail, 'then' should not be considered successful.
+                // That's why .finally is available.
+                // At any rate, resolving this issue by putting at leaving at least one error slip through.
                 .then(values => {
                     console.log("All promises completed successfully.");
 
-                    // This introduces an odd race condition. I keep keeping length of 0
+                    // This introduces an odd race condition. I keep getting a length of 0
                     //var projectsLength = Object.keys(Vuee.$store.getters.projects).length;
+
+                    // I should also do a check to confirm that the current project id
+                    // still exists in the list of projects. If not, take user to project selection.
+
 
                     // If there isn’t a project, display the create project popup.
                     if (values[1].length === 0) {
@@ -38,7 +52,8 @@
                 })
                 .catch(error => {
                     console.log("Error occurred during loading");
-                    console.log(error);
+                    // console.log(error);
+                    ErrorsBus.$emit("errorEvent", error)
                 })
         }
     }

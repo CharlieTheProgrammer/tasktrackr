@@ -7,7 +7,7 @@
 </template>
 
 <script>
-    import { MainBus } from '../main'
+    import { ErrorsBus } from '../main'
 
     export default {
         data: function() {
@@ -21,15 +21,16 @@
             }
         },
         created: function() {
-            MainBus.$on('startTimer', () => {
+            ErrorsBus.$on('startTimer', () => {
                 this.startTimer();
             });
 
-            MainBus.$on('stopTimer', () => {
+            ErrorsBus.$on('stopTimer', () => {
+                ErrorsBus.$emit('TimerData', this.timer)
                 this.stopTimer();
             });
 
-            MainBus.$on('resetTimer', () => {
+            ErrorsBus.$on('resetTimer', () => {
                 this.resetTimer();
             });
         },
