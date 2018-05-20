@@ -21,12 +21,12 @@ app.post(route_enum.new.category, v.newCategoryValidators, function (req, res) {
     }
 
     // Check for validation errors
-    const errors= validationResult(req).formatWith(v.errorFormatters.genericFailure);
+    const errors= validationResult(req).formatWith(v.errorFormatter);
 
     if (!errors.isEmpty()) {
         console.log(errors.array());
         var errs = errors.array();
-        res.json(errs)
+        res.status(400).json(errs);
         return;
     }
     // res.send(200);
@@ -45,12 +45,12 @@ app.post(route_enum.new.category, v.newCategoryValidators, function (req, res) {
 // Delete a category
 app.post(route_enum.delete.category, v.deleteCategoryValidator, function (req, res) {
     // Check for validation errors
-    const errors= validationResult(req).formatWith(v.errorFormatters.genericFailure);
+    const errors= validationResult(req).formatWith(v.errorFormatter);
 
     if (!errors.isEmpty()) {
         console.log(errors.array());
         var errs = errors.array();
-        res.json(errs)
+        res.status(400).json(errs);
         return;
     }
     // res.send(200);
@@ -69,12 +69,12 @@ app.post(route_enum.delete.category, v.deleteCategoryValidator, function (req, r
 // Update a category name
 app.post(route_enum.update.category, v.updateCategoryValidators, function (req, res) {
     // Check for validation errors
-    const errors= validationResult(req).formatWith(v.errorFormatters.genericFailure);
+    const errors= validationResult(req).formatWith(v.errorFormatter);
 
     if (!errors.isEmpty()) {
         console.log(errors.array());
         var errs = errors.array();
-        res.json(errs)
+        res.status(400).json(errs);
         return;
     }
     // res.send(200);

@@ -15,12 +15,12 @@ var app = express.Router();
 // Add new project
 app.post(route_enum.new.project, v.newProjectValidators, function (req, res) {
     // Check for validation errors
-    const errors= validationResult(req).formatWith(v.errorFormatters.newProjectFailures);
+    const errors= validationResult(req).formatWith(v.errorFormatter);
 
     if (!errors.isEmpty()) {
         console.log(errors.array());
         var errs = errors.array();
-        res.json(errs)
+        res.status(400).json(errs)
         return;
     }
     // res.send(200);
@@ -41,12 +41,12 @@ app.post(route_enum.new.project, v.newProjectValidators, function (req, res) {
 // Update project name
 app.post(route_enum.update.project, v.updateProjectValidator, function (req, res) {
     // Check for validation errors
-    const errors= validationResult(req).formatWith(v.errorFormatters.genericFailure);
+    const errors= validationResult(req).formatWith(v.errorFormatter);
 
     if (!errors.isEmpty()) {
         console.log(errors.array());
         var errs = errors.array();
-        res.json(errs)
+        res.status(400).json(errs)
         return;
     }
     // res.send(200);
@@ -66,12 +66,12 @@ app.post(route_enum.update.project, v.updateProjectValidator, function (req, res
 // Delete project. This actually hides a project, but is exposed as 'deleting' to the end user.
 app.post(route_enum.delete.project, v.deleteProjectValidators, function (req, res) {
     // Check for validation errors
-    const errors= validationResult(req).formatWith(v.errorFormatters.genericFailure);
+    const errors= validationResult(req).formatWith(v.errorFormatter);
 
     if (!errors.isEmpty()) {
         console.log(errors.array());
         var errs = errors.array();
-        res.json(errs)
+        res.status(400).json(errs)
         return;
     }
     // res.send(200);

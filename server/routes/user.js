@@ -13,9 +13,14 @@ var app = express.Router();
 app.post(route_enum.login, v.loginValidators, (req, res, next) => {
     console.log("Req user id " + req.session.user_id)
     //Check for validation errors
-     if (v.foundErrors(req, res, v.errorFormatters.loginFailures, 401)) {
+    // Check for validation errors
+    const errors= validationResult(req).formatWith(v.errorFormatter);
+    if (!errors.isEmpty()) {
+        console.log(errors.array());
+        var errs = errors.array();
+        res.status(401).json(errs)
         return;
-     }
+    }
 
     console.log("Inside login callback");
     passport.authenticate('local', (err, user, info) => {
@@ -77,11 +82,11 @@ app.post(route_enum.new.user, v.signupValidators, function(req, res){
     console.log(req.body);
 
     // Check for validation errors
-    const errors= validationResult(req).formatWith(v.errorFormatters.signupFailures);
+    const errors= validationResult(req).formatWith(v.errorFormatter);
     if (!errors.isEmpty()) {
         console.log(errors.array());
         var errs = errors.array();
-        res.json(errs)
+        res.status(400).json(errs)
         return;
     }
 

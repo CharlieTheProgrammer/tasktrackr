@@ -15,12 +15,12 @@ var app = express.Router();
 // Add a entry
 app.post(route_enum.new.entry, v.newEntryValidators, function (req, res) {
     // Check for validation errors
-    const errors= validationResult(req).formatWith(v.errorFormatters.genericFailure);
+    const errors= validationResult(req).formatWith(v.errorFormatter);
 
     if (!errors.isEmpty()) {
         console.log(errors.array());
         var errs = errors.array();
-        res.json(errs)
+        res.status(400).json(errs)
         return;
     }
     // res.send(200);
@@ -51,14 +51,14 @@ app.post(route_enum.delete.entry, function (req, res) {
 });
 
 // Update entry
-app.post(route_enum.update.entry, function (req, res) {
+app.post(route_enum.update.entry, v.updateEntryValidators, function (req, res) {
     // Check for validation errors
-    const errors= validationResult(req).formatWith(v.errorFormatters.genericFailure);
+    const errors= validationResult(req).formatWith(v.errorFormatter);
 
     if (!errors.isEmpty()) {
         console.log(errors.array());
         var errs = errors.array();
-        res.json(errs)
+        res.status(400).json(errs)
         return;
     }
     // res.send(200);
