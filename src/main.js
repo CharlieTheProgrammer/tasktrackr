@@ -40,14 +40,19 @@ axios.defaults.withCredentials = true;
 export const ErrorsBus = new Vue({
 	methods: {
 		errorHandler: function (event) {
-
 			// check for axios error
-			if (event.response.status && event.response.data) {
-				// Check that data is an array
+			if (event.response) {
 				event.response.data.forEach(error => {
 					ErrorsBus.$emit("errorEvent", error)
-				});
+				})
+			} else if (event.request) {
+				ErrorsBus.$emit('errorEvent', {
+					type: "Error",
+					title: "Network Error",
+					message: "Please check your internet connection."
+				})
 			}
+
 			// I can add further code down here for errors generated from other sources.
 			// This is also a good place to connect to an error logging API
 		}

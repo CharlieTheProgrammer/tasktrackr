@@ -87,8 +87,8 @@ const v = {
 
         check('start_time')
             //.exists().withMessage(ERRS.ENTRY.START_TIME.DEFAULTS.BAD_FORMAT)
-            .matches('^(1[0-2]|0?[1-9]):([0-5]?[0-9])[ ]([AP]?M)?$')
-                .withMessage(ERRS.ENTRY.START_TIME.DEFAULTS.BAD_FORMAT),
+            //.matches('^(1[0-2]|0?[1-9]):([0-5]?[0-9])[ ]([AP]?M)?$')
+            .isISO8601().withMessage(ERRS.ENTRY.START_TIME.DEFAULTS.BAD_FORMAT),
 
         check('entry_date')
             //.exists().withMessage(ERRS.ENTRY.ENTRY_DATE.DEFAULTS.BAD_FORMAT)

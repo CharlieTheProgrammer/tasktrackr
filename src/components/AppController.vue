@@ -7,7 +7,7 @@
 </template>
 
 <script>
-    import { MainBus } from '../main'
+    import { TimerBus } from '../main'
 
     export default {
         data: function() {
@@ -17,15 +17,15 @@
         },
         methods: {
             startTimer: function() {
-                MainBus.$emit('startTimer');
+                TimerBus.$emit('startTimer');
                 console.log("Start Timer");
                 this.displayme = false;
             },
             stopTimer: function() {
-                MainBus.$emit('stopTimer');
+                TimerBus.$emit('stopTimer');
                 console.log("Stop Timer");
                 this.displayme = true;
-            }
+            },
         }
     }
 </script>

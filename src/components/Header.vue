@@ -4,13 +4,17 @@
     <nav class="navbar navbar-dark bg-dark">
         <div class="container-fluid">
             <router-link to="/" tag="a" class="h2 text-uppercase text-muted mr-auto">Project TT</router-link>
-            <button href="#" class="btn btn-primary m-2" data-toggle="modal" data-target="#addProject" v-if="isAuthenticated">Create Project</button>
+            <button href="#" class="btn btn-primary m-2" data-toggle="modal" data-target="#addProject" v-if="true">Create Project</button>
             <router-link to="/processing" tag="a" class="btn btn-primary m-2">Test Link</router-link>
             <router-link to="/settings" tag="a" class="btn btn-primary m-2" v-if="isAuthenticated">Settings</router-link>
             <router-link to="/login" class="btn btn-primary m-2 px-4" v-if="!isAuthenticated">Log In</router-link>
             <button href="#" class="btn btn-primary m-2" @click.prevent="logout" v-else>Log Out</button>
         </div>
     </nav>
+
+    <div>
+        <app-alerts></app-alerts>
+    </div>
 
     <!-- NEW PROJECT MODAL -->
     <div
@@ -56,9 +60,14 @@
 
 <script>
 import axios from 'axios'
+import alerts from "./myalerts.vue"
+import { ErrorsBus } from '../main'
 
     export default {
         props: ['isAuthenticated'],
+        components: {
+            'app-alerts': alerts
+        },
         data: function() {
             return {
                 projectName: '',
@@ -70,12 +79,13 @@ import axios from 'axios'
             createNewProject: function() {
                 if (this.projectName !== '') {
                     this.$store.dispatch('createProject', this.projectName)
+                        .catch(err => {
+                            ErrorsBus.errorHandler(err)
+                        })
                     this.projectName = '';
                 } else if (this.projectName === '') {
                     this.validated = true;
                 }
-
-                return;
             },
             logout: function() {
                 axios.post('/logout')
