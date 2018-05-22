@@ -2,6 +2,7 @@
 
 // load all the things we need
 const LocalStrategy   = require('passport-local').Strategy;
+const ERRS = require('../../common/error_handling/errors')
 
 // expose this function to our app using module.exports
 module.exports = function(passport, appDB) {
@@ -46,8 +47,8 @@ module.exports = function(passport, appDB) {
             };
 
             if (!match) {
-                return done(null, false, {type: "Error", name:"Login Error", message: 'Incorrect username'})
                 console.log('Login Failed due to bad username')
+                return done(null, false, ERRS.USER.USERNAME.LOGIN.NO_MATCH)
             };
 
             appDB.validatePassword(user_login, password, function(error, response){
@@ -57,9 +58,9 @@ module.exports = function(passport, appDB) {
 
                 if (!response){
                     console.log('Incorrect password.');
-                    return done(null, false, {message: 'Incorrect password.'});
+                    return done(null, false, ERRS.USER.PASSWORD.LOGIN.NO_MATCH);
                 };
-                console.log('Over here');
+
                 return done(null, user_login);
             });
         });
