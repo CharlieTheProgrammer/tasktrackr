@@ -17,9 +17,6 @@
                         <button type="submit" class="text-center btn btn-success btn-lg my-3 w-50" @click.prevent="login">Login</button>
                     </div>
                 </form>
-                <div v-if="displayError" >
-                    <div class="text-danger" v-for="msg in errorMsg">{{ msg.message }}</div>
-                </div>
             </div>
         </section>
     </div>
@@ -27,25 +24,27 @@
 
 <script>
 import axios from 'axios'
+import { ErrorsBus } from '../main'
 
     export default {
         data: function() {
             return {
-                displayError: true,
-                errorMsg: null,
                 username: null,
                 password: null
             }
         },
         methods: {
             login: function() {
-                this.errorMsg = null;
-                this.$store.dispatch('loginAttempt', this.username, this.password)
+                var userInfo = {
+                    username: this.username,
+                    password: this.password
+                }
+                this.$store.dispatch('loginAttempt', userInfo)
                     .then(response => {
                         this.$router.push('Processing');
                     })
-                    .catch(error => {
-                        this.errorMsg = error.response.data;
+                    .catch(err => {
+                        ErrorsBus.errorHandler(err)
                     })
             },
         }
