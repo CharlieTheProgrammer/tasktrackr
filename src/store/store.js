@@ -40,9 +40,9 @@ const store = new Vuex.Store({
             // }
         },
         userInfo: {
-            currentProjectId: 1
+            currentProjectId: false
         },
-        isAuthenticated: true
+        isAuthenticated: false
     },
     mutations: {
         // Check for existing state in local storage
@@ -66,7 +66,7 @@ const store = new Vuex.Store({
         //     Vue.set(state, projectCategories, initialState );
         // },
         // Login and signup
-        'SET_LOGGED_IN' (state, isLoggedIn) {
+        'SET_IS_AUTHENTICATED' (state, isLoggedIn) {
             state.isAuthenticated = isLoggedIn;
         },
 
@@ -125,7 +125,6 @@ const store = new Vuex.Store({
         'UPDATE_ENTRY' (state, eventData) {
             var projectID = state.userInfo.currentProjectId
             state.projects[projectID].entries[eventData.entry_id][eventData.fieldName] = eventData.value
-            //var entry_id = entry.entry_id
         },
         'PUSH_ENTRY' (state, entry) {
             if (!entry.entry_id) {
@@ -184,32 +183,39 @@ const store = new Vuex.Store({
     },
     actions: {
         // USER MANAGEMENT =====================================================
-        setIsAuthenticated: function(context, isLoggedIn) {
-            console.log("Action: setIsAuthenticated to " + isLoggedIn);
-            if (typeof(isLoggedIn) !== 'boolean') {
-                throw Error("Invalid value")
-            }
-
-            this.commit('SET_LOGGED_IN', isLoggedIn);
-        },
-        loginAttempt: function(context, username, password) {
+        loginAttempt: function(context, userInfo) {
             return new Promise((resolve, reject) => {
-                axios.post('/login', {'username': username, 'password': password})
+                axios.post('/login', userInfo)
                     .then(res => {
-                        console.log(res);
-                        console.log(res.data);
-                        if (res.status === 200 && res.data.type !== "Error") {
-                            this.commit('SET_LOGGED_IN', true);
-                            resolve(res);
-                        } else {
-                            reject(res);
-                        }
+                        this.commit('SET_IS_AUTHENTICATED', true);
+                        resolve(res);
                     })
                     .catch(error => {
-                        console.log(error);
                         reject(error);
                     });
             });
+        },
+        logoutAttempt: function() {
+            return new Promise((resolve, reject) => {
+                axios.post('/logout')
+                    .then(res => {
+                        this.commit('SET_IS_AUTHENTICATED', false);
+                        resolve(res);
+                    })
+                    .catch(error => {
+                        reject(error);
+                    });
+            });
+        },
+        signup: function(context, user) {
+            return new Promise((resolve, reject) => {
+                axios.post('/signup', user)
+                    .then(res => {
+                        this.commit('SET_IS_AUTHENTICATED', true);
+                        resolve(res);
+                    })
+                    .catch(error => reject(error));
+            })
         },
         // CATEGORIES ==========================================================
         //
@@ -303,7 +309,7 @@ const store = new Vuex.Store({
             }
 
             var entry = {
-                category_id: 0,
+                category_id: "",
                 entry_id: null,
                 entry_date: mm+'/'+dd+'/'+yyyy,
                 entry_description: "",
@@ -394,11 +400,9 @@ const store = new Vuex.Store({
             // For the meantime, projects cannot be created in offline mode. Later, I can make it so by
             // creating a temporary staging area.
 
-            // Add project to backend.
-            console.log("create project mutation: ");
             console.log(newProjectName);
 
-            var createdDate = '01/01/2999'
+            var createdDate = '01/01/2099'
 
             return new Promise((resolve, reject) => {
                 axios.post('new/project', {
@@ -406,11 +410,6 @@ const store = new Vuex.Store({
                     created_date: createdDate
                 })
                     .then(res => {
-                        console.log(res);
-                        if (res.data[0].type == 'Error') {
-                            reject(res)
-                            return;
-                        }
                         var message = res.message;
                         var newRowID = res.newID;
                         // Commit new project
@@ -418,10 +417,10 @@ const store = new Vuex.Store({
                             project_id: res.newID,
                             project_name: newProjectName
                         });
+
                         resolve(res)
                     })
                     .catch(err => {
-                        console.log(err)
                         reject(err)
                     });
             })
