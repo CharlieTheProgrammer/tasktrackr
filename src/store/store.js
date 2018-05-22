@@ -11,9 +11,10 @@ Vue.use(Vuex);
 // })
 
 import axios from 'axios';
-import { ServerComm } from '../api/serverComm'
+
 const store = new Vuex.Store({
 //export default new Vuex.Store({
+    strict: true,
     state: {
         projectCategories: [
             {
@@ -41,7 +42,7 @@ const store = new Vuex.Store({
         userInfo: {
             currentProjectId: 1
         },
-        isAuthenticated: false
+        isAuthenticated: true
     },
     mutations: {
         // Check for existing state in local storage
@@ -49,10 +50,21 @@ const store = new Vuex.Store({
             if (localStorage.getItem('store')) {
                 // Replace the state object with the stored item
                 var storedState = JSON.parse(localStorage.getItem('store'))
-                console.log(storedState);
                 store.replaceState(Object.assign(store.state, storedState));
             }
         },
+        // 'RESET_PROJECTS' (state) {
+        //     Vue.set(state, projects, {} );
+        // },
+        // 'RESET_PROJECT_CATEGORIES' (state) {
+        //     var initialState = {
+        //         category_id: "",
+        //         category_name: "",
+        //         hidden: ""
+        //     }
+
+        //     Vue.set(state, projectCategories, initialState );
+        // },
         // Login and signup
         'SET_LOGGED_IN' (state, isLoggedIn) {
             state.isAuthenticated = isLoggedIn;
@@ -73,16 +85,24 @@ const store = new Vuex.Store({
                 state.projectCategories.push(data[category]);
             }
         },
+        'ADD_CATEGORY' (state, category) {
+            if (!category.category_id) { return Error("Category ID is required") }
+            if (!category.category_name) { return Error("Category Name is required") }
+            if (!category.hidden) { return Error("Category Hidden is required") }
 
-        // Load all projects
-        'GET_PROJECTLIST' (state, list) {
-            //state.projects = {};  Do not do this, it causes bugs.
+            state.projectCategories.push(category)
 
-            for (var item in list) {
-                Vue.set(state.projects, list[item].project_id, {project_name: list[item].project_name, entries: {}} )
-            }
         },
+        'UPDATE_CATEGORY' (state, category) {
+            if (!category.category_id) { return Error("Category ID is required") }
+            if (!category.new_category_name) { return Error("Category Name is required") }
 
+            state.projectCategories[category.category_id].category_name = category.new_category_name;
+        },
+        'DELETE_CATEGORY' (state, category_id) {
+            state.projectCategories[category_id].hidden = 1;
+        },
+        // ENTRIES =============================================================
         // Load entries
         'GET_ENTRIES' (state, table) {
             //state.projects = {};
@@ -115,46 +135,55 @@ const store = new Vuex.Store({
 
             Vue.set(state.projects[state.userInfo.currentProjectId].entries, entry.entry_id, entry);
         },
+        'COMPLETE_ENTRY' (state, total_time) {
+            // Need to get the last entry in the project
+            // Get the current project's entries' keys and get the last one.
+            var currentProjectId = state.userInfo.currentProjectId
+            var keys = Object.keys(state.projects[currentProjectId].entries)
+            var lastEntryId = keys[keys.length - 1]
 
+            state.projects[currentProjectId].entries[lastEntryId].total_time = total_time;
+        },
+        // PROJECTS ============================================================
+        // Loads all projects
+        'SET_PROJECTS' (state, list) {
+            //state.projects = {};  Do not do this, it causes bugs.
+            Vue.set(state, "projects", {} );
+
+            for (var item in list) {
+                Vue.set(state.projects, list[item].project_id, {
+                    project_id: list[item].project_id,
+                    project_name: list[item].project_name,
+                    entries: {}
+                })
+            }
+        },
         'SET_CURRENT_PROJECT_ID' (state, newProjectId) {
             state.userInfo.currentProjectId = newProjectId;
         },
+        'CREATE_PROJECT' (state, newProject) {
+            if (!newProject.project_id) { return Error("Project ID is required") }
+            if (!newProject.project_name) { return Error("Project Name is required") }
 
-        // Relating to Entries
-        // Add entry
-        // Update Entry ... and if we wanted to further break these down
-            // Update entry category
-            // Update entry description
-            // Update end time and total time, although contextually, this occurs differently.
+            state.projects[newProject.project_id] = {project_name: newProject.project_name}
+        },
+        'UPDATE_PROJECT_NAME' (state, project) {
+            if (!project.project_id) { return Error("Project ID is required") }
+            if (!project.project_name) { return Error("Project Name is required") }
 
-        // Relating to Project categories... I will mutate these here
-        // Update category name
-        // 'Delete a category' - actually just marks it as hidden.
-
-        // Relating to Projects
-        // Add a project
-        'CREATE_PROJECT' (state, newProjectName) {
-            // If an error occurs at the server, but not on the front end, how will I ensure the user's data
-            // is not lost? Only thing I can think of at the moment is to add it to a
-            // temporary area.
-
-            // When adding a project, a project ID is required and that can only come from the server.
-            // For the meantime, projects cannot be created in offline mode. Later, I can make it so by
-            // creating a temporary staging area.
-
-            // Add project to backend.
-            console.log("create project mutation: ");
-            console.log(newProjectName);
-            ServerComm.methods.createNewProject(newProjectName);
-
-                // Add project to data model. This will be a callback since project ID is needed.
+            state.projects[project.project_id].project_name = project.project_name;
+        },
+        'DELETE_PROJECT' (state, project_id) {
+            //delete state.projects[project_id]
+            //Vue.delete(state.projects, project_id)
+            var projectsCopy = {};
+            Object.assign(projectsCopy, state.projects)
+            delete projectsCopy[project_id]
+            Vue.set(state, "projects", projectsCopy)
         }
-
-        // Edit a project name - Something that occurs on settings page
-
     },
     actions: {
-        // Everything under here is basically everything under mutations
+        // USER MANAGEMENT =====================================================
         setIsAuthenticated: function(context, isLoggedIn) {
             console.log("Action: setIsAuthenticated to " + isLoggedIn);
             if (typeof(isLoggedIn) !== 'boolean') {
@@ -182,6 +211,8 @@ const store = new Vuex.Store({
                     });
             });
         },
+        // CATEGORIES ==========================================================
+        //
         loadCategories: function() {
             console.log("Action: loadCategories");
             return new Promise((resolve, reject) => {
@@ -193,39 +224,76 @@ const store = new Vuex.Store({
                     })
                     .catch(error => {
                         console.log(error)
+                        reject(error)
                     });
                 });
         },
-        loadProjectList: function() {
+        addCategory: function(context, category_name) {
+            console.log("Action: addCategory");
             return new Promise((resolve, reject) => {
-                console.log("Action: loadProjectList");
-                axios.post('/get/projectlist')
+                axios.post('/new/category', {category_name: category_name})
                     .then(res => {
-                        this.commit('GET_PROJECTLIST', res.data);
+                        this.commit('ADD_CATEGORY', res.data);
                         resolve(res.data);
                     })
                     .catch(error => {
-                        reject(error);
-                    })
-                })
+                        console.log(error)
+                        reject(error)
+                    });
+            });
         },
+        updateCategory: function(context, category) {
+            console.log("Action: updateCategory");
+
+            return new Promise((resolve, reject) => {
+                axios.post('/update/category', category)
+                    .then(res => {
+                        this.commit('UPDATE_CATEGORY', category);
+                        resolve(res);
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        reject(error)
+                    });
+            });
+        },
+        deleteCategory: function(context, category_id) {
+            console.log("Action: deleteCategory");
+            return new Promise((resolve, reject) => {
+                axios.post('/delete/category', {
+                    category_id: category_id,
+                })
+                    .then(res => {
+                        this.commit('DELETE_CATEGORY', category_id);
+                        resolve(res);
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        reject(error)
+                    });
+            });
+        },
+        // ENTRIES =============================================================
         loadAllEntries: function() {
             console.log("Action: loadAllEntries");
             return new Promise((resolve, reject) => {
                 axios.post('/get/allUserEntries')
-                    .then(res => {
-                        this.commit('GET_ENTRIES', res.data);
-                        resolve(res.data)
-                    })
-                    .catch(error => console.log(error));
+                .then(res => {
+                    this.commit('GET_ENTRIES', res.data);
+                    resolve(res.data)
+                })
+                .catch(error => {
+                    console.log(error)
+                        reject(error)
+                    });
                 });
         },
         newEntry: function(context) {
             var today = new Date();
             var dd = today.getDate();
             var mm = today.getMonth()+1; //January is 0!
-
             var yyyy = today.getFullYear();
+
             if (dd < 10) {
                 dd ='0' + dd;
             }
@@ -234,15 +302,12 @@ const store = new Vuex.Store({
                 mm ='0' + mm;
             }
 
-            var today = mm+'/'+dd+'/'+yyyy;
-            var start_time = '01:10 PM'
-
             var entry = {
                 category_id: 0,
                 entry_id: null,
-                entry_date: today,
+                entry_date: mm+'/'+dd+'/'+yyyy,
                 entry_description: "",
-                start_time: start_time,
+                start_time: today.toISOString(),
                 end_time: "",
                 total_time: "",
                 project_id: context.state.userInfo.currentProjectId
@@ -250,17 +315,17 @@ const store = new Vuex.Store({
 
             return new Promise((resolve, reject) => {
                 axios.post('/new/entry', entry)
-                    .then(res => {
-                        if (!res.data.newID) {
-                            resolve(res)
-                        }
+                .then(res => {
+                    if (!res.data.newID) {
+                        resolve(res)
+                    }
 
-                        entry.entry_id = res.data.newID
-                        this.commit('PUSH_ENTRY', entry);
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    })
+                    entry.entry_id = res.data.newID
+                    this.commit('PUSH_ENTRY', entry);
+                })
+                .catch(err => {
+                    console.log(err)
+                })
             })
         },
         updateEntry: function(context, event) {
@@ -281,8 +346,8 @@ const store = new Vuex.Store({
 
             return new Promise((resolve, reject) => {
                 axios.post('/update/entry', entry)
-                    .then(res => {
-                        console.log("Successfuly update entry in server.")
+                .then(res => {
+                    console.log("Successfully updated entry in server.")
                         resolve(res.data);
                     })
                     .catch(err => {
@@ -294,44 +359,102 @@ const store = new Vuex.Store({
                     })
             });
         },
+        completeEntry: function(context) {
+            var date = new Date();
+            var dateTime = date.toISOString();
+
+            // Then get the current time and then do math.
+            this.commit('COMPLETE_ENTRY', dateTime);
+        },
+        // PROJECTS ============================================================
+        loadProjectList: function() {
+            return new Promise((resolve, reject) => {
+                console.log("Action: loadProjectList");
+                axios.post('/get/projectlist')
+                    .then(res => {
+                        this.commit('SET_PROJECTS', res.data);
+                        resolve(res.data);
+                    })
+                    .catch(error => {
+                        reject(error);
+                    })
+                })
+        },
         setCurrrentProjectId: function (context, newProjectId) {
-
-            // const localProjectId = localStorage.getItem('currentProjectId');
-            // // Local Storage	Function arg
-
-            // // empty	not empty	use var
-            // if (!localProjectId && newProjectId) {
-            //     localStorage.setItem('currentProjectId', newProjectId);
-            //     this.commit('SET_CURRENT_PROJECT_ID', newProjectId);
-            //     return;
-            // };
-            // // not empty	not empty	use var
-            // if (localProjectId && newProjectId) {
-            //     localStorage.setItem('currentProjectId', newProjectId);
-            //     this.commit('SET_CURRENT_PROJECT_ID', newProjectId);
-            //     return;
-            // };
-            // // not empty	empty use local
-            // if (localProjectId && !newProjectId) {
-            //     console.log("Action: setCurrrentProjectId to " + localProjectId);
-            //     this.commit('SET_CURRENT_PROJECT_ID', localProjectId)
-            // } else {
-            //     // empty	empty	This is an error condition
-            //     console.error("setCurrrentProjectId Error")
-            // }
-
             if (!newProjectId) {
                 throw Error("Action requires project id.")
                 return;
             }
 
-            // console.log("Action: setCurrrentProjectId to " + newProjectId);
             this.commit('SET_CURRENT_PROJECT_ID', newProjectId)
         },
-
         createProject: function(context, newProjectName) {
             console.log("Action: createProject");
-            this.commit('CREATE_PROJECT', newProjectName);
+            // When adding a project, a project ID is required and that can only come from the server.
+            // For the meantime, projects cannot be created in offline mode. Later, I can make it so by
+            // creating a temporary staging area.
+
+            // Add project to backend.
+            console.log("create project mutation: ");
+            console.log(newProjectName);
+
+            var createdDate = '01/01/2999'
+
+            return new Promise((resolve, reject) => {
+                axios.post('new/project', {
+                    project_name: newProjectName,
+                    created_date: createdDate
+                })
+                    .then(res => {
+                        console.log(res);
+                        if (res.data[0].type == 'Error') {
+                            reject(res)
+                            return;
+                        }
+                        var message = res.message;
+                        var newRowID = res.newID;
+                        // Commit new project
+                        this.commit('CREATE_PROJECT', {
+                            project_id: res.newID,
+                            project_name: newProjectName
+                        });
+                        resolve(res)
+                    })
+                    .catch(err => {
+                        console.log(err)
+                        reject(err)
+                    });
+            })
+        },
+        updateProject: function(context, project) {
+            console.log("Action: updateProject");
+
+            return new Promise((resolve, reject) => {
+                axios.post('/update/project', project)
+                    .then(res => {
+                        this.commit('UPDATE_PROJECT_NAME', project);
+                        resolve(res);
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        reject(error)
+                    });
+            });
+        },
+        deleteProject: function(context, project_id) {
+            console.log("Action: deleteProject");
+
+            return new Promise((resolve, reject) => {
+                axios.post('/delete/project', {project_id: project_id})
+                    .then(res => {
+                        this.commit('DELETE_PROJECT', project_id);
+                        resolve(res);
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        reject(error)
+                    });
+            });
         }
     },
     getters: {
