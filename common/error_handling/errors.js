@@ -59,6 +59,11 @@ const ERRS = {
                         title: TITLE_ENUM[2],
                         message: "Login is a required field.",
                     },
+                    NO_MATCH: {
+                        type: TYPE_ENUM[3],
+                        title: TITLE_ENUM[2],
+                        message: "Login failed.",
+                    }
                 },
             },
             PASSWORD: {
@@ -104,6 +109,11 @@ const ERRS = {
                         type: TYPE_ENUM[3],
                         title: TITLE_ENUM[2],
                         message: "Password is a required field.",
+                    },
+                    NO_MATCH: {
+                        type: TYPE_ENUM[3],
+                        title: TITLE_ENUM[2],
+                        message: "Login failed.",
                     }
                 }
             },
@@ -111,7 +121,7 @@ const ERRS = {
                 DEFAULTS: {
                     EMAIL_ONLY: {
                         type: TYPE_ENUM[3],
-                        title: TITLE_ENUM[2],
+                        title: TITLE_ENUM[1],
                         message: "Enter a valid email address"
                     }
                 }
@@ -141,7 +151,7 @@ const ERRS = {
                     BAD_FORMAT: {
                         type: TYPE_ENUM[3],
                         title: TITLE_ENUM[5],
-                        message: "Internal Error: Start time must be in HH:MM AM/PM format."
+                        message: "Internal Error: Start time must be in ISO-8601 format."
                     }
                 }
             },
@@ -150,7 +160,7 @@ const ERRS = {
                     BAD_FORMAT: {
                         type: TYPE_ENUM[3],
                         title: TITLE_ENUM[5],
-                        message: "Internal Error: End time must be in HH:MM AM/PM format."
+                        message: "Internal Error: End time must be in ISO-8601 format."
                     }
                 }
             },
@@ -168,7 +178,7 @@ const ERRS = {
             NAME: {
                 DEFAULTS: {
                     BAD_LENGTH: {
-                        type: TYPE_ENUM[1],
+                        type: TYPE_ENUM[3],
                         title: TITLE_ENUM[4],
                         message: "Category name must be between 1 and 20 characters."
                     },
@@ -191,7 +201,7 @@ const ERRS = {
             NEW_NAME: {
                 DEFAULTS: {
                     BAD_LENGTH: {
-                        type: TYPE_ENUM[1],
+                        type: TYPE_ENUM[3],
                         title: TITLE_ENUM[4],
                         message: "Category name must be between 1 and 20 characters."
                     },
@@ -207,12 +217,12 @@ const ERRS = {
             NAME: {
                 DEFAULTS: {
                     MINIMUM_LENGTH: {
-                        type: TYPE_ENUM[1],
+                        type: TYPE_ENUM[3],
                         title: TITLE_ENUM[3],
                         message: "Project name must be between 1 and 50 characters."
                     },
                     BAD_FORMAT: {
-                        type: TYPE_ENUM[1],
+                        type: TYPE_ENUM[3],
                         title: TITLE_ENUM[3],
                         message: "Project name must only contain letters, numbers, spaces, and apostrophes."
                     }
@@ -221,12 +231,12 @@ const ERRS = {
             CREATED_DATE: {
                 DEFAULTS: {
                     FIELD_REQUIRED: {
-                        type: TYPE_ENUM[1],
+                        type: TYPE_ENUM[3],
                         title: TITLE_ENUM[3],
                         message: "Internal Error: Created date is required."
                     },
                     BAD_FORMAT: {
-                        type: TYPE_ENUM[1],
+                        type: TYPE_ENUM[3],
                         title: TITLE_ENUM[3],
                         message: "Internal Error: Date format must be MM/DD/YYYY."
                     }
@@ -235,7 +245,7 @@ const ERRS = {
             ID: {
                 DEFAULTS: {
                     NUMBER_ONLY: {
-                        type: TYPE_ENUM[1],
+                        type: TYPE_ENUM[3],
                         title: TITLE_ENUM[3],
                         message: "Internal Error: Project ID must be a number."
                     }
