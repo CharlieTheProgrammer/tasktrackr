@@ -7,7 +7,6 @@ import Signup from './components/Signup.vue'
 import FirstProjectWelcome from './components/FirstProject.vue'
 import ProjectSelect from './components/project/ProjectSelect.vue'
 import Processing from './components/Processing.vue'
-import QP from './components/QueryParser.vue'
 
 // Create routes for each component
 export const routes = [
@@ -17,8 +16,7 @@ export const routes = [
     { path : '/settings', component: Settings },
     { path : '/signup', component: Signup },
     { path : '/firstproject', component: FirstProjectWelcome },
-    { path : '/ProjectSelect', component: ProjectSelect },
+    { path : '/projectselect', component: ProjectSelect },
     { path: '/processing', component: Processing },
-    { path : '/QP', component: QP },
     { path : '*', redirect: '/landing'}
 ];
