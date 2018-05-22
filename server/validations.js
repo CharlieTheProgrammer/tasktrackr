@@ -5,27 +5,25 @@ const ERRS = require('../common/error_handling/errors');
 // Object with all the validation checks
 const v = {
     signupValidators: [
-        check('email')
-            .isEmail().withMessage(ERRS.USER.EMAIL.DEFAULTS.EMAIL_ONLY),
-
         check('username')
             .isLength({ min:1 }).withMessage(ERRS.USER.USERNAME.SIGNUP.FIELD_REQUIRED)
             .isAlphanumeric().withMessage(ERRS.USER.USERNAME.SIGNUP.ALPHANUMERIC_ONLY),
+
+        check('email')
+            .isEmail().withMessage(ERRS.USER.EMAIL.DEFAULTS.EMAIL_ONLY),
 
         check('password')
             .isLength({ min:8 }).withMessage(ERRS.USER.PASSWORD.SIGNUP.MINIMUM_LENGTH)
             .matches('[0-9]').withMessage(ERRS.USER.PASSWORD.SIGNUP.NUMBER_REQUIRED)
             .matches('[a-z]').withMessage(ERRS.USER.PASSWORD.SIGNUP.LOWERCASE_LETTER_REQUIRED)
-            .matches('[A-Z]').withMessage(ERRS.USER.PASSWORD.SIGNUP.UPPERCASE_LETTER_REQUIRED)
-                .custom((value, {req, loc, path}) => {
-                    if (value !== req.body.confirmPassword) {
-                        // throw error if passwords do not match
-                        //throw new Error("Passwords don't match");
-                        return ERRS.USER.PASSWORD.SIGNUP.PASSWORDS_NO_MATCH;
-                    } else {
-                        return value;
-                    }
-                })
+            .matches('[A-Z]').withMessage(ERRS.USER.PASSWORD.SIGNUP.UPPERCASE_LETTER_REQUIRED),
+
+        check('confirmPassword')
+            .custom((value, {req, loc, path}) => {
+                if (value != req.body.password) {
+                    throw new Error("Bad");
+                } else { return value}
+            }).withMessage(ERRS.USER.PASSWORD.SIGNUP.PASSWORDS_NO_MATCH)
     ],
     loginValidators: [
         check('username')

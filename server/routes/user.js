@@ -6,14 +6,13 @@ const { v } = require('../validations.js');
 const route_enum = require('./routeEnumeration');
 
 
+
 // Router Config ===============================================================
 var express = require('express');
 var app = express.Router();
 
 app.post(route_enum.login, v.loginValidators, (req, res, next) => {
-    console.log("Req user id " + req.session.user_id)
-    //Check for validation errors
-    // Check for validation errors
+
     const errors= validationResult(req).formatWith(v.errorFormatter);
     if (!errors.isEmpty()) {
         console.log(errors.array());
@@ -22,17 +21,13 @@ app.post(route_enum.login, v.loginValidators, (req, res, next) => {
         return;
     }
 
-    console.log("Inside login callback");
     passport.authenticate('local', (err, user, info) => {
-        console.log("Inside passport authenticate callback");
         if (err) {
-            console.log("Error");
             console.log(err);
+            res.status(401).json(err)
         }
 
         if (user) {
-            console.log("User");
-            console.log(user)
             req.login(user, (err) => {
                 console.log('Inside req.login() callback')
                 console.log(`req.session.passport: ${JSON.stringify(req.session.passport)}`)
@@ -58,7 +53,7 @@ app.post(route_enum.login, v.loginValidators, (req, res, next) => {
 });
 
 app.post(route_enum.logout, function(req, res) {
-    console.log(req);
+
 
     if (req.isAuthenticated()) {
         req.logout();
