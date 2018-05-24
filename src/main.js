@@ -40,6 +40,13 @@ axios.defaults.withCredentials = true;
 export const ErrorsBus = new Vue({
 	methods: {
 		errorHandler: function (event) {
+			// These are internal application errors
+			if (event instanceof Error) {
+				//console.log(error);
+				return;
+			}
+
+
 			// if event.response.data is not an array, check for object and then push into array
 			if (!(Array.isArray(event.response.data))) {
 				var array = [event.response.data]
