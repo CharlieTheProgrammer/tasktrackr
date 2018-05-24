@@ -4,25 +4,24 @@
 
     <b-alert variant="success" dismissible show>Success Alert</b-alert> -->
 
-    <b-alert variant="danger"
+    <!-- <b-alert variant="danger"
             v-for="(error, index) in errors" :key="index"
              dismissible
              :show="true"
              @dismissed="showDismissibleAlert=false">
-      <p> {{error.type }} {{ error.message }}</p>
-    </b-alert>
+      <p>{{error.title }}: {{ error.message }}</p>
+    </b-alert> -->
 
-    <!-- <b-alert
+    <b-alert
             v-for="(error, index) in errors" :key="index"
             :show="dismissCountDown"
             fade
             dismissible
-            variant="warning"
+            variant="danger"
             @dismissed="dismissCountDown=0"
             @dismiss-count-down="countDownChanged">
-      <p>{{ error }} {{ index }}</p>
-      <p>This alert will dismiss after {{dismissCountDown}} seconds...</p>
-    </b-alert> -->
+      <p>{{ error.title }}: {{ error.message }}</p>
+    </b-alert>
 
     <!-- <b-btn @click="showAlert" variant="info" class="m-1">
       Show alert with count-down timer
@@ -46,6 +45,8 @@ export default {
     created: function() {
         ErrorsBus.$on('errorEvent', (errorObj) => {
                 this.errors.push(errorObj)
+                this.dismissCountDown = 10;
+
         });
     },
     methods: {
@@ -61,7 +62,7 @@ export default {
 
 <style scoped>
     #myalert {
-        position: absolute;
+        position: fixed;
         top: 75px;
         right: 15px
     }
