@@ -26,5 +26,6 @@ module.exports = {
         user: '/get/user'
     },
     login: '/login',
-    logout: '/logout'
+    logout: '/logout',
+    isAuthenticated: '/checksession'
 };

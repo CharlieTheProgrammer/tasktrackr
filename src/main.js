@@ -81,7 +81,12 @@ new Vue({
 	router: router,
 	render: h => h(App),
 	beforeCreate: function () {
-		this.$store.commit('initStore');
+		this.$store.dispatch('validSessionCheck')
+			.then(res => {
+				this.$store.commit('INIT_STORE');
+				this.$router.push('processing');
+			})
+			.catch(err => localStorage.setItem('store', null))
 	}
 });
 

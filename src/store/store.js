@@ -38,13 +38,14 @@ const store = new Vuex.Store({
     },
     mutations: {
         // Check for existing state in local storage
-        'initStore' (state) {
+        'INIT_STORE' (state) {
             if (localStorage.getItem('store')) {
                 // Replace the state object with the stored item
                 var storedState = JSON.parse(localStorage.getItem('store'))
                 store.replaceState(Object.assign(store.state, storedState));
             }
         },
+
         // 'RESET_PROJECTS' (state) {
         //     Vue.set(state, projects, {} );
         // },
@@ -217,6 +218,13 @@ const store = new Vuex.Store({
                     })
                     .catch(error => reject(error));
             })
+        },
+        'validSessionCheck': function() {
+            return new Promise((resolve, reject) => {
+                axios.post('/checksession')
+                    .then(res => resolve(res))
+                    .catch(err => reject(err))
+            });
         },
         // CATEGORIES ==========================================================
         //

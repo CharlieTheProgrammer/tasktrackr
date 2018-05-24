@@ -5,11 +5,15 @@ const { passport, appDB } = require('../server');
 const { v } = require('../validations.js');
 const route_enum = require('./routeEnumeration');
 
-
-
 // Router Config ===============================================================
 var express = require('express');
 var app = express.Router();
+
+
+//      *** USERS ****
+// Holds all routes related to projects. This may be moved into its own file later
+// to make it easier to manage.
+
 
 app.post(route_enum.login, v.loginValidators, (req, res, next) => {
 
@@ -127,9 +131,13 @@ app.post(route_enum.new.user, v.signupValidators, function(req, res){
 });
 
 
-//      *** USERS ****
-// Holds all routes related to projects. This may be moved into its own file later
-// to make it easier to manage.
+app.post(route_enum.isAuthenticated, function(req, res) {
+    if (req.isAuthenticated()) {
+        res.sendStatus(200)
+    } else {
+        res.sendStatus(401)
+    }
+});
 
 // Gets user id by session
 app.post(route_enum.get.user, function (req, res) {
