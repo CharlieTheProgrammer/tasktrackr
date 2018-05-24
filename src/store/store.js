@@ -238,7 +238,7 @@ const store = new Vuex.Store({
         addCategory: function(context, category_name) {
             console.log("Action: addCategory");
             return new Promise((resolve, reject) => {
-                axios.post('/new/category', {new_category_name: category_name})
+                axios.post('/new/category', {category_name: category_name})
                     .then(res => {
                         var category = {
                             category_id: res.data.newID,
