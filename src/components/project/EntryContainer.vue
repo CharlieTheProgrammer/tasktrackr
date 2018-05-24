@@ -11,7 +11,13 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="entry in orderedTable" :key="entry.entry_id">
+                <app-entry
+                    v-for="entry in orderedTable" :key="entry.entry_id"
+                    :entry="entry"
+                    :projectCategories="projectCategories"
+                    ></app-entry>
+
+                <!-- <tr v-for="entry in orderedTable" :key="entry.entry_id">
                     <td>
                         <select
                             class="custom-select w-100"
@@ -19,9 +25,9 @@
                             data-cat="category_id"
                             >
                             <option
-                                v-for="(categoryItem, index) in projectCategories"
+                                v-for="(categoryItem, index) in projectCategories" :key="index"
                                 :selected="entry.category_id == categoryItem.category_id ? 'selected' : null"
-                                :value="categoryItem.category_id" :key="index"
+                                :value="categoryItem.category_id"
                                 >{{ categoryItem.category_name}}</option>
                         </select>
                     </td>
@@ -44,7 +50,7 @@
                     <td
                         class="text-center"
                         :data-entry_id="entry.entry_id">{{ entry.total_time | generateTotalTime(entry.start_time) }}</td>
-                </tr>
+                </tr> -->
             </tbody>
         </table>
     </div>
@@ -53,12 +59,13 @@
 <script>
     import { ErrorsBus } from '../../main'
     import { TimerBus } from '../../main'
+    import Entry from './Entry'
 
     export default {
         props: ['selectedProject', 'projectCategories'],
-        // components: {
-        //     'app-entry': Entry
-        // },
+        components: {
+            'app-entry': Entry
+        },
         computed: {
             orderedTable: function(){
                 var orderedEntries = [];
@@ -79,38 +86,10 @@
                     })
             }
         },
-        filters: {
-            toTimeFormat: function(isostring){
-                var date = new Date(isostring);
-                return date.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"})
-            },
-            generateTotalTime: function(endTimeinISO, startTimeinISO) {
-                var oldDate = new Date(startTimeinISO);
-                var newDate = new Date(endTimeinISO);
-
-                var timeDiff = newDate.getTime() - oldDate.getTime();
-
-                if (isNaN(Math.round(timeDiff / 1000 / 60))) {
-                    return ""
-                } else {
-                    return Math.round(timeDiff / 1000 / 60)
-                }
-            }
-        },
         created: function() {
             // This is when a new entry is made
             TimerBus.$on('startTimer', () => {
                 this.$store.dispatch('newEntry')
-                    .catch(err => {
-                        // What kind of error message is returned here?
-                        ErrorsBus.$emit("ErrorEvent", err)
-                    })
-            });
-
-            // This is when an entry is closed.
-            TimerBus.$on('TimerData', (timer) => {
-                // Send dispatch to store
-                this.$store.dispatch('completeEntry')
                     .catch(err => {
                         // What kind of error message is returned here?
                         ErrorsBus.$emit("ErrorEvent", err)
