@@ -1,19 +1,11 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import appcontrol from '../store/modules/appcontrol'
+import axios from 'axios';
 
 Vue.use(Vuex);
 
-// export default new Vuex.Store({
-//     modules: {
-//         appcontrol
-//     }
-// })
-
-import axios from 'axios';
-
 const store = new Vuex.Store({
-//export default new Vuex.Store({
     strict: true,
     state: {
         projectCategories: [
@@ -88,7 +80,7 @@ const store = new Vuex.Store({
         'ADD_CATEGORY' (state, category) {
             if (!category.category_id) { return Error("Category ID is required") }
             if (!category.category_name) { return Error("Category Name is required") }
-            if (!category.hidden) { return Error("Category Hidden is required") }
+            if (!category.hidden === "") { return Error("Category Hidden must be an empty string") }
 
             state.projectCategories.push(category)
 
@@ -141,7 +133,7 @@ const store = new Vuex.Store({
             var keys = Object.keys(state.projects[currentProjectId].entries)
             var lastEntryId = keys[keys.length - 1]
 
-            state.projects[currentProjectId].entries[lastEntryId].total_time = total_time;
+            Vue.set(state.projects[currentProjectId].entries[lastEntryId], 'total_time', total_time)
         },
         // PROJECTS ============================================================
         // Loads all projects
@@ -164,7 +156,16 @@ const store = new Vuex.Store({
             if (!newProject.project_id) { return Error("Project ID is required") }
             if (!newProject.project_name) { return Error("Project Name is required") }
 
-            state.projects[newProject.project_id] = {project_name: newProject.project_name}
+            Vue.set(state.projects, newProject.project_id, {
+                project_name: newProject.project_name,
+                project_id: newProject.project_id,
+                entries: {}
+            })
+            // USE VUE.SET!!! Although the below works, it will not trigger any events since Vue cannot detect it
+            // state.projects[newProject.project_id] = {
+            //     project_name: newProject.project_name,
+            //     project_id: newProject.project_id
+            // }
         },
         'UPDATE_PROJECT_NAME' (state, project) {
             if (!project.project_id) { return Error("Project ID is required") }
@@ -237,9 +238,14 @@ const store = new Vuex.Store({
         addCategory: function(context, category_name) {
             console.log("Action: addCategory");
             return new Promise((resolve, reject) => {
-                axios.post('/new/category', {category_name: category_name})
+                axios.post('/new/category', {new_category_name: category_name})
                     .then(res => {
-                        this.commit('ADD_CATEGORY', res.data);
+                        var category = {
+                            category_id: res.data.newID,
+                            hidden: "",
+                            category_name: category_name
+                        }
+                        this.commit('ADD_CATEGORY', category);
                         resolve(res.data);
                     })
                     .catch(error => {
@@ -410,14 +416,11 @@ const store = new Vuex.Store({
                     created_date: createdDate
                 })
                     .then(res => {
-                        var message = res.message;
-                        var newRowID = res.newID;
                         // Commit new project
                         this.commit('CREATE_PROJECT', {
-                            project_id: res.newID,
+                            project_id: res.data.newID,
                             project_name: newProjectName
                         });
-
                         resolve(res)
                     })
                     .catch(err => {
