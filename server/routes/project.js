@@ -32,7 +32,7 @@ app.post(route_enum.new.project, v.newProjectValidators, function (req, res) {
             res.sendStatus(500);
         } else {
             console.log("Inserted new project: " + req.body.project_name);
-            res.json({ newProjectID: response.newID });
+            res.json(response);
         }
     });
 });
