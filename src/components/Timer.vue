@@ -56,8 +56,6 @@
                 this.timer.hour = ("0" + this.timer.hour).slice(-2);
                 this.timer.minute = ("0" + this.timer.minute).slice(-2);
                 this.timer.second = ("0" + this.timer.second).slice(-2);
-
-                console.log("Timer Started");
             },
             stopTimer: function() {
                 clearInterval(this.timer.tInterval);
