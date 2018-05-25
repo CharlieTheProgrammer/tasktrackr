@@ -32,10 +32,6 @@ import { ErrorsBus } from '../main'
                     // This introduces an odd race condition. I keep getting a length of 0
                     //var projectsLength = Object.keys(Vuee.$store.getters.projects).length;
 
-                    // I should also do a check to confirm that the current project id
-                    // still exists in the list of projects. If not, take user to project selection.
-
-
                     // If there isn’t a project, display the create project popup.
                     if (values[1].length === 0) {
                         console.log('Pushing to First Project Welcome')
