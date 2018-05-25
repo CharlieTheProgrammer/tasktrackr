@@ -46,6 +46,12 @@ export const ErrorsBus = new Vue({
 				return;
 			}
 
+			// Temporarily handling errors created manually
+			if (!(Array.isArray(event))) {
+				var array = [event]
+				ErrorsBus.$emit("errorEvent", event)
+				return;
+			}
 
 			// if event.response.data is not an array, check for object and then push into array
 			if (!(Array.isArray(event.response.data))) {

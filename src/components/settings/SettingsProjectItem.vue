@@ -74,6 +74,16 @@ import { ErrorsBus } from '../../main'
                         })
             },
             deleteProject: function() {
+                if (Number(this.project.project_id) === Number(this.$store.getters.currentProjectId)) {
+                    var err = {
+                        type: "Error",
+                        title: "Projects Failure",
+                        message: "A project that is in use cannot be deleted."
+                    }
+
+                    ErrorsBus.errorHandler(err)
+                    return;
+                }
 
                 this.$store.dispatch('deleteProject', this.project.project_id)
                     .then(location.reload())
