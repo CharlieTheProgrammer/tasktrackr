@@ -1,67 +1,58 @@
 <template>
-  <div id="myalert">
-    <!-- <b-alert show>Default Alert</b-alert>
-
-    <b-alert variant="success" dismissible show>Success Alert</b-alert> -->
-
-    <!-- <b-alert variant="danger"
-            v-for="(error, index) in errors" :key="index"
-             dismissible
-             :show="true"
-             @dismissed="showDismissibleAlert=false">
-      <p>{{error.title }}: {{ error.message }}</p>
-    </b-alert> -->
-
-    <b-alert
-            v-for="(error, index) in errors" :key="index"
-            :show="dismissCountDown"
-            fade
-            dismissible
-            variant="danger"
-            @dismissed="dismissCountDown=0"
-            @dismiss-count-down="countDownChanged">
-      <p>{{ error.title }}: {{ error.message }}</p>
-    </b-alert>
-
-    <!-- <b-btn @click="showAlert" variant="info" class="m-1">
-      Show alert with count-down timer
-    </b-btn> -->
+  <div id="notifications">
+    <app-notif-item
+        v-for="(message, index) in messages"
+        :key="index"
+        :message="message"
+        :countDownToDismiss="countDownToDismiss">
+    </app-notif-item>
   </div>
 </template>
 
 <script>
 import { ErrorsBus } from '../../main'
+import NotificationItem from './NotificationsItem.vue'
 
 export default {
-    props: ['errorObj'],
+    components: {
+        'app-notif-item': NotificationItem
+    },
     data() {
         return {
-            dismissSecs: 10,
-            dismissCountDown: 10,
-            showDismissibleAlert: false,
-            errors: []
+            messages: [],
+            countDownToDismiss: 10,
+            tInterval: false
         };
     },
     created: function() {
-        ErrorsBus.$on('errorEvent', (errorObj) => {
-                this.errors.push(errorObj)
-                this.dismissCountDown = 10;
-
-        });
+        ErrorsBus.$on('errorEvent', (message) => {
+            this.messages.push(message)
+        })
+        // Didn't work because not every component hit a countdown of 0. See Notification Item.
+        // ErrorsBus.$on('deleteMessage', () => {
+        //     this.messages.pop()
+        // }),
     },
-    methods: {
-        countDownChanged(dismissCountDown) {
-            this.dismissCountDown = dismissCountDown;
-        },
-        showAlert() {
-            this.dismissCountDown = this.dismissSecs;
+    watch: {
+        messages: function() {
+            // Destroys NotificationItem components / cleans up messages queue
+            if (this.messages.length > 0) {
+                if (!this.tInterval) {
+                    this.tInterval = setInterval(() => {
+                       this.messages.pop()
+                    }, this.countDownToDismiss * 1000 + 2000)
+                }
+            } else {
+                clearInterval(this.tInterval);
+                this.tInterval = false;
+            }
         }
     }
 };
 </script>
 
 <style scoped>
-    #myalert {
+    #notifications {
         position: fixed;
         top: 75px;
         right: 15px
