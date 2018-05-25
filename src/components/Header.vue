@@ -14,7 +14,7 @@
     </nav>
 
     <div>
-        <app-alerts></app-alerts>
+        <app-notifications></app-notifications>
     </div>
 
     <!-- NEW PROJECT MODAL -->
@@ -61,13 +61,13 @@
 
 <script>
 import axios from 'axios'
-import alerts from "./myalerts.vue"
+import notifications from "./notifications/Notifications.vue"
 import { ErrorsBus } from '../main'
 
     export default {
         props: ['isAuthenticated'],
         components: {
-            'app-alerts': alerts
+            'app-notifications': notifications
         },
         data: function() {
             return {

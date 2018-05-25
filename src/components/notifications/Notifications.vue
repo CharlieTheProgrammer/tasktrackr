@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { ErrorsBus } from '../main'
+import { ErrorsBus } from '../../main'
 
 export default {
     props: ['errorObj'],
