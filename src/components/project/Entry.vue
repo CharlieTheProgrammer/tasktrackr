@@ -41,6 +41,7 @@
 
 <script>
     import { ErrorsBus } from '../../main'
+    import { TimerBus } from '../../main'
 
     export default {
         props:['entry', 'projectCategories'],
@@ -53,12 +54,16 @@
             'entry.total_time': function(newValue, oldValue) {
                 console.log("Change to Total Time detected -- " + this.entry.total_time)
                 var fakeEventData = {
-                    fieldName: 'total_time',
-                    entry_id: this.entry.entry_id,
-                    value: this.entry.total_time
+                    target: {
+                        dataset: {
+                            cat: 'total_time',
+                            entry_id: this.entry.entry_id
+                        },
+                        value: this.entry.total_time
+                    }
                 }
 
-                this.$store.commit('UPDATE_ENTRY', fakeEventData)
+                this.$store.dispatch('updateEntry', fakeEventData)
 
             }
         },
@@ -73,7 +78,7 @@
 
                 var timeDiff = newDate.getTime() - oldDate.getTime();
 
-                if (isNaN(Math.round(timeDiff / 1000 / 60))) {
+                if (isNaN(Math.round(timeDiff / 1000 / 60)) || Number(timeDiff) < 0) {
                     return ""
                 } else {
                     return Math.round(timeDiff / 1000 / 60)
