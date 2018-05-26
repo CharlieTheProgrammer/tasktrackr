@@ -82,6 +82,11 @@ const store = new Vuex.Store({
             if (!category.category_id) { return Error("Category ID is required") }
             if (!category.category_name) { return Error("Category Name is required") }
             if (!category.hidden === "") { return Error("Category Hidden must be an empty string") }
+            // if (true) { throw Error(JSON.stringify({
+            //     type: "Heya",
+            //     title: "Ma Error Title"
+            // })) }
+            // console.log('Still made it past return point.');
 
             state.projectCategories.push(category)
 
@@ -202,6 +207,7 @@ const store = new Vuex.Store({
                 axios.post('/logout')
                     .then(res => {
                         this.commit('SET_IS_AUTHENTICATED', false);
+                        localStorage.setItem('store', null);
                         resolve(res);
                     })
                     .catch(error => {

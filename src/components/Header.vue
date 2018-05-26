@@ -90,7 +90,7 @@ import { ErrorsBus } from '../main'
             },
             logout: function() {
                 this.$store.dispatch('logoutAttempt')
-                    .then(this.$router.push('/'))
+                    .then(this.$router.push('/', () => window.location.reload()))
                     .catch(err => ErrorsBus.errorHandler(err));
             }
         }
