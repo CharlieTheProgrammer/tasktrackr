@@ -8,13 +8,13 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
     strict: true,
     state: {
-        projectCategories: [
-            {
+        projectCategories: {
+            0: {
                 category_id: "",
                 category_name: "",
                 hidden: ""
-            },
-        ],
+            }
+        },
         projects: {
             // Sample
             // 1: {
@@ -64,18 +64,19 @@ const store = new Vuex.Store({
         },
 
         // Load categories
-        'GET_CATEGORIES' (state, data) {
-            console.log(data);
-            state.projectCategories = [
-                {
-                    category_id: "",
-                    category_name: "",
-                    hidden: ""
-                }
-            ]
+        'GET_CATEGORIES' (state, list) {
+            console.log(list);
+            state.projectCategories = {
+                0:
+                    {
+                        category_id: "",
+                        category_name: "",
+                        hidden: ""
+                    }
+            }
 
-            for (var category in data) {
-                state.projectCategories.push(data[category]);
+            for (var item in list) {
+                Vue.set(state.projectCategories, list[item].category_id, list[item])
             }
         },
         'ADD_CATEGORY' (state, category) {
