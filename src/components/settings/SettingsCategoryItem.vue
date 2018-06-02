@@ -2,6 +2,7 @@
     <div>
         <div class="row py-2 mx-4" >
             <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+                <div>
                     <input
                         class="h4 w-100"
                         type="text"
@@ -34,7 +35,7 @@
 import { ErrorsBus } from '../../main'
 
     export default {
-        props: ['category', 'index'],
+        props: ['category'],
         data: function() {
             return {
                 name: this.category.category_name,
@@ -75,11 +76,7 @@ import { ErrorsBus } from '../../main'
                     })
             },
             deleteCategory: function() {
-
-                this.$store.dispatch('deleteCategory', this.category.category_id)
-                    .catch(err => {
-                        ErrorsBus.errorHandler(err);
-                    })
+                this.$emit('confirmDelete', this.category, "category");
             }
         }
     }
