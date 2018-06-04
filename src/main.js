@@ -34,39 +34,49 @@ store.subscribe((mutation, state) => {
 
 // Axios Configuration  ========================================================
 axios.defaults.baseURL = 'http://localhost:3000'
+//axios.defaults.baseURL = 'http://kilowebdesigns.com'
 axios.defaults.withCredentials = true;
 
 
 export const ErrorsBus = new Vue({
 	methods: {
 		errorHandler: function (event) {
-			// These are internal application errors
-			// if (event instanceof Error) {
-			// 	//console.log(error);
-			// 	return;
-			// }
-
-			// Temporarily handling errors created manually
-			// if (!(Array.isArray(event))) {
-			// 	var array = [event]
-			// 	ErrorsBus.$emit("errorEvent", event)
-			// 	return;
-			// }
-
-			// if event.response.data is not an array, check for object and then push into array
-			if (!(Array.isArray(event.response.data))) {
-				var array = [event.response.data]
-				event.response.data = array;
+			var ORIGIN = {
+				Axios: 'Axios',
+				Internal: 'Internal'
 			}
 
+			// I shouldn't be getting Errors here.
+			if (event instanceof Error) {
+				//this.addStacktoEvent()
+			}
+
+			if (!event.response && event.request) {
+				event.Origin = ORIGIN.Axios
+			}
+
+			if (event.response) {
+				event.Origin = ORIGIN.Axios
+			}
+
+			if (event.type && event.title && event.message) {
+				event.Origin = ORIGIN.Internal
+			}
+
+			// Errors created manually inside the application are generally single objects not in an array.
+			if (!(Array.isArray(event)) && event.Origin == 'Internal') {
+				var array = [event]
+				this.sendMessage(event)
+				return;
+			}
 
 			// check for axios error
 			if (event.response) {
 				event.response.data.forEach(error => {
-					ErrorsBus.$emit("errorEvent", error)
+					this.sendMessage(error);
 				})
 			} else if (event.request) {
-				ErrorsBus.$emit('errorEvent', {
+				this.sendMessage({
 					type: "Error",
 					title: "Network Error",
 					message: "Please check your internet connection."
@@ -75,6 +85,27 @@ export const ErrorsBus = new Vue({
 
 			// I can add further code down here for errors generated from other sources.
 			// This is also a good place to connect to an error logging API
+		},
+		addStacktoEvent: function(event, errorObj) {
+			if (!errorObj.stack) {
+				//throw new Error("Error object is missing stack.");
+				return undefined;
+			}
+
+			if (!event.type || !event.title || !event.message) {
+				throw new Error("Custom error object does not match format.");
+				return undefined;
+			}
+
+			return event.extension.stack = errorObj.stack;
+		},
+		sendMessage: function(message) {
+			if (!message.type || !message.title || !message.message) {
+				console.error("Custom error object does not match format. \n Got the following instead");
+				console.error(message);
+				return;
+			}
+			ErrorsBus.$emit("errorEvent", message)
 		}
 	}
 });
