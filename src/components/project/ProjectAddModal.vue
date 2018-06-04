@@ -57,9 +57,8 @@ import { ErrorsBus } from '../../main'
             createNewProject: function() {
                 if (this.projectName !== '') {
                     this.$store.dispatch('createProject', this.projectName)
-                        .catch(err => {
-                            ErrorsBus.errorHandler(err)
-                        })
+                        .then(this.$emit('toggleModal'))
+                        .catch(err => ErrorsBus.errorHandler(err))
                     this.projectName = '';
                 } else if (this.projectName === '') {
                     this.validated = true;
