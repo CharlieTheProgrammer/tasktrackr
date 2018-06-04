@@ -39,6 +39,14 @@ import { ErrorsBus } from '../../main'
         //         }
         //     }
         // }
+        watch: {
+            message: function() {
+                if (!this.message.type || !this.message.title || !this.message.message) {
+                    throw new Error("Custom error object does not match format.");
+                    return;
+                }
+            }
+        }
     }
 </script>
 
