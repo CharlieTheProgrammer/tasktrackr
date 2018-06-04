@@ -4,8 +4,6 @@
 const cors         = true;
 const port         = process.env.PORT || 3000;
 const host         = '192.168.0.1'
-const DB_PATH      = './server/models/data/ProjectTT.db';
-
 // set up ======================================================================
 const express      = require('express');
 const appBackend   = express();
@@ -14,8 +12,8 @@ const morgan       = require('morgan');
 const bodyParser   = require('body-parser');
 const session      = require('express-session');
 
-
 // Database Config =============================================================
+const DB_PATH      =  path.resolve(__dirname, './models/data/ProjectTT.db');
 const DB           = require('./models/database.js');
 const appDB        = new DB.DataAPI();
 appDB.initDB(DB_PATH);
@@ -33,7 +31,7 @@ const sessionOptions = {
     store: new SQLiteStore({
         db: 'ProjectTT.db',
         table: 'sessions',
-        dir: 'server/models/data',
+        dir: path.dirname(DB_PATH),
     }),
     cookie : {
         maxAge: null,  // configure when sessions expires
@@ -68,7 +66,7 @@ appBackend.use(passport.initialize());
 appBackend.use(passport.session());
 
 // For Testing =================================================================
-var TESTING = true;
+var TESTING = false;
 
 appBackend.use('/', function(req, res, next) {
     if (TESTING) {
@@ -76,7 +74,7 @@ appBackend.use('/', function(req, res, next) {
     }
     next();
 });
-appBackend.use(globalBeforeRouter);
+//appBackend.use(globalBeforeRouter);
 appBackend.use(usersRoutes);
 appBackend.use(entryRoutes);
 appBackend.use(projectRoutes);
