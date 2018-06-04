@@ -12,19 +12,24 @@
     export default {
         data: function() {
             return {
-                displayme: true
+                displayme: true,
+                clicked: false
             }
         },
         methods: {
             startTimer: function() {
-                TimerBus.$emit('startTimer');
-                console.log("Start Timer");
-                this.displayme = false;
+                if (!this.clicked) {
+                    TimerBus.$emit('startTimer');
+                    console.log("Start Timer");
+                    this.displayme = false;
+                    this.clicked = true
+                }
             },
             stopTimer: function() {
                 TimerBus.$emit('stopTimer');
                 console.log("Stop Timer");
                 this.displayme = true;
+                this.clicked = false;
             },
         }
     }
