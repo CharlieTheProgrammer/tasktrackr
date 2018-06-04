@@ -5,7 +5,7 @@ import axios from 'axios';
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
-    strict: true,
+    strict: false,
     state: {
         projectCategories: {
             0: {
@@ -33,7 +33,8 @@ const store = new Vuex.Store({
         userInfo: {
             currentProjectId: false
         },
-        isAuthenticated: false
+        isAuthenticated: false,
+        testMode: true
     },
     mutations: {
         // Check for existing state in local storage
@@ -64,7 +65,6 @@ const store = new Vuex.Store({
 
         // Load categories
         'GET_CATEGORIES' (state, list) {
-            console.log(list);
             state.projectCategories = {
                 0:
                     {

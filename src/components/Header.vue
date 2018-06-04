@@ -1,10 +1,12 @@
 <template>
   <div>
     <!-- MAIN NAVIGATION -->
-    <nav class="navbar navbar-dark bg-dark">
+    <nav
+        class="navbar navbar-dark"
+        :class="headerBackgroundColor">
         <div class="container-fluid">
             <router-link to="/" tag="a" class="h2 text-uppercase text-muted mr-auto">Project TT</router-link>
-            <router-link to="/processing" tag="a" class="btn btn-primary m-2">Test Link</router-link>
+            <router-link to="/processing" tag="a" class="btn btn-primary m-2" v-if="testMode">Test Link</router-link>
             <button href="#" class="btn btn-primary m-2" @click.prevent="toggle = !toggle" v-if="isAuthenticated">Create Project</button>
             <router-link to="/settings" tag="a" class="btn btn-primary m-2" v-if="isAuthenticated">Settings</router-link>
             <router-link to="/login" class="btn btn-primary m-2 px-4" v-if="!isAuthenticated">Log In</router-link>
@@ -44,6 +46,18 @@ import { ErrorsBus } from '../main'
                 this.$store.dispatch('logoutAttempt')
                     .then(this.$router.push('/', () => window.location.reload()))
                     .catch(err => ErrorsBus.errorHandler(err));
+            }
+        },
+        computed: {
+            testMode: function() {
+                return this.$store.state.testMode
+            },
+            headerBackgroundColor: function() {
+                if (this.testMode) {
+                    return 'bg-warning'
+                } else {
+                    return 'bg-dark'
+                }
             }
         }
     }
