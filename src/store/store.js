@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import appcontrol from '../store/modules/appcontrol'
 import axios from 'axios';
 
 Vue.use(Vuex);
@@ -83,11 +82,6 @@ const store = new Vuex.Store({
             if (!category.category_id) { return Error("Category ID is required") }
             if (!category.category_name) { return Error("Category Name is required") }
             if (!category.hidden === "") { return Error("Category Hidden must be an empty string") }
-            // if (true) { throw Error(JSON.stringify({
-            //     type: "Heya",
-            //     title: "Ma Error Title"
-            // })) }
-            // console.log('Still made it past return point.');
 
             state.projectCategories.push(category)
 
@@ -230,7 +224,7 @@ const store = new Vuex.Store({
             return new Promise((resolve, reject) => {
                 axios.post('/checksession')
                     .then(res => resolve(res))
-                    .catch(err => reject(err))
+                    .catch(error => reject(error))
             });
         },
         // CATEGORIES ==========================================================
@@ -244,10 +238,7 @@ const store = new Vuex.Store({
                         this.commit('GET_CATEGORIES', res.data);
                         resolve(res.data);
                     })
-                    .catch(error => {
-                        console.log(error)
-                        reject(error)
-                    });
+                    .catch(error => reject(error));
                 });
         },
         addCategory: function(context, category_name) {
@@ -263,10 +254,7 @@ const store = new Vuex.Store({
                         this.commit('ADD_CATEGORY', category);
                         resolve(res.data);
                     })
-                    .catch(error => {
-                        console.log(error)
-                        reject(error)
-                    });
+                    .catch(error => reject(error));
             });
         },
         updateCategory: function(context, category) {
@@ -278,10 +266,7 @@ const store = new Vuex.Store({
                         this.commit('UPDATE_CATEGORY', category);
                         resolve(res);
                     })
-                    .catch(error => {
-                        console.log(error)
-                        reject(error)
-                    });
+                    .catch(error => reject(error));
             });
         },
         deleteCategory: function(context, category_id) {
@@ -294,10 +279,7 @@ const store = new Vuex.Store({
                         this.commit('DELETE_CATEGORY', category_id);
                         resolve(res);
                     })
-                    .catch(error => {
-                        console.log(error)
-                        reject(error)
-                    });
+                    .catch(error => reject(error));
             });
         },
         // ENTRIES =============================================================
@@ -350,9 +332,7 @@ const store = new Vuex.Store({
                     entry.entry_id = res.data.newID
                     this.commit('PUSH_ENTRY', entry);
                 })
-                .catch(err => {
-                    console.log(err)
-                })
+                .catch(error => reject(error))
             })
         },
         updateEntry: function(context, event) {
@@ -377,12 +357,11 @@ const store = new Vuex.Store({
                     console.log("Successfully updated entry in server.")
                         resolve(res.data);
                     })
-                    .catch(err => {
+                    .catch(error => {
                         // Need to come up with way of handling network loss, perhaps a message queue with a process
                         // that periodically tries to send the updates to the server.
                         console.log("Error saving entry to server.")
-                        console.log(err)
-                        reject(err)
+                        reject(error)
                     })
             });
         },
@@ -402,9 +381,7 @@ const store = new Vuex.Store({
                         this.commit('SET_PROJECTS', res.data);
                         resolve(res.data);
                     })
-                    .catch(error => {
-                        reject(error);
-                    })
+                    .catch(error => reject(error));
                 })
         },
         setCurrrentProjectId: function (context, newProjectId) {
@@ -438,9 +415,7 @@ const store = new Vuex.Store({
                         });
                         resolve(res)
                     })
-                    .catch(err => {
-                        reject(err)
-                    });
+                    .catch(error => reject(error));
             })
         },
         updateProject: function(context, project) {
@@ -452,10 +427,7 @@ const store = new Vuex.Store({
                         this.commit('UPDATE_PROJECT_NAME', project);
                         resolve(res);
                     })
-                    .catch(error => {
-                        console.log(error)
-                        reject(error)
-                    });
+                    .catch(error => reject(error));
             });
         },
         deleteProject: function(context, project_id) {
@@ -467,10 +439,7 @@ const store = new Vuex.Store({
                         this.commit('DELETE_PROJECT', project_id);
                         resolve(res);
                     })
-                    .catch(error => {
-                        console.log(error)
-                        reject(error)
-                    });
+                    .catch(error => reject(error));
             });
         }
     },
@@ -497,4 +466,3 @@ const store = new Vuex.Store({
 })
 
 export { store };
-
