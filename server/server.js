@@ -1,19 +1,56 @@
 // server.js
 
-// Stuff that should be arg'ed
-const cors         = true;
-const port         = process.env.PORT || 3000;
-const host         = '192.168.0.1'
-// set up ======================================================================
+const path         = require('path');
+
+// ENV HANDLING  ==============================================================
+const CMD_ARGS = process.argv;
+const VALID_CMD_ARGS = ['test', 'prod'];
+
+if (!VALID_CMD_ARGS.includes(CMD_ARGS[2])) {
+    console.error("Environment argument must be set to valid value to launch application.");
+    console.log("--- Valid Values ---");
+    VALID_CMD_ARGS.forEach(arg =>  console.log(arg));
+    return;
+} else {
+    var env = CMD_ARGS[2];
+    console.log("*****  Connected to " + env + " environment. *****\n");
+}
+
+const test = {
+    app: {
+        port: 3000,
+        cors: true
+    },
+    db: {
+        path: path.resolve(__dirname, './models/data/Test.db')
+    }
+};
+
+const prod = {
+    app: {
+        port: 3000,
+        cors: false
+    },
+    db: {
+        path: path.resolve(__dirname, './models/data/ProjectTT.db')
+    }
+};
+
+const config = {
+    test: test,
+    prod: prod
+}
+
+
+// Set up ======================================================================
 const express      = require('express');
 const appBackend   = express();
-const path         = require('path');
 const morgan       = require('morgan');
 const bodyParser   = require('body-parser');
 const session      = require('express-session');
 
 // Database Config =============================================================
-const DB_PATH      =  path.resolve(__dirname, './models/data/ProjectTT.db');
+const DB_PATH = config[env].db.path;
 const DB           = require('./models/database.js');
 const appDB        = new DB.DataAPI();
 appDB.initDB(DB_PATH);
@@ -57,7 +94,7 @@ appBackend.use(bodyParser.urlencoded({ extended: true }));
 appBackend.use(bodyParser.json());
 appBackend.use(express.static(path.join(__dirname, '../dist')));
 // CORS
-if (cors === true) {
+if (config[env].app.cors === true) {
     const corsSettings = require('./config/cors');
     appBackend.use(corsSettings);
 }
@@ -80,6 +117,5 @@ appBackend.use(entryRoutes);
 appBackend.use(projectRoutes);
 appBackend.use(categoryRoutes);
 // Launch ======================================================================
-appBackend.listen(port);
-//appBackend.listen(port, host); The host part means that it's required in order for the server to respond!!!
-console.log('The magic happens on port ' + port);
+appBackend.listen(config[env].app.port);
+console.log('The magic happens on port ' + config[env].app.port);
