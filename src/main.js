@@ -33,9 +33,12 @@ store.subscribe((mutation, state) => {
 })
 
 // Axios Configuration  ========================================================
-axios.defaults.baseURL = 'http://localhost:3000'
-//axios.defaults.baseURL = 'http://kilowebdesigns.com'
-axios.defaults.withCredentials = true;
+if (store.state.testMode) {
+	axios.defaults.baseURL = 'http://localhost:3000'
+	axios.defaults.withCredentials = true;
+} else {
+	axios.defaults.baseURL = 'http://kilowebdesigns.com'
+}
 
 
 export const ErrorsBus = new Vue({
