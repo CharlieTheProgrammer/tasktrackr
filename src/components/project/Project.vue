@@ -8,7 +8,6 @@
                 :selectedProject="selectedProject"
                 :projectCategories="projectCategories"
                 ></app-entry-container>
-            <button @click="log">Console log projects</button>
         </section>
     </div>
 
@@ -32,11 +31,6 @@
             },
             projectCategories: function() {
                 return this.$store.getters.projectCategories;
-            }
-        },
-        methods: {
-            log: function() {
-                console.log(this.projects);
             }
         },
         beforeRouteEnter: function(to, from, next) {
