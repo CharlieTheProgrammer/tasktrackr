@@ -97,7 +97,7 @@ const globalBeforeRouter = require('./globalroutehandlers_before');
 // Express Middleware Config ===================================================
 if (config[env].app.helmet) {
     console.log("Helmet Enabled")
-    appBackend.use(helmet)
+    appBackend.use(helmet())
     appBackend.use(helmet.noCache())
 }
 appBackend.use(bodyParser.urlencoded({ extended: true }));
