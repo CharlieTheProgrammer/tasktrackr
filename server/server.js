@@ -19,20 +19,24 @@ if (!VALID_CMD_ARGS.includes(CMD_ARGS[2])) {
 const test = {
     app: {
         port: 3000,
-        cors: true
+        cors: true,
+        helmet: false
     },
     db: {
-        path: path.resolve(__dirname, './models/data/Test.db')
+        path: path.resolve(__dirname, './models/data/Test.db'),
+        name: 'Test.db'
     }
 };
 
 const prod = {
     app: {
         port: 3000,
-        cors: false
+        cors: false,
+        helmet: true
     },
     db: {
-        path: path.resolve(__dirname, './models/data/ProjectTT.db')
+        path: path.resolve(__dirname, './models/data/ProjectTT.db'),
+        name: 'ProjectTT.db'
     }
 };
 
@@ -48,6 +52,7 @@ const appBackend   = express();
 const morgan       = require('morgan');
 const bodyParser   = require('body-parser');
 const session      = require('express-session');
+const helmet = require('helmet');
 
 // Database Config =============================================================
 const DB_PATH = config[env].db.path;
@@ -62,11 +67,11 @@ require('./config/passport.js')(passport, appDB);
 // Sessions Setup ==============================================================
 const SQLiteStore = require('connect-sqlite3')(session);
 const sessionOptions = {
-    secret: 'awesomesauce',
+    secret: 'ngEyZqWagRgvkVK63nJUpZUe7YFf5W2sUSRYCWzX',
     resave: false,
     saveUninitialized: false,   // This creates a cookie just by visiting the site. We only want to turn this on after login.
     store: new SQLiteStore({
-        db: 'ProjectTT.db',
+        db: config[env].db.name,
         table: 'sessions',
         dir: path.dirname(DB_PATH),
     }),
@@ -89,7 +94,12 @@ const entryRoutes= require('./routes/entry');
 const categoryRoutes= require('./routes/category');
 const globalBeforeRouter = require('./globalroutehandlers_before');
 
-// Express Middleware Config ==================================================
+// Express Middleware Config ===================================================
+if (config[env].app.helmet) {
+    console.log("Helmet Enabled")
+    appBackend.use(helmet)
+    appBackend.use(helmet.noCache())
+}
 appBackend.use(bodyParser.urlencoded({ extended: true }));
 appBackend.use(bodyParser.json());
 appBackend.use(express.static(path.join(__dirname, '../dist')));
