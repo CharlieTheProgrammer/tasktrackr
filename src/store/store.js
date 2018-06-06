@@ -83,8 +83,7 @@ const store = new Vuex.Store({
             if (!category.category_name) { return Error("Category Name is required") }
             if (!category.hidden === "") { return Error("Category Hidden must be an empty string") }
 
-            state.projectCategories.push(category)
-
+            Vue.set(state.projectCategories, category.category_id, category)
         },
         'UPDATE_CATEGORY' (state, category) {
             if (!category.category_id) { return Error("Category ID is required") }
