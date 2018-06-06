@@ -14,7 +14,6 @@ import { store } from './store/store'
 var authorizationCheck = (to, from, next) => {
     // Check if is authenticated
     // this.$store doesn't work because we're in context of Vue router, not Vue app.
-    console.log(" Testing Auth Check")
     if (store.getters.isAuthenticated) {
         next();
     } else {
@@ -32,5 +31,5 @@ export const routes = [
     { path : '/firstproject', component: FirstProjectWelcome , beforeEnter: authorizationCheck},
     { path : '/projectselect', component: ProjectSelect , beforeEnter: authorizationCheck},
     { path: '/processing', component: Processing , beforeEnter: authorizationCheck},
-    { path : '*', redirect: '/landing'}
+    { path : '*', redirect: '/'}
 ];
