@@ -7,7 +7,7 @@
         <div class="container-fluid">
             <router-link to="/" tag="a" class="h2 text-uppercase text-muted mr-auto">Project TT</router-link>
             <router-link to="/processing" tag="a" class="btn btn-primary m-2" v-if="testMode">Test Link</router-link>
-            <button href="#" class="btn btn-primary m-2" @click.prevent="toggle = !toggle" v-if="isAuthenticated">Create Project</button>
+            <button href="#" class="btn btn-secondary m-2" v-if="this.$route.path == '/settings'" @click="$router.go(-1)">Go Back</button>
             <router-link to="/settings" tag="a" class="btn btn-primary m-2" v-if="isAuthenticated">Settings</router-link>
             <router-link to="/login" class="btn btn-primary m-2 px-4" v-if="!isAuthenticated">Log In</router-link>
             <router-link to="/signup" class="btn btn-secondary m-2 px-4" v-if="!isAuthenticated">Signup</router-link>
@@ -18,28 +18,17 @@
     <div>
         <app-notifications></app-notifications>
     </div>
-
-    <!-- NEW PROJECT MODAL -->
-    <app-project-add :toggle="toggle" @toggleModal="toggle = !toggle"></app-project-add>
-
   </div>
 </template>
 
 <script>
 import notifications from './notifications/Notifications.vue'
-import AddProjectModal from './project/ProjectAddModal.vue'
 import { ErrorsBus } from '../main'
 
     export default {
         props: ['isAuthenticated'],
         components: {
             'app-notifications': notifications,
-            'app-project-add': AddProjectModal
-        },
-        data: function() {
-            return {
-                toggle: false
-            }
         },
         methods: {
             logout: function() {

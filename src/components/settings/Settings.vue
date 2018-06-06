@@ -2,13 +2,20 @@
     <div>
         <!-- PROJECT HEADER -->
         <div class="container-fluid mt-4 bg-light border">
-            <p class="display-4 mx-3">Projects</p>
+            <div class="row justify-content-between align-items-center mx-3">
+                <p class="display-4 mx-3">Projects</p>
+                <button class="btn btn-primary btn-sm" @click.prevent="toggleProjectAddModal = !toggleProjectAddModal">Add Project</button>
+            </div>
         </div>
 
         <!-- PROJECT EDIT BODY -->
         <div class="container-fluid pt-3" v-for="(project, key, index) in projects" :key="index + '-project'">
             <app-project :project="project" @confirmDelete="confirmDelete"></app-project>
         </div>
+
+
+        <!-- NEW CATEGORY MODAL -->
+        <app-add-project-modal :toggle="toggleProjectAddModal" @toggleModal="toggleProjectAddModal = !toggleProjectAddModal"></app-add-project-modal>
 
         <!-- CATEGORY HEADER -->
         <div class="container-fluid mt-4 bg-light border">
@@ -40,6 +47,7 @@
 <script>
 import { ErrorsBus } from '../../main'
 import SettingsProjectItem from './SettingsProjectItem.vue'
+import SettingsProjectModal from './SettingsProjectModal.vue'
 import SettingsCategoryItem from './SettingsCategoryItem.vue'
 import SettingsCategoryModal from './SettingsCategoryModal.vue'
 import SettingsDeleteConfirmation from './SettingsDeleteConfirmation.vue'
@@ -47,6 +55,7 @@ import SettingsDeleteConfirmation from './SettingsDeleteConfirmation.vue'
     export default {
         data: function() {
             return {
+                toggleProjectAddModal: false,
                 toggleCategoryAddModal: false,
                 toggleDeleteConfirmationModal: false,
                 thingToDelete: '',
@@ -57,6 +66,7 @@ import SettingsDeleteConfirmation from './SettingsDeleteConfirmation.vue'
             'app-project': SettingsProjectItem,
             'app-category': SettingsCategoryItem,
             'app-add-category-modal': SettingsCategoryModal,
+            'app-add-project-modal': SettingsProjectModal,
             'app-delete-confirmation-modal': SettingsDeleteConfirmation
         },
         computed: {
@@ -81,3 +91,9 @@ import SettingsDeleteConfirmation from './SettingsDeleteConfirmation.vue'
         }
     }
 </script>
+
+<style scoped>
+.btn {
+    min-width: 7rem;
+}
+</style>
