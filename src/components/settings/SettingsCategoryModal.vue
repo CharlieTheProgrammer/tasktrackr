@@ -57,7 +57,7 @@ import { ErrorsBus } from '../../main'
             addCategory: function() {
                 if (this.categoryName !== '') {
                     this.$store.dispatch('addCategory', this.categoryName)
-                        .then(res => this.display = false)
+                        .then((this.$emit('toggleModal')))
                         .catch(err => {
                             ErrorsBus.errorHandler(err);
                             this.categoryName = '';
