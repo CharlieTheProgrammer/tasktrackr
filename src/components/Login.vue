@@ -1,6 +1,6 @@
 <template>
    <div>
-        <section id="" class="container my-4">
+        <section class="container my-4">
             <div class="jumbotron w-75 mx-auto">
                 <p class="h2 text-center py-2">Project TT Login</p>
                 <p class="lead text-center">or <router-link to="/signup" tag="a">create a new account</router-link></p>
@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { ErrorsBus } from '../main'
 
     export default {
@@ -46,7 +45,7 @@ import { ErrorsBus } from '../main'
                     .catch(err => {
                         ErrorsBus.errorHandler(err)
                     })
-            },
+            }
         }
     }
 </script>

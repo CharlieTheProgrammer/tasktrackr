@@ -1,6 +1,6 @@
 <template>
     <div>
-        <section id="" class="container my-4">
+        <section class="container my-4">
             <div class="jumbotron w-75 mx-auto">
                 <div class="w-50 mx-auto">
                     <p class="h2 text-center py-2">Create an Account</p>
@@ -33,8 +33,7 @@
 </template>
 
 <script>
-import axios from 'axios'
-import { ErrorBus, ErrorsBus } from '../main'
+import { ErrorBus } from '../main'
 
     export default {
         data: function() {
