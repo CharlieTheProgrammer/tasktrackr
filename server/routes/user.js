@@ -1,9 +1,10 @@
 // Imports ======================================================================
 const { validationResult } = require('express-validator/check');
 const { matchedData, sanitize } = require('express-validator/filter');
-const { passport, appDB } = require('../server');
+const { passport, appDB, EmailService } = require('../server');
 const { v } = require('../validations.js');
 const route_enum = require('./routeEnumeration');
+const uuidGen = require('uuid/v4')
 
 // Router Config ===============================================================
 var express = require('express');
@@ -149,6 +150,87 @@ app.post(route_enum.get.user, function (req, res) {
         res.send(error);
         return;
     }
+});
+
+app.post(route_enum.passwordResetRequest, v.passwordResetRequestValidators, function(req, res, next) {
+    const errors= validationResult(req).formatWith(v.errorFormatter);
+    if (!errors.isEmpty()) {
+        console.log(errors.array());
+        var errs = errors.array();
+        res.status(400).json(errs)
+        return;
+    }
+
+    appDB.findUserbyEmail(req.body.email, function(error, response) {
+
+        if (error) {
+            console.log(error);
+            res.sendStatus(500);
+            return;
+        }
+
+        if (response) {
+            var emailservice = new EmailService();
+            var uuid = uuidGen()
+
+            // Insert UUID into user database
+            appDB.setResetToken(req.body.email, uuid, function(error, response) {
+                if (error) {
+                    console.log(error);
+                    res.sendStatus(500);
+                    return;
+                }
+
+                emailservice.passwordReset(req.body.email, uuid)
+                res.sendStatus(200)
+                return;
+            })
+        } else {
+            // Send back error message indicating email does not exist
+            res.status(400).json(v.ERRS.USER.EMAIL.DEFAULTS.NO_MATCH)
+            return;
+        }
+    })
+})
+
+app.post(route_enum.passwordReset, v.PasswordResetValidators, function(req, res) {
+    // At this stage, user is already on the reset password page and sending in a new password
+    // Check for validation errors
+    const errors= validationResult(req).formatWith(v.errorFormatter);
+    if (!errors.isEmpty()) {
+        console.log(errors.array());
+        var errs = errors.array();
+        res.status(400).json(errs)
+        return;
+    }
+
+    // Confirm token is part of request
+    var token = req.query.token;
+    if (!token) {
+        res.status(400).json(v.ERRS.USER.TOKEN.DEFAULTS.NO_MATCH)
+        return;
+    }
+
+    // Validate token
+    appDB.getResetToken(token, function(error, response) {
+        if (error) {
+            console.log(error);
+            res.sendStatus(500);
+            return;
+        }
+
+        if (response) {
+            appDB.setNewPassword(req.body.password, response.user_id, function(error, response) {
+                if (error) {
+                    console.log(error);
+                    res.sendStatus(500);
+                    return;
+                }
+
+                res.sendStatus(200)
+            })
+        }
+    })
 });
 
 module.exports = app;

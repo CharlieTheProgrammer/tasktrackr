@@ -374,6 +374,9 @@ function DataAPI() {
     }
 
 
+
+    // Users DB Actions
+
     // User Info Lookup
     this.findUserByLogin = function(user_login, _callback) {
         let sql = 'SELECT user_id, user_login '
@@ -400,14 +403,23 @@ function DataAPI() {
         getQuery(sql, user_id, _callback);
     };
 
+    this.findUserbyEmail = function(email, _callback) {
+        let sql = 'SELECT user_id '
+        sql += 'FROM Users '
+        sql += 'WHERE user_email = ? '
 
+        email = email.toLowerCase()
 
-    // Users DB Actions
+        getQuery(sql, email, _callback)
+    }
+
 
     // Create New User
     this.createNewUser = function(params, _callback) {
         let sql = 'INSERT INTO Users(user_first_name, user_last_name, user_login, user_password, user_email) '
         sql += 'VALUES (?, ?, ?, ?, ?) '
+
+        params.email = params.email.toLowerCase()
 
         // Is this a good time to hash the password? When should this be hashed?
         // We may also want to lowercase the values here if queries are case sensitive
@@ -419,6 +431,45 @@ function DataAPI() {
             params.email] ,
             _callback);
     };
+
+    // Add Reset Token to User
+    this.setResetToken = function(user_email, token, _callback) {
+        let sql = 'UPDATE Users '
+        sql += 'SET pwd_reset_token = ? '
+        sql += 'WHERE user_email = ?'
+
+        runQuery(sql, [token, user_email], _callback)
+    }
+
+    // This should only get called after user has submitted a new valid password
+    this.getResetToken = function(token, _callback) {
+        let sql = 'SELECT user_id '
+        sql += 'FROM Users '
+        sql += 'WHERE pwd_reset_token = ? '
+
+        getQuery(sql, token, _callback)
+
+        this.clearResetToken(token, function(error, response){
+            console.log(error)
+            console.log(response)
+        })
+    }
+
+    this.clearResetToken= function(token, _callback) {
+        let sql = 'UPDATE Users '
+        sql += 'SET pwd_reset_token = null '
+        sql += 'WHERE pwd_reset_token = ? '
+
+        runQuery(sql, token, _callback)
+    }
+
+    this.setNewPassword = function(password, user_id, _callback) {
+        let sql = 'UPDATE Users '
+        sql += 'SET user_password = ? '
+        sql += 'WHERE user_id = ? '
+
+        runQuery(sql, [password, user_id], _callback)
+    }
 
     // Set Session ID. For Logging Out function, we will simply pass in an empty string.
     this.setSessionID = function(user_login, session_id, _callback) {

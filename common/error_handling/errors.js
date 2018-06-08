@@ -35,7 +35,8 @@
         3: "Projects Error",
         4: "Category Error",
         5: "Entry Error",
-        6: "Network Error"
+        6: "Network Error",
+        7: "Password Reset Error"
     }
 
 const ERRS = {
@@ -64,7 +65,7 @@ const ERRS = {
                         title: TITLE_ENUM[2],
                         message: "Login failed.",
                     }
-                },
+                }
             },
             PASSWORD: {
                 SIGNUP: {
@@ -115,6 +116,43 @@ const ERRS = {
                         title: TITLE_ENUM[2],
                         message: "Login failed.",
                     }
+                },
+                RESET: {
+                    FIELD_REQUIRED: {
+                        type: TYPE_ENUM[3],
+                        title: TITLE_ENUM[7],
+                        message: "Password is a required field.",
+                    },
+                    ALPHANUMERIC_ONLY: {
+                        type: TYPE_ENUM[3],
+                        title: TITLE_ENUM[7],
+                        message: "Password must be alphanumeric.",
+                    },
+                    NUMBER_REQUIRED: {
+                        type: TYPE_ENUM[3],
+                        title: TITLE_ENUM[7],
+                        message: "Password must contain at least 1 number.",
+                    },
+                    LOWERCASE_LETTER_REQUIRED: {
+                        type: TYPE_ENUM[3],
+                        title: TITLE_ENUM[7],
+                        message: "Password must contain at least 1 lowercase letter.",
+                    },
+                    UPPERCASE_LETTER_REQUIRED: {
+                        type: TYPE_ENUM[3],
+                        title: TITLE_ENUM[7],
+                        message: "Password must contain at least 1 uppercase letter.",
+                    },
+                    MINIMUM_LENGTH: {
+                        type: TYPE_ENUM[3],
+                        title: TITLE_ENUM[7],
+                        message: "Password must be at least 8 characters in length.",
+                    },
+                    PASSWORDS_NO_MATCH: {
+                        type: TYPE_ENUM[3],
+                        title: TITLE_ENUM[7],
+                        message: "Passwords don't match",
+                    }
                 }
             },
             EMAIL: {
@@ -123,6 +161,27 @@ const ERRS = {
                         type: TYPE_ENUM[3],
                         title: TITLE_ENUM[1],
                         message: "Enter a valid email address"
+                    },
+                    NO_MATCH: {
+                        type: TYPE_ENUM[3],
+                        title: TITLE_ENUM[7],
+                        message: "Email address not found.",
+                    }
+                },
+                PASSWORDRESET: {
+                    EMAIL_ONLY: {
+                        type: TYPE_ENUM[3],
+                        title: TITLE_ENUM[7],
+                        message: "Enter a valid email address"
+                    }
+                }
+            },
+            TOKEN: {
+                DEFAULTS: {
+                    NO_MATCH: {
+                        type: TYPE_ENUM[3],
+                        title: TITLE_ENUM[7],
+                        message: "Invalid Token",
                     }
                 }
             }

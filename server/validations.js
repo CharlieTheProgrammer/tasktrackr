@@ -121,9 +121,28 @@ const v = {
             //     }
             // })
     ],
+    passwordResetRequestValidators: [
+        check('email')
+            .isEmail().withMessage(ERRS.USER.EMAIL.PASSWORDRESET.EMAIL_ONLY)
+    ],
+    PasswordResetValidators: [
+        check('password')
+        .isLength({ min:8 }).withMessage(ERRS.USER.PASSWORD.RESET.MINIMUM_LENGTH)
+        .matches('[0-9]').withMessage(ERRS.USER.PASSWORD.RESET.NUMBER_REQUIRED)
+        .matches('[a-z]').withMessage(ERRS.USER.PASSWORD.RESET.LOWERCASE_LETTER_REQUIRED)
+        .matches('[A-Z]').withMessage(ERRS.USER.PASSWORD.RESET.UPPERCASE_LETTER_REQUIRED),
+
+        check('confirmPassword')
+            .custom((value, {req, loc, path}) => {
+                if (value != req.body.password) {
+                    throw new Error("Bad");
+                } else { return value}
+            }).withMessage(ERRS.USER.PASSWORD.RESET.PASSWORDS_NO_MATCH)
+    ],
     errorFormatter: ({location, msg, param, value, nestedErrors}) => {
         return msg
     },
+    ERRS: ERRS
 }
 
 module.exports = { v }

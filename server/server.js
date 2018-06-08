@@ -1,5 +1,5 @@
 // server.js
-
+const EmailService = require('./config/email')
 const path         = require('path');
 
 // ENV HANDLING  ==============================================================
@@ -85,7 +85,7 @@ const sessionOptions = {
 // File Exports ================================================================
 // My routes need the passport and appDB object and want to centralize the config here.
 // Not sure if there's another way of doing this. The line below is usually first or last in  a file.
-module.exports = { passport, appDB }
+module.exports = { passport, appDB, EmailService }
 
 // Route Imports ===============================================================
 const usersRoutes = require('./routes/user');

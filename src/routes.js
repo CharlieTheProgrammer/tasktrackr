@@ -1,9 +1,15 @@
 // import components
-import Login from './components/Login.vue'
+
+// USER COMPONENTS
+import Login from './components/userMgt/Login.vue'
+import PasswordResetInit from './components/userMgt/PasswordResetInit.vue'
+import PasswordNew from './components/userMgt/PasswordNew.vue'
+import Signup from './components/userMgt/Signup.vue'
+
+// OTHER
 import Landing from './components/Landing.vue'
 import Home from './components/Home.vue'
 import Settings from './components/settings/Settings.vue'
-import Signup from './components/Signup.vue'
 import FirstProjectWelcome from './components/FirstProject.vue'
 import ProjectSelect from './components/project/ProjectSelect.vue'
 import Processing from './components/Processing.vue'
@@ -25,6 +31,8 @@ var authorizationCheck = (to, from, next) => {
 export const routes = [
     { path : '/', component: Landing },
     { path : '/login', component: Login},
+    { path : '/requestpasswordreset', component: PasswordResetInit},
+    { path : '/passwordreset', component: PasswordNew},
     { path : '/signup', component: Signup},
     { path : '/home', component: Home, beforeEnter: authorizationCheck},
     { path : '/settings', component: Settings, beforeEnter: authorizationCheck},

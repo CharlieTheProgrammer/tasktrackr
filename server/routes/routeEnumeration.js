@@ -27,5 +27,7 @@ module.exports = {
     },
     login: '/login',
     logout: '/logout',
-    isAuthenticated: '/checksession'
+    isAuthenticated: '/checksession',
+    passwordResetRequest: '/passwordresetrequest',
+    passwordReset: '/passwordreset'
 };

@@ -219,9 +219,23 @@ const store = new Vuex.Store({
                     .catch(error => reject(error));
             })
         },
-        'validSessionCheck': function() {
+        validSessionCheck: function() {
             return new Promise((resolve, reject) => {
                 axios.post('/checksession')
+                    .then(res => resolve(res))
+                    .catch(error => reject(error))
+            });
+        },
+        passwordResetRequest: function(context, emailAddress) {
+            return new Promise((resolve, reject) => {
+                axios.post('/passwordresetrequest', emailAddress)
+                    .then(res => resolve(res))
+                    .catch(error => reject(error))
+            });
+        },
+        setNewPasswordAttempt: function(context, userInfo) {
+            return new Promise((resolve, reject) => {
+                axios.post('/passwordreset?token=' + userInfo.token, userInfo)
                     .then(res => resolve(res))
                     .catch(error => reject(error))
             });

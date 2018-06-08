@@ -16,6 +16,9 @@
                     <div class="d-flex justify-content-center align-content-center">
                         <button type="submit" class="text-center btn btn-success btn-lg my-3 w-50" @click.prevent="login">Login</button>
                     </div>
+                    <div class="d-flex justify-content-center align-content-center mt-2">
+                        <router-link to="/requestpasswordreset" tag="a">Forgot your password?</router-link>
+                    </div>
                 </form>
             </div>
         </section>
@@ -23,7 +26,7 @@
 </template>
 
 <script>
-import { ErrorsBus } from '../main'
+import { ErrorsBus } from '../../main'
 
     export default {
         data: function() {
