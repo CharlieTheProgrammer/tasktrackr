@@ -34,7 +34,7 @@ const store = new Vuex.Store({
             currentProjectId: false
         },
         isAuthenticated: false,
-        testMode: true
+        testMode: false
     },
     mutations: {
         // Check for existing state in local storage
@@ -339,11 +339,12 @@ const store = new Vuex.Store({
                 axios.post('/new/entry', entry)
                 .then(res => {
                     if (!res.data.newID) {
-                        resolve(res)
+                        reject(res)
                     }
 
                     entry.entry_id = res.data.newID
                     this.commit('PUSH_ENTRY', entry);
+                    resolve(res);
                 })
                 .catch(error => reject(error))
             })
