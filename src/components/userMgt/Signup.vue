@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { ErrorBus } from '../../main'
+import { ErrorsBus } from '../../main'
 
     export default {
         data: function() {
