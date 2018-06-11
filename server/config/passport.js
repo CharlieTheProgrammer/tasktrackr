@@ -1,4 +1,5 @@
 // config/passport.js
+var bcrypt = require('bcrypt');
 
 // load all the things we need
 const LocalStrategy   = require('passport-local').Strategy;
@@ -57,11 +58,25 @@ module.exports = function(passport, appDB) {
                 };
 
                 if (!response){
-                    console.log('Incorrect password.');
-                    return done(null, false, ERRS.USER.PASSWORD.LOGIN.NO_MATCH);
+                    // console.log('Incorrect password.');
+                    // return done(null, false, ERRS.USER.PASSWORD.LOGIN.NO_MATCH);
+                    console.log('Login Failed due to bad username')
+                    return done(null, false, ERRS.USER.USERNAME.LOGIN.NO_MATCH)
                 };
 
-                return done(null, user_login);
+                if (response) {
+                    console.log(response)
+                    console.log(password)
+
+                    bcrypt.compare(password, response.user_password, function(err, res) {
+                        if (res) {
+                            return done(null, user_login);
+                        }
+
+                        console.log('Incorrect password.');
+                        return done(null, false, ERRS.USER.PASSWORD.LOGIN.NO_MATCH);
+                    })
+                }
             });
         });
     }));

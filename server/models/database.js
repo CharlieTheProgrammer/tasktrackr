@@ -1,4 +1,7 @@
 "use strict"
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 module.exports = {DataAPI};
 
 /**
@@ -390,9 +393,9 @@ function DataAPI() {
         let sql = 'SELECT user_password '
         sql += 'FROM Users '
         sql += 'WHERE user_login = ? '
-        sql += 'AND user_password = ?'
+        //sql += 'AND user_password = ?'
 
-        getQuery(sql, [user_login, user_password], _callback)
+        getQuery(sql, user_login, _callback)
     };
 
     this.findUserById = function(user_id, _callback) {
@@ -414,22 +417,30 @@ function DataAPI() {
     }
 
 
+
     // Create New User
     this.createNewUser = function(params, _callback) {
         let sql = 'INSERT INTO Users(user_first_name, user_last_name, user_login, user_password, user_email) '
         sql += 'VALUES (?, ?, ?, ?, ?) '
 
-        params.email = params.email.toLowerCase()
+        bcrypt.hash(params.password, saltRounds, function(err, hash) {
+            if (err) {
+                console.log(err)
+                return;
+            }
 
-        // Is this a good time to hash the password? When should this be hashed?
-        // We may also want to lowercase the values here if queries are case sensitive
+        params.email = params.email.toLowerCase()
+            params.password = hash;
+
         runQuery(sql, [
             params.user_first_name,
             params.user_last_name,
             params.login,
             params.password,
             params.email] ,
-            _callback);
+                _callback
+            )
+        })
     };
 
     // Add Reset Token to User
