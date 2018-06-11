@@ -206,7 +206,7 @@ app.post(route_enum.passwordReset, v.PasswordResetValidators, function(req, res)
 
     // Confirm token is part of request
     var token = req.query.token;
-    if (!token) {
+    if (token === 'undefined') {
         res.status(400).json(v.ERRS.USER.TOKEN.DEFAULTS.NO_MATCH)
         return;
     }
