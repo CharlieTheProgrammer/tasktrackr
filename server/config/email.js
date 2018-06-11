@@ -1,14 +1,27 @@
 const nodemailer = require('nodemailer');
 const templates = require('./emailTemplates')
 
-module.exports = function() {
+module.exports = function(config) {
+    // check config
+    if (!config.username || !config.password) {
+        console.error("Missing email service credentials.")
+        console.log("Use --emailusername and --emailpassword to pass in credentials")
+        console.log('Terminating application.')
+        process.exit(0)
+    }
+
+    if (!config.testEmailAddress) {
+        console.warn("Email address for testing not found. \n You will not be able to send test email.")
+    }
+
+
     let smtpConfig = {
         host: 'smtp.office365.com',
         port: 587,
         secure: false, // true for 465, false for other ports
         auth: {
-            user: '', // generated ethereal user
-            pass: '' // generated ethereal password
+            user: config.username,
+            pass: config.password
         }
     }
 
@@ -49,8 +62,13 @@ module.exports = function() {
     }
 
     function sendTestEmail() {
-        mailOptions.from = '', // sender address
-        mailOptions.to = '', // list of receivers
+        if (!config.testEmailAddress) {
+            console.log("Can't send email because test email address is missing.")
+            console.log("Relaunch application with the --testemailaddress flag.")
+            return;
+        }
+        mailOptions.from = 'Project TT Test', // sender address
+        mailOptions.to = config.testEmailAddress, // list of receivers
         mailOptions.subject = 'Hello ✔', // Subject line
         mailOptions.text = 'Hello world?', // plain text body
 

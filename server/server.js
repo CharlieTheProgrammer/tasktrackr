@@ -1,20 +1,26 @@
 // server.js
-const EmailService = require('./config/email')
 const path         = require('path');
+const ARGS         = require('minimist')(process.argv.slice(2))
 
 // ENV HANDLING  ==============================================================
-const CMD_ARGS = process.argv;
-const VALID_CMD_ARGS = ['test', 'prod'];
-
-if (!VALID_CMD_ARGS.includes(CMD_ARGS[2])) {
-    console.error("Environment argument must be set to valid value to launch application.");
-    console.log("--- Valid Values ---");
-    VALID_CMD_ARGS.forEach(arg =>  console.log(arg));
-    return;
-} else {
-    var env = CMD_ARGS[2];
+if (ARGS.env == 'test' || ARGS.env == 'prod') {
+    var env = ARGS.env;
     console.log("*****  Connected to " + env + " environment. *****\n");
+} else {
+    console.error("\nEnvironment argument must be set to valid value to launch application.");
+    console.log("--- Valid Values ---");
+    console.log('test')
+    console.log('prod')
+    console.log('Terminating application.')
+    process.exit(0)
 }
+
+//Extract email username, password, and test email
+var emailServicecConfig = {
+    username: ARGS.emailusername,
+    password: ARGS.emailpassword,
+    testEmailAddress: ARGS.testemailaddress
+};
 
 const test = {
     app: {
@@ -47,6 +53,7 @@ const config = {
 
 
 // Set up ======================================================================
+const EmailService = require('./config/email')(emailServicecConfig);
 const express      = require('express');
 const appBackend   = express();
 const morgan       = require('morgan');
