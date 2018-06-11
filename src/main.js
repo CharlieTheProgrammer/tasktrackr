@@ -46,44 +46,63 @@ export const ErrorsBus = new Vue({
 		errorHandler: function (event) {
 			var ORIGIN = {
 				Axios: 'Axios',
+				Axios_CommFailure: 'Axios_CommFailure',
+				Axios_SingleError: 'Axios_SingleError',
+				Axios_ErrorsArray: 'Axios_ErrorsArray',
 				Internal: 'Internal'
 			}
 
-			// I shouldn't be getting Errors here.
-			if (event instanceof Error) {
-				//this.addStacktoEvent()
+			try {
+				if (!event.response && event.request) {
+					event.Origin = ORIGIN.Axios_CommFailure
+				}
+				// Classifies event returned from backend that do not come in array format
+				if (event.response && !Array.isArray(event.response.data)) {
+					event.Origin = ORIGIN.Axios_SingleError
+				}
+				// Classifies event generated from backend that comes in array format, usually due to form validators
+				if (Array.isArray(event.response.data)) {
+					event.Origin = ORIGIN.Axios_ErrorsArray
+				}
+				// Classifies event generated from frontend, that do not come in array format
+				if (event.type && event.title && event.message) {
+					event.Origin = ORIGIN.Internal
+				}
+			} catch(e) {
+				if (e instanceof TypeError) {
+					// Ignore these
+				} else {
+					throw e
+				}
 			}
 
-			if (!event.response && event.request) {
-				event.Origin = ORIGIN.Axios
-			}
-
-			if (event.response) {
-				event.Origin = ORIGIN.Axios
-			}
-
-			if (event.type && event.title && event.message) {
-				event.Origin = ORIGIN.Internal
-			}
-
-			// Errors created manually inside the application are generally single objects not in an array.
-			if (!(Array.isArray(event)) && event.Origin == 'Internal') {
-				var array = [event]
-				this.sendMessage(event)
-				return;
-			}
-
-			// check for axios error
-			if (event.response) {
-				event.response.data.forEach(error => {
-					this.sendMessage(error);
-				})
-			} else if (event.request) {
-				this.sendMessage({
-					type: "Error",
-					title: "Network Error",
-					message: "Please check your internet connection."
-				})
+			switch(event.Origin) {
+				// In this scenario Axios includes a request, but not a response.
+				case (ORIGIN.Axios_CommFailure):
+					// Generate message manually
+					this.sendMessage({
+						type: "Error",
+						title: "Network Error",
+						message: "Please check your internet connection."
+					})
+					break;
+				// In this scenario, the server has returned multiple errors within an array
+				case (ORIGIN.Axios_ErrorsArray):
+					event.response.data.forEach(error => {
+						this.sendMessage(error);
+					})
+					break;
+				// In this scenario, a single error was generated from the BACKEND and needs to be displayed to user
+				case (ORIGIN.Axios_SingleError):
+					this.sendMessage(event.response.data)
+					break;
+				// In this scenario, a single error was created within the FRONTEND and needs to be displayed to user
+				case (ORIGIN.Internal):
+					this.sendMessage(event)
+					break;
+				default:
+					console.log("Unhandled Event Found");
+					console.log(event)
 			}
 
 			// I can add further code down here for errors generated from other sources.
