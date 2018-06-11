@@ -101,6 +101,11 @@ export const ErrorsBus = new Vue({
 					this.sendMessage(event)
 					break;
 				default:
+					this.sendMessage({
+						type: "Error",
+						title: "Unexpected Error",
+						message: "Reload your browser."
+					})
 					console.log("Unhandled Event Found");
 					console.log(event)
 			}
