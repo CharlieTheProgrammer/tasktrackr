@@ -16,6 +16,7 @@
 <script>
     import ProjectNav from './ProjectNav.vue'
     import EntryContainer from './EntryContainer.vue'
+    import { TimerBus } from '../../main'
 
     export default {
         components: {
@@ -37,6 +38,27 @@
             if (this.$store.getters.isAuthenticated) {
                 next();
             }
+        },
+        created: function() {
+            // This is when a new entry is made
+            TimerBus.$on('startTimer', () => {
+                this.$store.dispatch('newEntry')
+                    .catch(err => {
+                        ErrorsBus.$emit("ErrorEvent", err)
+                    })
+            })
+
+            TimerBus.$on('TimerData', (timer) => {
+                // Send dispatch to store
+                this.$store.dispatch('completeEntry')
+                    .catch(err => {
+                        ErrorsBus.$emit("ErrorEvent", err)
+                    })
+            })
+        },
+        beforeDestroy: function() {
+            TimerBus.$off('startTimer')
+            TimerBus.$off('TimerData')
         }
     }
 </script>

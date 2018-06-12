@@ -41,7 +41,6 @@
 
 <script>
     import { ErrorsBus } from '../../main'
-    import { TimerBus } from '../../main'
 
     export default {
         props:['entry', 'projectCategories'],
@@ -84,19 +83,7 @@
                     return Math.round(timeDiff / 1000 / 60)
                 }
             }
-        },
-        created: function() {
-            // This is when an entry is closed.
-            TimerBus.$on('TimerData', (timer) => {
-                // Send dispatch to store
-                this.$store.dispatch('completeEntry')
-                    .catch(err => {
-                        // What kind of error message is returned here?
-                        ErrorsBus.$emit("ErrorEvent", err)
-                    })
-            });
         }
-
     }
 </script>
 

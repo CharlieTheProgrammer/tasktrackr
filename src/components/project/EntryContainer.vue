@@ -58,7 +58,6 @@
 
 <script>
     import { ErrorsBus } from '../../main'
-    import { TimerBus } from '../../main'
     import Entry from './Entry'
 
     export default {
@@ -85,16 +84,6 @@
                         ErrorsBus.$emit("ErrorEvent", err)
                     })
             }
-        },
-        created: function() {
-            // This is when a new entry is made
-            TimerBus.$on('startTimer', () => {
-                this.$store.dispatch('newEntry')
-                    .catch(err => {
-                        // What kind of error message is returned here?
-                        ErrorsBus.$emit("ErrorEvent", err)
-                    })
-            });
         }
     }
 </script>
