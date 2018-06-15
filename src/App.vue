@@ -1,13 +1,14 @@
 <template>
     <div>
-      <app-header :isAuthenticated="isAuthenticated"></app-header>
-      <router-view></router-view>
-
-    <!-- <footer class="footer">
-      <div class="container text-center">
-        <span class="text-muted">&copy; 2018 Charlie The Programmer</span>
-      </div>
-    </footer> -->
+        <div class="pb-4">
+            <app-header :isAuthenticated="isAuthenticated"></app-header>
+            <router-view></router-view>
+        </div>
+    <footer class="footer">
+        <div class="container text-center">
+            <span class="text-muted">&copy; 2018 Charlie The Programmer</span>
+        </div>
+    </footer>
   </div>
 </template>
 
