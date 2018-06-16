@@ -59,7 +59,8 @@ const appBackend   = express();
 const morgan       = require('morgan');
 const bodyParser   = require('body-parser');
 const session      = require('express-session');
-const helmet = require('helmet');
+const helmet       = require('helmet');
+const history      = require('connect-history-api-fallback');
 
 // Database Config =============================================================
 const DB_PATH = config[env].db.path;
@@ -109,8 +110,12 @@ if (config[env].app.helmet) {
 }
 appBackend.use(bodyParser.urlencoded({ extended: true }));
 appBackend.use(bodyParser.json());
+appBackend.use(history({
+    verbose: true
+}))
 appBackend.use(express.static(path.join(__dirname, '../dist')));
-// CORS
+
+//CORS
 if (config[env].app.cors === true) {
     const corsSettings = require('./config/cors');
     appBackend.use(corsSettings);
