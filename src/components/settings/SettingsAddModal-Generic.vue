@@ -19,7 +19,7 @@
                     </div>
                     <div class="modal-body">
                         <p>{{ modalDescription }}</p>
-                        <form novalidate :class="{'was-validated': validated}">
+                        <form novalidate :class="{'was-validated': validated}" @submit.prevent>
                             <div class="form-group">
                                 <label>{{ inputLabel }}</label>
                                 <input type="text" :name="inputName" class="form-control" required v-model="userInput" @keyup="validated = true">
