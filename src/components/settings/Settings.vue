@@ -13,9 +13,18 @@
             <app-project :project="project" @confirmDelete="confirmDelete"></app-project>
         </div>
 
+        <!-- NEW PROJECT MODAL -->
+        <app-add-item-modal
+            :toggle="toggleProjectAddModal"
+            @toggleModal="toggleProjectAddModal = !toggleProjectAddModal"
+            :modalTitle="'Add a New Project'"
+            :modalDescription="'Enter a name for your new project.'"
+            :inputLabel="'Project Name'"
+            :inputName="'project_name'"
+            :invalidFeedbackDescription="'Please provide a valid project name.'"
+            :dispatchAction="'createProject'"
+            ></app-add-item-modal>
 
-        <!-- NEW CATEGORY MODAL -->
-        <app-add-project-modal :toggle="toggleProjectAddModal" @toggleModal="toggleProjectAddModal = !toggleProjectAddModal"></app-add-project-modal>
 
         <!-- CATEGORY HEADER -->
         <div class="container-fluid mt-4 bg-light border">
@@ -30,9 +39,18 @@
             <app-category :category="category" @confirmDelete="confirmDelete"></app-category>
         </div>
 
-
         <!-- NEW CATEGORY MODAL -->
-        <app-add-category-modal :toggle="toggleCategoryAddModal" @toggleModal="toggleCategoryAddModal = !toggleCategoryAddModal"></app-add-category-modal>
+        <app-add-item-modal
+            :toggle="toggleCategoryAddModal"
+            @toggleModal="toggleCategoryAddModal = !toggleCategoryAddModal"
+            :modalTitle="'Add a New Category'"
+            :modalDescription="'Enter a name for your new category.'"
+            :inputLabel="'Category Name'"
+            :inputName="'category_name'"
+            :invalidFeedbackDescription="'Please provide a valid category name.'"
+            :dispatchAction="'addCategory'"
+            ></app-add-item-modal>
+
 
         <!-- DELETE CONFIRMATION MODAL -->
         <app-delete-confirmation-modal
@@ -47,10 +65,9 @@
 <script>
 import { ErrorsBus } from '../../main'
 import SettingsProjectItem from './SettingsProjectItem.vue'
-import SettingsProjectModal from './SettingsProjectModal.vue'
 import SettingsCategoryItem from './SettingsCategoryItem.vue'
-import SettingsCategoryModal from './SettingsCategoryModal.vue'
 import SettingsDeleteConfirmation from './SettingsDeleteConfirmation.vue'
+import SettingsAddItemModal from './SettingsAddModal-Generic.vue'
 
     export default {
         data: function() {
@@ -65,9 +82,8 @@ import SettingsDeleteConfirmation from './SettingsDeleteConfirmation.vue'
         components: {
             'app-project': SettingsProjectItem,
             'app-category': SettingsCategoryItem,
-            'app-add-category-modal': SettingsCategoryModal,
-            'app-add-project-modal': SettingsProjectModal,
-            'app-delete-confirmation-modal': SettingsDeleteConfirmation
+            'app-delete-confirmation-modal': SettingsDeleteConfirmation,
+            'app-add-item-modal': SettingsAddItemModal
         },
         computed: {
             projects: function() {
