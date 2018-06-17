@@ -174,8 +174,6 @@ const store = new Vuex.Store({
             state.projects[project.project_id].project_name = project.project_name;
         },
         'DELETE_PROJECT' (state, project_id) {
-            //delete state.projects[project_id]
-            //Vue.delete(state.projects, project_id)
             var projectsCopy = {};
             Object.assign(projectsCopy, state.projects)
             delete projectsCopy[project_id]

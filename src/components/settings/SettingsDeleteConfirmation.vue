@@ -62,7 +62,6 @@ import { ErrorsBus } from '../../main'
                     this.$store.dispatch('deleteProject', this.thingToDelete.project_id)
                         .then( res => {
                             this.$emit('resetDeleteConfirmationModal');
-                            location.reload(); // Don't recall why this is done. Check and maybe remove.
                         })
                         .catch(err => {
                             ErrorsBus.errorHandler(err);
