@@ -26,7 +26,16 @@
 import ProjectSelectModal from './ProjectSelectModal.vue'
 
     export default {
-        props: ['currentProjectID', 'selectedProject', 'projects'],
+        props: {
+            selectedProject: {
+                type: Object,
+                required: true
+            },
+            projects: {
+                type: Object,
+                required: true
+            }
+        },
         components: {
             'app-project-select-modal': ProjectSelectModal
         },

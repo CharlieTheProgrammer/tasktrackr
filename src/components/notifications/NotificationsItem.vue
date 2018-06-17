@@ -16,7 +16,16 @@
 import { ErrorsBus } from '../../main'
 
     export default {
-        props: ['message', 'countDownToDismiss'],
+        props: {
+            message: {
+                type: Object,
+                required: true,
+            },
+            countDownToDismiss: {
+                type: Number,
+                required: true,
+            },
+        },
         data() {
             return {
                 dismissSecs: this.countDownToDismiss,

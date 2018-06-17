@@ -37,7 +37,20 @@
 import { ErrorsBus } from '../../main'
 
     export default {
-        props: ['toggle', 'thingToDelete', 'projectOrCategory'],
+        props: {
+            toggle: {
+                type: Boolean,
+                required: true
+            },
+            thingToDelete: {
+                type: String,
+                required: true
+            },
+            projectOrCategory: {
+                type: String,
+                required: true
+            }
+        },
         data: function() {
             return {
                 isShown: false,

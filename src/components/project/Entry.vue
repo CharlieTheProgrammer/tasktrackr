@@ -43,7 +43,16 @@
     import { ErrorsBus } from '../../main'
 
     export default {
-        props:['entry', 'projectCategories'],
+        props: {
+            entry: {
+                type: Object,
+                required: true
+            },
+            projectCategories: {
+                type: Object,
+                required: true
+            }
+        },
         data: function() {
             return {
                 tt: ""

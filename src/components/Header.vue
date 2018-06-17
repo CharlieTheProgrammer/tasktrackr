@@ -26,7 +26,12 @@ import notifications from './notifications/Notifications.vue'
 import { ErrorsBus } from '../main'
 
     export default {
-        props: ['isAuthenticated'],
+        props: {
+            isAuthenticated: {
+                type: Boolean,
+                required: true
+            }
+        },
         components: {
             'app-notifications': notifications,
         },

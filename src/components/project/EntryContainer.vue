@@ -61,7 +61,16 @@
     import Entry from './Entry'
 
     export default {
-        props: ['selectedProject', 'projectCategories'],
+        props: {
+            selectedProject: {
+                type: Object,
+                required: true
+            },
+            projectCategories: {
+                type: Object,
+                required: true
+            }
+        },
         components: {
             'app-entry': Entry
         },

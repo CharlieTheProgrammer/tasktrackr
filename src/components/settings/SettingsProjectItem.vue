@@ -34,7 +34,12 @@
 import { ErrorsBus } from '../../main'
 
     export default {
-        props: ['project'],
+        props: {
+            project: {
+                type: Object,
+                required: true
+            }
+        },
         data: function() {
             return {
                 name: this.project.project_name,

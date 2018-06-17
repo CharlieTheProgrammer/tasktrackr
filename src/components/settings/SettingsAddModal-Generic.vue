@@ -43,7 +43,36 @@
 import { ErrorsBus } from '../../main'
 
     export default {
-        props: ['toggle', 'modalTitle', 'modalDescription', 'inputLabel', 'inputName', 'invalidFeedbackDescription', 'dispatchAction'],
+        props: {
+            toggle: {
+                type: Boolean,
+                required: true
+            },
+            modalTitle: {
+                type: String,
+                required: true
+            },
+            modalDescription: {
+                type: String,
+                required: false
+            },
+            inputLabel: {
+                type: String,
+                required: true
+            },
+            inputName: {
+                type: String,
+                required: true
+            },
+            invalidFeedbackDescription: {
+                type: String,
+                required: false
+            },
+            dispatchAction: {
+                type: String,
+                required: true
+            }
+        },
         data: function() {
             return {
                 userInput: '',

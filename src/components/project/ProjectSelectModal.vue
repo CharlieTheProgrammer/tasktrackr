@@ -51,7 +51,12 @@
 import { ErrorsBus } from '../../main'
 
     export default {
-        props: ['toggle'],
+        props: {
+            toggle: {
+                type: Boolean,
+                required: true
+            }
+        },
         data: function() {
             return {
                 isShown: false,

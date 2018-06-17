@@ -33,7 +33,12 @@
 import { ErrorsBus } from '../../main'
 
     export default {
-        props: ['category'],
+        props: {
+            category: {
+                type: Object,
+                required: true
+            }
+        },
         data: function() {
             return {
                 name: this.category.category_name,
