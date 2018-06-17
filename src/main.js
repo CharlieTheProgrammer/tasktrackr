@@ -56,6 +56,12 @@ export const ErrorsBus = new Vue({
 				if (!event.response && event.request) {
 					event.Origin = ORIGIN.Axios_CommFailure
 				}
+
+				// Classifies event generated from frontend, that do not come in array format
+				if (event.type && event.title && event.message) {
+					event.Origin = ORIGIN.Internal
+				}
+
 				// Classifies event returned from backend that do not come in array format
 				if (event.response && !Array.isArray(event.response.data)) {
 					event.Origin = ORIGIN.Axios_SingleError
@@ -63,10 +69,6 @@ export const ErrorsBus = new Vue({
 				// Classifies event generated from backend that comes in array format, usually due to form validators
 				if (Array.isArray(event.response.data)) {
 					event.Origin = ORIGIN.Axios_ErrorsArray
-				}
-				// Classifies event generated from frontend, that do not come in array format
-				if (event.type && event.title && event.message) {
-					event.Origin = ORIGIN.Internal
 				}
 			} catch(e) {
 				if (e instanceof TypeError) {
