@@ -8,7 +8,7 @@
             <router-link to="/" tag="a" class="h2 text-uppercase text-muted mr-auto">Project TT</router-link>
             <router-link to="/processing" tag="a" class="btn btn-primary m-2" v-if="testMode">Test Link</router-link>
             <button href="#" class="btn btn-secondary m-2" v-if="this.$route.path == '/settings'" @click="$router.go(-1)">Go Back</button>
-            <router-link to="/settings" tag="a" class="btn btn-primary m-2" v-if="isAuthenticated">Settings</router-link>
+            <router-link to="/settings" tag="a" class="btn btn-primary m-2" v-if="isAuthenticated && this.$route.path != '/settings'">Settings</router-link>
             <router-link to="/login" class="btn btn-primary m-2 px-4" v-if="!isAuthenticated">Log In</router-link>
             <router-link to="/signup" class="btn btn-secondary m-2 px-4" v-if="!isAuthenticated">Signup</router-link>
             <button href="#" class="btn btn-primary m-2" @click.prevent="logout" v-else>Log Out</button>
