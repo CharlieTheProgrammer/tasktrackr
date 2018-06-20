@@ -170,7 +170,6 @@ app.post(route_enum.passwordResetRequest, v.passwordResetRequestValidators, func
         }
 
         if (response) {
-            var emailservice = new EmailService();
             var uuid = uuidGen()
 
             // Insert UUID into user database
@@ -181,7 +180,7 @@ app.post(route_enum.passwordResetRequest, v.passwordResetRequestValidators, func
                     return;
                 }
 
-                emailservice.passwordReset(req.body.email, uuid)
+                EmailService.passwordReset(req.body.email, uuid)
                 res.sendStatus(200)
                 return;
             })
@@ -219,7 +218,10 @@ app.post(route_enum.passwordReset, v.PasswordResetValidators, function(req, res)
             return;
         }
 
-        if (response) {
+        if (!response) {
+            res.status(401).json(v.ERRS.USER.TOKEN.DEFAULTS.NO_MATCH)
+            return;
+        } else {
             appDB.setNewPassword(req.body.password, response.user_id, function(error, response) {
                 if (error) {
                     console.log(error);

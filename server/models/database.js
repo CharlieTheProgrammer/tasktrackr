@@ -479,7 +479,14 @@ function DataAPI() {
         sql += 'SET user_password = ? '
         sql += 'WHERE user_id = ? '
 
-        runQuery(sql, [password, user_id], _callback)
+        bcrypt.hash(password, saltRounds, function(err, hash) {
+            if (err) {
+                console.log(err)
+                return;
+            }
+
+            runQuery(sql, [hash, user_id], _callback)
+        })
     }
 
     // Set Session ID. For Logging Out function, we will simply pass in an empty string.
