@@ -5,7 +5,7 @@
         class="navbar navbar-dark"
         :class="headerBackgroundColor">
         <div class="container-fluid">
-            <router-link to="/" tag="a" class="h2 text-uppercase text-muted mr-auto">Project TT</router-link>
+            <router-link :to="calcRoute" tag="a" class="h2 text-uppercase text-muted mr-auto">Project TT</router-link>
             <router-link to="/processing" tag="a" class="btn btn-primary m-2" v-if="testMode">Test Link</router-link>
             <button href="#" class="btn btn-secondary m-2" v-if="this.$route.path == '/settings'" @click="$router.go(-1)">Go Back</button>
             <router-link to="/settings" tag="a" class="btn btn-primary m-2" v-if="isAuthenticated && this.$route.path != '/settings'">Settings</router-link>
@@ -51,6 +51,13 @@ import { ErrorsBus } from '../main'
                     return 'bg-warning'
                 } else {
                     return 'bg-dark'
+                }
+            },
+            calcRoute: function() {
+                if (this.isAuthenticated) {
+                    return '/ProjectSelect'
+                } else {
+                    return '/'
                 }
             }
         }
