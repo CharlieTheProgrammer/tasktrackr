@@ -100,13 +100,16 @@
                 }
 
                 this.$store.dispatch('updateEntry', fakeEventData)
-
             }
         },
         filters: {
-            toTimeFormat: function(isostring){
-                var date = new Date(isostring);
-                return date.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"})
+            toTimeFormat: function(isostring) {
+                if (!isostring) {
+                    return ''
+                } else {
+                    var date = new Date(isostring);
+                    return date.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"})
+                }
             },
             generateTotalTime: function(endTimeinISO, startTimeinISO) {
                 var oldDate = new Date(startTimeinISO);
