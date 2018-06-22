@@ -32,6 +32,11 @@
             :data-entry_id="entry.entry_id" data-cat="start_time">{{ entry.start_time | toTimeFormat }}
         </td>
         <td
+            v-if="displayEndTime"
+            class="text-center"
+            :data-entry_id="entry.entry_id">{{ entry.total_time | toTimeFormat }}
+        </td>
+        <td
             class="text-center"
             :data-entry_id="entry.entry_id">{{ entry.total_time | generateTotalTime(entry.start_time) }}
         </td>
@@ -67,6 +72,17 @@
                     return false;
                 } else {
                     return true;
+                }
+            }
+        },
+        computed: {
+            displayEndTime: function() {
+                var settings = this.$store.getters.userSettings;
+
+                if (settings.displayEndTime.value === true) {
+                    return true
+                } else {
+                    return false
                 }
             }
         },

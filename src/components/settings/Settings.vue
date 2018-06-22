@@ -39,6 +39,18 @@
             <app-category :category="category" @confirmDelete="confirmDelete"></app-category>
         </div>
 
+        <!-- USER SETTINGS HEADER -->
+        <div class="container-fluid mt-4 bg-light border">
+            <div class="row justify-content-between align-items-center mx-3">
+                <p class="display-4 mx-3">Other</p>
+            </div>
+        </div>
+
+        <!-- USER SETTINGS EDIT BODY -->
+        <div class="container-fluid pt-3" v-for="(setting, key, index) in userSettings" :key="index + '-setting'">
+            <app-user-setting :setting="setting"></app-user-setting>
+        </div>
+
         <!-- NEW CATEGORY MODAL -->
         <app-add-item-modal
             :toggle="toggleCategoryAddModal"
@@ -66,6 +78,7 @@
 import { ErrorsBus } from '../../main'
 import SettingsProjectItem from './SettingsProjectItem.vue'
 import SettingsCategoryItem from './SettingsCategoryItem.vue'
+import SettingsUserSettingItem from './SettingsUserSettingItem.vue'
 import SettingsDeleteConfirmation from './SettingsDeleteConfirmation.vue'
 import SettingsAddItemModal from './SettingsAddModal-Generic.vue'
 
@@ -82,6 +95,7 @@ import SettingsAddItemModal from './SettingsAddModal-Generic.vue'
         components: {
             'app-project': SettingsProjectItem,
             'app-category': SettingsCategoryItem,
+            'app-user-setting': SettingsUserSettingItem,
             'app-delete-confirmation-modal': SettingsDeleteConfirmation,
             'app-add-item-modal': SettingsAddItemModal
         },
@@ -91,6 +105,9 @@ import SettingsAddItemModal from './SettingsAddModal-Generic.vue'
             },
             projectCategories: function() {
                 return this.$store.getters.projectCategories;
+            },
+            userSettings: function() {
+                return this.$store.getters.userSettings;
             }
         },
         methods: {

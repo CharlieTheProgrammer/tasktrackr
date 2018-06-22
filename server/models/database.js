@@ -489,6 +489,22 @@ function DataAPI() {
         })
     }
 
+    this.setUserSettings = function(user_id, settings, _callback) {
+        let sql = 'UPDATE Users '
+        sql += 'SET user_settings = ?'
+        sql += 'WHERE user_id = ? '
+
+        runQuery(sql, [settings, user_id], _callback)
+    }
+
+    this.getUserSettings = function(user_id, _callback) {
+        let sql = 'SELECT user_settings '
+        sql += 'FROM Users '
+        sql += 'WHERE user_id = ? '
+
+        getQuery(sql, user_id, _callback)
+    }
+
     // Set Session ID. For Logging Out function, we will simply pass in an empty string.
     this.setSessionID = function(user_login, session_id, _callback) {
         let sql = 'UPDATE Users '

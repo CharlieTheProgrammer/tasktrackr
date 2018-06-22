@@ -235,4 +235,37 @@ app.post(route_enum.passwordReset, v.PasswordResetValidators, function(req, res)
     })
 });
 
+app.post(route_enum.get.userSettings, function(req, res){
+    appDB.getUserSettings(req.user.user_id, function(error, response) {
+        if (error) {
+            console.log(error);
+            res.sendStatus(500);
+            return;
+        }
+
+        res.status(200).json(response.user_settings)
+    })
+})
+
+app.post(route_enum.update.userSettings, function(req, res) {
+    const errors= validationResult(req).formatWith(v.errorFormatter);
+    if (!errors.isEmpty()) {
+        console.log(errors.array());
+        var errs = errors.array();
+        //res.status(400).json(errs)    These errors are not meant to be sent to the user
+        res.sendStatus(500)
+        return;
+    }
+
+    appDB.setUserSettings(req.user.user_id, req.body.userSettings, function(error, response) {
+        if (error) {
+            console.log(error);
+            res.sendStatus(500);
+            return;
+        }
+
+        res.sendStatus(200)
+    })
+})
+
 module.exports = app;

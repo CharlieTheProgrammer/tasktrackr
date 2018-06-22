@@ -15,7 +15,8 @@ module.exports = {
     update: {
         project: '/update/project',
         category: '/update/category',
-        entry: '/update/entry'
+        entry: '/update/entry',
+        userSettings: '/update/usersettings'
     },
     get: {
         project: '/get/project',
@@ -23,7 +24,8 @@ module.exports = {
         categories: '/get/categories',
         entries: '/get/entries',
         allUserEntries: '/get/allUserEntries',
-        user: '/get/user'
+        user: '/get/user',
+        userSettings: '/get/usersettings'
     },
     login: '/login',
     logout: '/logout',

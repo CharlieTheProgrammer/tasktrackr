@@ -15,12 +15,16 @@ import { ErrorsBus } from '../main'
             var p2 = this.$store.dispatch('loadProjectList');
 
             var p3 = this.$store.dispatch('loadAllEntries');
+
+            var p4 = this.$store.dispatch('getUserSettings');
+            
             var Vuee = this;
 
             Promise.all([
                     p1.catch(error => ErrorsBus.$emit("errorEvent", error)),
                     p2.catch(error => ErrorsBus.$emit("errorEvent", error)),
-                    p3
+                    p3.catch(error => ErrorsBus.$emit("errorEvent", error)),
+                    p4
                 ])
                 // If I catch all the errors above, the 'then' is triggered which is odd
                 // since if all promises fail, 'then' should not be considered successful.

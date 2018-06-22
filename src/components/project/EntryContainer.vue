@@ -7,6 +7,7 @@
                     <th id="date-column"         class="w-sm-5 w-md-10 w-lg-10 w-xl-10" scope="col">Date</th>
                     <th id="description-column"  class="w-sm-10 w-md-40 w-lg-40 w-xl-40 text-center" scope="col">Description</th>
                     <th id="starttime-column"    class="w-sm-3 w-md-5 w-lg-10 w-xl-10 text-center" scope="col">Start Time</th>
+                    <th id="endtime-column"    class="w-sm-3 w-md-5 w-lg-10 w-xl-10 text-center" scope="col" v-if="displayEndTime">End Time</th>
                     <th id="totaltime-column"    class="w-sm-3 w-md-5 w-lg-10 w-xl-10 text-center" scope="col">Total Time &nbsp;(mins)</th>
                 </tr>
             </thead>
@@ -16,41 +17,6 @@
                     :entry="entry"
                     :projectCategories="projectCategories"
                     ></app-entry>
-
-                <!-- <tr v-for="entry in orderedTable" :key="entry.entry_id">
-                    <td>
-                        <select
-                            class="custom-select w-100"
-                            :data-entry_id="entry.entry_id"
-                            data-cat="category_id"
-                            >
-                            <option
-                                v-for="(categoryItem, index) in projectCategories" :key="index"
-                                :selected="entry.category_id == categoryItem.category_id ? 'selected' : null"
-                                :value="categoryItem.category_id"
-                                >{{ categoryItem.category_name}}</option>
-                        </select>
-                    </td>
-                    <td
-                        class="text-center"
-                        :data-entry_id="entry.entry_id"
-                        data-cat="entry_date">{{ entry.entry_date }}</td>
-                    <td>
-                        <textarea
-                            class="w-100 bg-transparent"
-                            :data-entry_id="entry.entry_id"
-                            data-cat="entry_description"
-                            :value="entry.entry_description"
-                            >
-                        </textarea>
-                    </td>
-                    <td
-                        class="text-center"
-                        :data-entry_id="entry.entry_id" data-cat="start_time">{{ entry.start_time | toTimeFormat }}</td>
-                    <td
-                        class="text-center"
-                        :data-entry_id="entry.entry_id">{{ entry.total_time | generateTotalTime(entry.start_time) }}</td>
-                </tr> -->
             </tbody>
         </table>
     </div>
@@ -83,6 +49,15 @@
                 });
 
                 return orderedEntries;
+            },
+            displayEndTime: function() {
+                var settings = this.$store.getters.userSettings;
+
+                if (settings.displayEndTime.value === true) {
+                    return true
+                } else {
+                    return false
+                }
             }
         },
         methods: {

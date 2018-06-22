@@ -30,11 +30,18 @@ const store = new Vuex.Store({
             //     }
             // }
         },
-        userInfo: {
-            currentProjectId: false
+        userSettings: {
+            // displayEndTime: {
+            //     key: "displayEndTime",
+            //     displayName: "", // String
+            //     value: "", // Boolean, integer
+            //     type: "", // Checkbox, dropdown, etc
+            //     options: [], //-> for non-binary settings.
+            // }
         },
+        currentProjectId: false,
         isAuthenticated: false,
-        testMode: false
+        testMode: true
     },
     mutations: {
         // Check for existing state in local storage
@@ -62,8 +69,19 @@ const store = new Vuex.Store({
         'SET_IS_AUTHENTICATED' (state, isLoggedIn) {
             state.isAuthenticated = isLoggedIn;
         },
-
-        // Load categories
+        // USER ===============================================================
+        'LOAD_USER_SETTINGS' (state, settings) {
+            settings = JSON.parse(settings)
+            for (var setting in settings) {
+                if (settings.hasOwnProperty(setting)) {
+                    Vue.set(state.userSettings, settings[setting].key, settings[setting]);
+                }
+            }
+        },
+        'SET_USER_SETTING' (state, setting) {
+            Vue.set(state.userSettings, setting.key, setting);
+        },
+        // CATEGORIES ==========================================================
         'GET_CATEGORIES' (state, list) {
             state.projectCategories = {
                 0:
@@ -115,7 +133,7 @@ const store = new Vuex.Store({
             }
         },
         'UPDATE_ENTRY' (state, eventData) {
-            var projectID = state.userInfo.currentProjectId
+            var projectID = state.currentProjectId
             state.projects[projectID].entries[eventData.entry_id][eventData.fieldName] = eventData.value
         },
         'PUSH_ENTRY' (state, entry) {
@@ -124,12 +142,12 @@ const store = new Vuex.Store({
                 return;
             }
 
-            Vue.set(state.projects[state.userInfo.currentProjectId].entries, entry.entry_id, entry);
+            Vue.set(state.projects[state.currentProjectId].entries, entry.entry_id, entry);
         },
         'COMPLETE_ENTRY' (state, total_time) {
             // Need to get the last entry in the project
             // Get the current project's entries' keys and get the last one.
-            var currentProjectId = state.userInfo.currentProjectId
+            var currentProjectId = state.currentProjectId
             var keys = Object.keys(state.projects[currentProjectId].entries)
             var lastEntryId = keys[keys.length - 1]
 
@@ -150,7 +168,7 @@ const store = new Vuex.Store({
             }
         },
         'SET_CURRENT_PROJECT_ID' (state, newProjectId) {
-            state.userInfo.currentProjectId = newProjectId;
+            state.currentProjectId = newProjectId;
         },
         'CREATE_PROJECT' (state, newProject) {
             if (!newProject.project_id) { return Error("Project ID is required") }
@@ -330,7 +348,7 @@ const store = new Vuex.Store({
                 start_time: today.toISOString(),
                 end_time: "",
                 total_time: "",
-                project_id: context.state.userInfo.currentProjectId
+                project_id: context.state.currentProjectId
             }
 
             return new Promise((resolve, reject) => {
@@ -357,7 +375,7 @@ const store = new Vuex.Store({
             this.commit('UPDATE_ENTRY', eventData);
 
             // get entry
-            var currentProjectId = context.state.userInfo.currentProjectId;
+            var currentProjectId = context.state.currentProjectId;
             var entry = context.state.projects[currentProjectId].entries[eventData.entry_id]
 
             // console.log("Entry below should be the updated one, not the original entry")
@@ -453,6 +471,39 @@ const store = new Vuex.Store({
                     })
                     .catch(error => reject(error));
             });
+        },
+        // SETTINGS ============================================================
+        getUserSettings: function() {
+            // This will fetch other settings from backend.
+            console.log("Action: getOtherSettings");
+
+            return new Promise((resolve, reject) => {
+                axios.post('/get/usersettings')
+                    .then(res => {
+                        console.log(res.data)
+                        this.commit('LOAD_USER_SETTINGS', res.data);
+                        resolve(res);
+                    })
+                    .catch(error => reject(error));
+            });
+        },
+        setUserSettings: function(context, setting) {
+            // This will send update to the backend then updata the state.
+            console.log("Action: setUserSettings");
+            // Since we're blobbing this information on the back end, the entire settings will be sent over
+            this.commit('SET_USER_SETTING', setting)
+            // One concern I have here is that code below may execute before commit.
+            // In that case, the settings in backend would not reflect app state.
+
+            return new Promise((resolve, reject) => {
+                axios.post('/update/usersettings', {userSettings: JSON.stringify(context.state.userSettings)})
+                    .then(res => {
+                        // If a race condition occurs, I can verify here that state
+                        // matches user supplied setting
+                        resolve(res);
+                    })
+                    .catch(error => reject(error));
+            });
         }
     },
     getters: {
@@ -460,19 +511,22 @@ const store = new Vuex.Store({
             return state.projects;
         },
         project: function(state) {
-            if (!state.userInfo.currentProjectId) {
+            if (!state.currentProjectId) {
                 return undefined;
             }
-            return state.projects[state.userInfo.currentProjectId];
+            return state.projects[state.currentProjectId];
         },
         projectCategories: function(state) {
             return state.projectCategories;
         },
         currentProjectId: function(state) {
-            return state.userInfo.currentProjectId;
+            return state.currentProjectId;
         },
         isAuthenticated: function(state) {
             return state.isAuthenticated;
+        },
+        userSettings: function(state) {
+            return state.userSettings;
         }
     }
 })
