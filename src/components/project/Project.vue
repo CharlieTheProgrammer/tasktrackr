@@ -17,6 +17,7 @@
     import ProjectNav from './ProjectNav.vue'
     import EntryContainer from './EntryContainer.vue'
     import { TimerBus } from '../../main'
+    import { ErrorsBus } from '../../main'
 
     export default {
         components: {
