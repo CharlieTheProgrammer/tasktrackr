@@ -10,66 +10,24 @@
     import { TimerBus } from '../main'
 
     export default {
-        data: function() {
-            return {
-                timer: {
-                    hour: '00',
-                    minute: '00',
-                    second: '00',
-                    tInterval: false
-                }
+        computed: {
+            timer: function() {
+                return TimerBus.getTimerData();
             }
         },
         created: function() {
             TimerBus.$on('startTimer', () => {
-                this.startTimer();
+                TimerBus.startTimer();
             });
 
             TimerBus.$on('stopTimer', () => {
-                TimerBus.$emit('TimerData', this.timer)
-                this.stopTimer();
+                TimerBus.$emit('TimerData', TimerBus.timer)
+                TimerBus.stopTimer();
             });
 
             TimerBus.$on('resetTimer', () => {
-                this.resetTimer();
+                TimerBus.resetTimer();
             });
-        },
-        methods: {
-            setInterval: function() {
-                if (!this.timer.tInterval) {
-                    this.timer.tInterval = setInterval(this.startTimer, 1000);
-                };
-            },
-            startTimer: function() {
-                this.setInterval();
-
-                this.timer.second++;
-                if (this.timer.second >= 60) {
-                    this.timer.second = 0;
-                    this.timer.minute++;
-                    if (this.timer.minute >= 60) {
-                        this.timer.minute = 0;
-                        this.timer.hour++;
-                    }
-                };
-
-                this.timer.hour = ("0" + this.timer.hour).slice(-2);
-                this.timer.minute = ("0" + this.timer.minute).slice(-2);
-                this.timer.second = ("0" + this.timer.second).slice(-2);
-            },
-            stopTimer: function() {
-                clearInterval(this.timer.tInterval);
-                this.timer.tInterval = false;
-
-                this.resetTimer();
-            },
-            resetTimer: function() {
-                this.timer = {
-                    hour: '00',
-                    minute: '00',
-                    second: '00'
-                }
-            }
         }
     }
 </script>

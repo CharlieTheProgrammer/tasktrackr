@@ -81,28 +81,28 @@ export const ErrorsBus = new Vue({
 			switch(event.Origin) {
 				// In this scenario Axios includes a request, but not a response.
 				case (ORIGIN.Axios_CommFailure):
-					// Generate message manually
-					this.sendMessage({
-						type: "Error",
+				// Generate message manually
+				this.sendMessage({
+					type: "Error",
 						title: "Network Error",
 						message: "Please check your internet connection."
 					})
 					break;
-				// In this scenario, the server has returned multiple errors within an array
-				case (ORIGIN.Axios_ErrorsArray):
+					// In this scenario, the server has returned multiple errors within an array
+					case (ORIGIN.Axios_ErrorsArray):
 					event.response.data.forEach(error => {
 						this.sendMessage(error);
 					})
 					break;
-				// In this scenario, a single error was generated from the BACKEND and needs to be displayed to user
-				case (ORIGIN.Axios_SingleError):
+					// In this scenario, a single error was generated from the BACKEND and needs to be displayed to user
+					case (ORIGIN.Axios_SingleError):
 					this.sendMessage(event.response.data)
 					break;
 				// In this scenario, a single error was created within the FRONTEND and needs to be displayed to user
 				case (ORIGIN.Internal):
 					this.sendMessage(event)
 					break;
-				default:
+					default:
 					this.sendMessage({
 						type: "Error",
 						title: "Unexpected Error",
@@ -110,26 +110,26 @@ export const ErrorsBus = new Vue({
 					})
 					console.log("Unhandled Event Found");
 					console.log(event)
-			}
+				}
 
-			// I can add further code down here for errors generated from other sources.
-			// This is also a good place to connect to an error logging API
-		},
-		addStacktoEvent: function(event, errorObj) {
-			if (!errorObj.stack) {
-				//throw new Error("Error object is missing stack.");
-				return undefined;
-			}
+				// I can add further code down here for errors generated from other sources.
+				// This is also a good place to connect to an error logging API
+			},
+			addStacktoEvent: function(event, errorObj) {
+				if (!errorObj.stack) {
+					//throw new Error("Error object is missing stack.");
+					return undefined;
+				}
 
-			if (!event.type || !event.title || !event.message) {
-				throw new Error("Custom error object does not match format.");
-				return undefined;
-			}
+				if (!event.type || !event.title || !event.message) {
+					throw new Error("Custom error object does not match format.");
+					return undefined;
+				}
 
-			return event.extension.stack = errorObj.stack;
-		},
-		sendMessage: function(message) {
-			if (!message.type || !message.title || !message.message) {
+				return event.extension.stack = errorObj.stack;
+			},
+			sendMessage: function(message) {
+				if (!message.type || !message.title || !message.message) {
 				console.error("Custom error object does not match format. \n Got the following instead");
 				console.error(message);
 				return;
@@ -139,8 +139,68 @@ export const ErrorsBus = new Vue({
 	}
 });
 
-export const TimerBus = new Vue();
+export const TimerBus = new Vue({
+	data: {
+		timer: {
+			hour: '00',
+			minute: '00',
+			second: '00',
+			tInterval: false
+		}
+	},
+	methods: {
+		setInterval: function() {
+			if (!this.timer.tInterval) {
+				this.timer.tInterval = setInterval(this.startTimer, 1000);
+			};
+		},
+		startTimer: function() {
+			this.setInterval();
 
+			this.timer.second++;
+			if (this.timer.second >= 60) {
+				this.timer.second = 0;
+				this.timer.minute++;
+				if (this.timer.minute >= 60) {
+					this.timer.minute = 0;
+					this.timer.hour++;
+				}
+			};
+
+			this.timer.hour = ("0" + this.timer.hour).slice(-2);
+			this.timer.minute = ("0" + this.timer.minute).slice(-2);
+			this.timer.second = ("0" + this.timer.second).slice(-2);
+		},
+		stopTimer: function() {
+			clearInterval(this.timer.tInterval);
+			this.timer.tInterval = false;
+
+			this.resetTimer();
+		},
+		resetTimer: function() {
+			this.timer = {
+				hour: '00',
+				minute: '00',
+				second: '00'
+			}
+		},
+		getTimerData: function() {
+			return this.timer;
+		},
+		handleUnload: function() {
+			// window.confirm method is no longer allowed in most/all browsers. There's no way to prompt user.
+			if (this.timer.tInterval) {
+				this.$emit('TimerData')
+			}
+		}
+	},
+	created: function() {
+		window.addEventListener('beforeunload', this.handleUnload);
+	}
+});
+
+// *** Vue instance below is instantiated and destroyed last.
+// *** Moving this before Timer Bus will break autosave on unload functionality.
 new Vue({
 	el: '#app',
 	store: store,
