@@ -43,7 +43,7 @@ import { ErrorsBus } from '../../main'
                 required: true
             },
             thingToDelete: {
-                type: String,
+                //type: String,     Needs refactoring. Currently, starts as string, turns into object.
                 required: true
             },
             projectOrCategory: {

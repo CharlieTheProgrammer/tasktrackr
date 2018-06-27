@@ -3,7 +3,7 @@
         <!-- PROJECT HEADER -->
         <div class="container-fluid mt-4 bg-light border">
             <div class="row justify-content-between align-items-center mx-3">
-                <p class="display-4 mx-3">Projects</p>
+                <p class="display-4">Projects</p>
                 <button class="btn btn-primary btn-sm" @click.prevent="toggleProjectAddModal = !toggleProjectAddModal">Add Project</button>
             </div>
         </div>
@@ -42,7 +42,7 @@
         <!-- USER SETTINGS HEADER -->
         <div class="container-fluid mt-4 bg-light border">
             <div class="row justify-content-between align-items-center mx-3">
-                <p class="display-4 mx-3">Other</p>
+                <p class="display-4">Other</p>
             </div>
         </div>
 

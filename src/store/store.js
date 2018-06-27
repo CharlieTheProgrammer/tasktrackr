@@ -480,7 +480,6 @@ const store = new Vuex.Store({
             return new Promise((resolve, reject) => {
                 axios.post('/get/usersettings')
                     .then(res => {
-                        console.log(res.data)
                         this.commit('LOAD_USER_SETTINGS', res.data);
                         resolve(res);
                     })
