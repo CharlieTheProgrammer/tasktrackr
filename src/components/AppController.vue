@@ -12,7 +12,6 @@
     export default {
         data: function() {
             return {
-                displayme: true,
                 clicked: false
             }
         },
@@ -31,6 +30,16 @@
                 this.displayme = true;
                 this.clicked = false;
             },
+        },
+        computed: {
+            displayme: function() {
+                var timerData = TimerBus.getTimerData()
+                if (timerData.tInterval) {
+				    return false
+			    } else {
+                    return true
+                }
+            }
         }
     }
 </script>
