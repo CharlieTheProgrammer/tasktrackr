@@ -51,8 +51,6 @@ import { ErrorsBus } from '../main'
             headerBackgroundColor: function() {
                 if (this.testMode) {
                     return 'bg-warning'
-                } else {
-                    return 'bg-dark'
                 }
             },
             calcRoute: function() {
