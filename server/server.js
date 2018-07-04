@@ -76,7 +76,8 @@ require('./config/passport.js')(passport, appDB);
 const SQLiteStore = require('connect-sqlite3')(session);
 const sessionOptions = {
     secret: 'ngEyZqWagRgvkVK63nJUpZUe7YFf5W2sUSRYCWzX',
-    resave: false,
+    resave: false,  // Resaves on every response.
+    rolling: true,  // Resets maxAge on every request.
     saveUninitialized: false,   // This creates a cookie just by visiting the site. We only want to turn this on after login.
     store: new SQLiteStore({
         db: config[env].db.name,
@@ -84,7 +85,7 @@ const sessionOptions = {
         dir: path.dirname(DB_PATH),
     }),
     cookie : {
-        maxAge: null,  // configure when sessions expires
+        maxAge: 86400000,  // configure when sessions expires. Set to 24 hours.
         httpOnly: true,
         secure: false
     }
@@ -113,7 +114,13 @@ appBackend.use(bodyParser.json());
 appBackend.use(history({
     verbose: true
 }))
-appBackend.use(express.static(path.join(__dirname, '../dist')));
+
+if (env === 'prod') {
+    appBackend.use(express.static(path.join(__dirname, '..')));
+} else {
+    appBackend.use(express.static(path.join(__dirname, '../dist')));
+}
+
 
 //CORS
 if (config[env].app.cors === true) {
