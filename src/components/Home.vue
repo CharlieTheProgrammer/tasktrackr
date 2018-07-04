@@ -32,7 +32,6 @@
             'app-timer': Timer,
             'app-project': Project,
             'app-firstprojectwelcome': FirstProjectWelcome
-        },
-
+        }
     }
 </script>

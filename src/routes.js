@@ -13,6 +13,7 @@ import Settings from './components/settings/Settings.vue'
 import FirstProjectWelcome from './components/FirstProject.vue'
 import ProjectSelect from './components/project/ProjectSelect.vue'
 import Processing from './components/Processing.vue'
+import Docs from './components/Docs.vue'
 
 import { store } from './store/store'
 
@@ -30,6 +31,7 @@ var authorizationCheck = (to, from, next) => {
 // Create routes for each component
 export const routes = [
     { path : '/', component: Landing },
+    { path : '/docs', component: Docs },
     { path : '/login', component: Login},
     { path : '/requestpasswordreset', component: PasswordResetInit},
     { path : '/passwordreset', component: PasswordNew},

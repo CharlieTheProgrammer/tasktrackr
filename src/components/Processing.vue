@@ -17,7 +17,7 @@ import { ErrorsBus } from '../main'
             var p3 = this.$store.dispatch('loadAllEntries');
 
             var p4 = this.$store.dispatch('getUserSettings');
-            
+
             var Vuee = this;
 
             Promise.all([
@@ -59,7 +59,7 @@ import { ErrorsBus } from '../main'
     }
 </script>
 
-<style>
+<style scoped>
     .loader {
     border: 16px solid #f3f3f3;
     border-radius: 50%;

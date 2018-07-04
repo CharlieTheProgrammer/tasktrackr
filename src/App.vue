@@ -1,12 +1,12 @@
 <template>
     <div>
-        <div class="pb-4">
+        <div class="">
             <app-header :isAuthenticated="isAuthenticated"></app-header>
             <router-view></router-view>
         </div>
     <footer class="footer">
         <div class="container text-center">
-            <span class="text-muted">&copy; 2018 Charlie The Programmer</span>
+            <span class="text-light">&copy; 2018 Charlie The Programmer</span>
         </div>
     </footer>
   </div>
@@ -39,6 +39,22 @@ export default {
 }
 </script>
 
+<style scoped>
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 40px;
+    line-height: 40px; /* Vertically center the text there */
+    background-color: #002B59;
+    -webkit-box-shadow: -3px 0px 5px 0px rgba(0,4,40,1);
+    -moz-box-shadow: -3px 0px 5px 0px rgba(0,4,40,1);
+    box-shadow: -3px 0px 5px 0px rgba(0,4,40,1);
+  }
+</style>
+
+
 <style>
 
 /* * {
@@ -54,15 +70,6 @@ body, html {
     margin-bottom: 4rem;
 } */
 
-.footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    /* Set the fixed height of the footer here */
-    height: 40px;
-    line-height: 40px; /* Vertically center the text there */
-    background-color: #f5f5f5;
-  }
 
 #entries {
     margin-bottom: 2rem;

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <section id="" class="container my-4">
+        <section id="" class="container my-5">
             <div class="jumbotron w-75 mx-auto">
                 <div class="w-50 mx-auto">
                     <p class="h2 text-center py-2">Enter new password</p>

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <section class="container my-4">
+        <section class="container my-5">
             <div class="jumbotron w-75 mx-auto">
                 <p class="h2 text-center py-2">Request Password Reset</p>
                 <p class="lead text-center">or <router-link to="/login" tag="a">return to login.</router-link></p>

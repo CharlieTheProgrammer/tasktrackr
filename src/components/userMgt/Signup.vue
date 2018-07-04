@@ -1,10 +1,10 @@
 <template>
     <div>
-        <section class="container my-4">
+        <section class="container my-5">
             <div class="jumbotron w-75 mx-auto">
                 <div class="w-50 mx-auto">
                     <p class="h2 text-center py-2">Create an Account</p>
-                    <p class="lead text-center">or <router-link to="/login" tag="a">sign into your new account</router-link></p>
+                    <p class="lead text-center">or <router-link to="/login" tag="a">sign into your account</router-link></p>
                 </div>
                 <form class="w-50 mx-auto" method="POST">
                     <div class="form-group">

@@ -1,7 +1,5 @@
 <template>
     <div>
-        <!-- <p v-if="!selectedProject">Select a project</p> -->
-
         <section>
             <app-project-nav :selectedProject="selectedProject" :projects="projects"></app-project-nav>
             <app-entry-container

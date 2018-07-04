@@ -1,6 +1,6 @@
 <template>
     <!-- CREATE NEW PROJECT WELCOME SCREEN-->
-    <section id="newProjectWelcome" class="container my-4" v-if="true">
+    <section id="newProjectWelcome" class="container my-5" v-if="true">
         <div class="jumbotron ">
             <h1 class="display-3 text-center">Start Time Tracking Today</h1>
             <p class="lead text-center w-75 mx-auto">Project time trackers allows you to create projects, assign categories, and keep track of all your time spent.</p>
