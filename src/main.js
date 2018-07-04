@@ -173,8 +173,6 @@ export const TimerBus = new Vue({
 		},
 		stopTimer: function() {
 			clearInterval(this.timer.tInterval);
-			this.timer.tInterval = false;
-
 			this.resetTimer();
 		},
 		resetTimer: function() {
@@ -183,6 +181,8 @@ export const TimerBus = new Vue({
 				minute: '00',
 				second: '00'
 			}
+			// tInterval is used as a reactive property by other components. KEEP VUE SET!
+			Vue.set(this.timer, 'tInterval', false)
 		},
 		getTimerData: function() {
 			return this.timer;
