@@ -47,7 +47,7 @@
         </div>
 
         <!-- USER SETTINGS EDIT BODY -->
-        <div class="container-fluid pt-3" v-for="(setting, key, index) in userSettings" :key="index + '-setting'">
+        <div class="container-fluid pt-3 pb-5" v-for="(setting, key, index) in userSettings" :key="index + '-setting'">
             <app-user-setting :setting="setting"></app-user-setting>
         </div>
 
