@@ -1,5 +1,6 @@
 var COMPANY_NAME = 'Project TT'
 var DOMAIN_NAME = 'http://kilowebdesigns.com'
+var SUPPORT_URL = 'http://kilowebdesigns.com/support'
 
 
 function PasswordReset(uuid) {
@@ -15,7 +16,7 @@ function PasswordReset(uuid) {
 
     </head>
 
-    <body style="-webkit-text-size-adjust: none; box-sizing: border-box; color: #74787E; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; height: 100%; line-height: 1.4; margin: 0; width: 100% !important;"
+    <body style="-webkit-text-size-adjust: none; box-sizing: border-box; color: #74787E;  height: 100%; line-height: 1.4; margin: 0; width: 100% !important;"
         bgcolor="#F2F4F6">
         <style type="text/css">
             body {
@@ -26,6 +27,21 @@ function PasswordReset(uuid) {
                 background-color: #F2F4F6;
                 color: #74787E;
                 -webkit-text-size-adjust: none;
+            }
+
+            #header {
+                background: #00336B;  /* fallback for old browsers */
+                -webkit-box-shadow: -3px 0px 20px 5px rgba(0,4,40,.8);
+                -moz-box-shadow: -3px 0px 20px 5px rgba(0,4,40,.8);
+                box-shadow: -3px 0px 20px 5px rgba(0,4,40,.8);
+            }
+
+            .BSfont {
+                font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol" !important;
+            }
+
+            .text-light {
+                color: #f8f9fa !important;
             }
 
             @media only screen and (max-width: 600px) {
@@ -43,47 +59,47 @@ function PasswordReset(uuid) {
                 }
             }
         </style>
-        <span class="preheader" style="box-sizing: border-box; display: none !important; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 1px; line-height: 1px; max-height: 0; max-width: 0; mso-hide: all; opacity: 0; overflow: hidden; visibility: hidden;">Use this link to reset your password. The link is only valid for 24 hours.</span>
-        <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0" style="box-sizing: border-box; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; margin: 0; padding: 0; width: 100%;"
-            bgcolor="#F2F4F6">
+        <span class="preheader BSfont" style="box-sizing: border-box; display: none !important;  font-size: 1px; line-height: 1px; max-height: 0; max-width: 0; mso-hide: all; opacity: 0; overflow: hidden; visibility: hidden;">Use this link to reset your password. The link is only valid for 24 hours.</span>
+        <table class="email-wrapper BSfont" id="header" width="100%" cellpadding="0" cellspacing="0" style="box-sizing: border-box;  margin: 0; padding: 0; width: 100%;"
+            >
             <tr>
-                <td align="center" style="box-sizing: border-box; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; word-break: break-word;">
-                    <table class="email-content" width="100%" cellpadding="0" cellspacing="0" style="box-sizing: border-box; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; margin: 0; padding: 0; width: 100%;">
+                <td class="BSfont" align="center" style="box-sizing: border-box;  word-break: break-word;">
+                    <table class="email-content BSfont" width="100%" cellpadding="0" cellspacing="0" style="box-sizing: border-box;  margin: 0; padding: 0; width: 100%;">
                         <tr>
-                            <td class="email-masthead" style="box-sizing: border-box; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; padding: 25px 0; word-break: break-word;"
+                            <td class="email-masthead BSfont" style="box-sizing: border-box;  padding: 25px 0; word-break: break-word;"
                                 align="center">
-                                <a href="${DOMAIN_NAME}" class="email-masthead_name" style="box-sizing: border-box; color: #bbbfc3; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 16px; font-weight: bold; text-decoration: none; text-shadow: 0 1px 0 white;">
+                                <a href="${DOMAIN_NAME}" class="email-masthead_name text-light BSfont" style="box-sizing: border-box; font-size: 24px; font-weight: bold; text-decoration: none; text-shadow: 0 1px 0 white;">
                                     ${COMPANY_NAME}
                                 </a>
                             </td>
                         </tr>
 
                         <tr>
-                            <td class="email-body" width="100%" cellpadding="0" cellspacing="0" style="-premailer-cellpadding: 0; -premailer-cellspacing: 0; border-bottom-color: #EDEFF2; border-bottom-style: solid; border-bottom-width: 1px; border-top-color: #EDEFF2; border-top-style: solid; border-top-width: 1px; box-sizing: border-box; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; margin: 0; padding: 0; width: 100%; word-break: break-word;"
+                            <td class="email-body BSfont" width="100%" cellpadding="0" cellspacing="0" style="-premailer-cellpadding: 0; -premailer-cellspacing: 0; border-bottom-color: #EDEFF2; border-bottom-style: solid; border-bottom-width: 1px; border-top-color: #EDEFF2; border-top-style: solid; border-top-width: 1px; box-sizing: border-box;  margin: 0; padding: 0; width: 100%; word-break: break-word;"
                                 bgcolor="#FFFFFF">
-                                <table class="email-body_inner" align="center" width="570" cellpadding="0" cellspacing="0" style="box-sizing: border-box; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; margin: 0 auto; padding: 0; width: 570px;"
+                                <table class="email-body_inner BSfont" align="center" width="570" cellpadding="0" cellspacing="0" style="box-sizing: border-box;  margin: 0 auto; padding: 0; width: 570px;"
                                     bgcolor="#FFFFFF">
 
                                     <tr>
-                                        <td class="content-cell" style="box-sizing: border-box; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; padding: 35px; word-break: break-word;">
-                                            <!--  <h1 style="box-sizing: border-box; color: #2F3133; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 19px; font-weight: bold; margin-top: 0;" align="left">Hi {{name}},</h1> -->
-                                            <p style="box-sizing: border-box; color: #74787E; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 16px; line-height: 1.5em; margin-top: 0;"
+                                        <td class="content-cell BSfont" style="box-sizing: border-box;  padding: 35px; word-break: break-word;">
+                                            <!--  <h1 style="box-sizing: border-box; color: #2F3133;  font-size: 19px; font-weight: bold; margin-top: 0;" align="left">Hi {{name}},</h1> -->
+                                            <p class="BSfont" style="box-sizing: border-box; color: #74787E;  font-size: 16px; line-height: 1.5em; margin-top: 0;"
                                                 align="left">You recently requested to reset your password for your ${COMPANY_NAME} account. Use the
                                                 button below to reset it.
-                                                <strong style="box-sizing: border-box; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;">This password reset is only valid for the next 24 hours.</strong>
+                                                <strong class="BSfont" style="box-sizing: border-box; ">This password reset is only valid for the next 24 hours.</strong>
                                             </p>
 
-                                            <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" style="box-sizing: border-box; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; margin: 30px auto; padding: 0; text-align: center; width: 100%;">
+                                            <table class="body-action BSfont" align="center" width="100%" cellpadding="0" cellspacing="0" style="box-sizing: border-box;  margin: 30px auto; padding: 0; text-align: center; width: 100%;">
                                                 <tr>
-                                                    <td align="center" style="box-sizing: border-box; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; word-break: break-word;">
+                                                    <td class="BSfont" align="center" style="box-sizing: border-box;  word-break: break-word;">
 
-                                                        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;">
+                                                        <table class="BSfont" width="100%" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box; ">
                                                             <tr>
-                                                                <td align="center" style="box-sizing: border-box; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; word-break: break-word;">
-                                                                    <table border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;">
+                                                                <td class="BSfont" align="center" style="box-sizing: border-box;  word-break: break-word;">
+                                                                    <table class="BSfont" border="0" cellspacing="0" cellpadding="0" style="box-sizing: border-box; ">
                                                                         <tr>
-                                                                            <td style="box-sizing: border-box; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; word-break: break-word;">
-                                                                                <a href="${DOMAIN_NAME}/passwordreset?token=${uuid}" class="button button--green" target="_blank" style="-webkit-text-size-adjust: none; background: #22BC66; border-color: #22bc66; border-radius: 3px; border-style: solid; border-width: 10px 18px; box-shadow: 0 2px 3px rgba(0, 0, 0, 0.16); box-sizing: border-box; color: #FFF; display: inline-block; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; text-decoration: none;">Reset your password</a>
+                                                                            <td class="BSfont" style="box-sizing: border-box;  word-break: break-word;">
+                                                                                <a href="${DOMAIN_NAME}/passwordreset?token=${uuid}" class="button button--green BSfont" target="_blank" style="-webkit-text-size-adjust: none; background: #22BC66; border-color: #22bc66; border-radius: 3px; border-style: solid; border-width: 10px 18px; box-shadow: 0 2px 3px rgba(0, 0, 0, 0.16); box-sizing: border-box; color: #FFF; display: inline-block;  text-decoration: none;">Reset your password</a>
                                                                             </td>
                                                                         </tr>
                                                                     </table>
@@ -93,22 +109,22 @@ function PasswordReset(uuid) {
                                                     </td>
                                                 </tr>
                                             </table>
-                                            <p style="box-sizing: border-box; color: #74787E; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 16px; line-height: 1.5em; margin-top: 0;"
+                                            <p class="BSfont" style="box-sizing: border-box; color: #74787E;  font-size: 16px; line-height: 1.5em; margin-top: 0;"
                                                 align="left">If you did not request a password reset, please ignore this email or
-                                                <a href="{{support_url}}"
-                                                    style="box-sizing: border-box; color: #3869D4; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;">contact support</a> if you have questions.</p>
-                                            <p style="box-sizing: border-box; color: #74787E; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 16px; line-height: 1.5em; margin-top: 0;"
+                                                <a href="${SUPPORT_URL}" class="BSfont"
+                                                    style="box-sizing: border-box; color: #3869D4; ">contact support</a> if you have questions.</p>
+                                            <p class="BSfont" style="box-sizing: border-box; color: #74787E;  font-size: 16px; line-height: 1.5em; margin-top: 0;"
                                                 align="left">Thanks,
                                                 <br />The ${COMPANY_NAME} Team</p>
 
                                             <!--
-                                            <table class="body-sub" style="border-top-color: #EDEFF2; border-top-style: solid; border-top-width: 1px; box-sizing: border-box; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; margin-top: 25px; padding-top: 25px;">
+                                            <table class="body-sub" style="border-top-color: #EDEFF2; border-top-style: solid; border-top-width: 1px; box-sizing: border-box;  margin-top: 25px; padding-top: 25px;">
                                                 <tr>
-                                                    <td style="box-sizing: border-box; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; word-break: break-word;">
-                                                        <p class="sub" style="box-sizing: border-box; color: #74787E; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 1.5em; margin-top: 0;"
+                                                    <td style="box-sizing: border-box;  word-break: break-word;">
+                                                        <p class="sub" style="box-sizing: border-box; color: #74787E;  font-size: 12px; line-height: 1.5em; margin-top: 0;"
                                                             align="left">If you’re having trouble with the button above, copy and paste the URL
                                                             below into your web browser.</p>
-                                                        <p class="sub" style="box-sizing: border-box; color: #74787E; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 1.5em; margin-top: 0;"
+                                                        <p class="sub" style="box-sizing: border-box; color: #74787E;  font-size: 12px; line-height: 1.5em; margin-top: 0;"
                                                             align="left"></p>
                                                     </td>
                                                 </tr>
@@ -119,13 +135,13 @@ function PasswordReset(uuid) {
                             </td>
                         </tr>
                         <tr>
-                            <td style="box-sizing: border-box; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; word-break: break-word;">
-                                <table class="email-footer" align="center" width="570" cellpadding="0" cellspacing="0" style="box-sizing: border-box; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; margin: 0 auto; padding: 0; text-align: center; width: 570px;">
+                            <td class="BSfont" style="box-sizing: border-box;  word-break: break-word;">
+                                <table class="email-footer BSfont" align="center" width="570" cellpadding="0" cellspacing="0" style="box-sizing: border-box;  margin: 0 auto; padding: 0; text-align: center; width: 570px;">
                                     <tr>
-                                        <td class="content-cell" align="center" style="box-sizing: border-box; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; padding: 35px; word-break: break-word;">
-                                            <p class="sub align-center" style="box-sizing: border-box; color: #AEAEAE; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 1.5em; margin-top: 0;"
+                                        <td class="content-cell BSfont" align="center" style="box-sizing: border-box;  padding: 35px; word-break: break-word;">
+                                            <p class="sub align-center text-light BSfont" style="box-sizing: border-box; font-size: 12px; line-height: 1.5em; margin-top: 0;"
                                                 align="center">© 2018 ${COMPANY_NAME}. All rights reserved.</p>
-                                            <p class="sub align-center" style="box-sizing: border-box; color: #AEAEAE; font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; line-height: 1.5em; margin-top: 0;"
+                                            <p class="sub align-center text-light BSfont" style="box-sizing: border-box; font-size: 12px; line-height: 1.5em; margin-top: 0;"
                                                 align="center">
                                                 Charlie The Programmer
                                             </p>
@@ -137,7 +153,7 @@ function PasswordReset(uuid) {
                     </table>
                 </td>
             </tr>
-        </table>f
+        </table>
     </body>
 
     </html>
