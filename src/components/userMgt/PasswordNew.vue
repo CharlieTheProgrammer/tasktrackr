@@ -19,7 +19,7 @@
                     </div>
                 </form>
                 <div v-if="display">
-                    <p class="h5 text-center text-success py-2">Password Successfully Reset</p>
+                    <p class="h5 text-center text-success py-2">Password Successfully Reset. You may now log in.</p>
                 </div>
             </div>
         </section>

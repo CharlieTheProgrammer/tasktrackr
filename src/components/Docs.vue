@@ -121,7 +121,7 @@
         <section class="container pb-5 pt-3" v-if="!isAuthenticated">
             <div class="jumbotron">
                 <h1 class="display-3 text-center">Start Time Tracking Today</h1>
-                <p class="lead text-center w-75 mx-auto px-4">Project time trackers allows you to create projects, assign categories, and keep track of all your time spent.</p>
+                <p class="lead text-center w-75 mx-auto px-4">TaskTrackr allows you to create projects, assign categories, and keep track of all your time spent.</p>
                 <div class="d-flex justify-content-center align-content-center w-100">
                     <router-link to="/signup" tag="a" class="text-center btn btn-success btn-lg my-3 w-50">Sign up</router-link>
                 </div>

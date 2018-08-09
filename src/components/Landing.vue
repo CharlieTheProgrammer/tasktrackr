@@ -3,7 +3,7 @@
         <!-- Splash Page -->
         <section id="splash" class="text-light d-flex flex-column align-items-center justify-content-center pb-4">
             <div class="splash-content">
-                <h1 class="display-2 text-center w-75 mx-auto mb-4">Project TT</h1>
+                <h1 class="display-2 text-center w-75 mx-auto mb-4">TaskTrackr</h1>
                 <p class="text-center lead pb-4">A simple web application for keeping track of time spent on projects and tasks</p>
                 <router-link to="/docs" class="btn btn-primary w-50 mx-auto d-block">Learn More</router-link>
             </div>

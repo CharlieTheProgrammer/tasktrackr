@@ -28,7 +28,7 @@ module.exports = function(config) {
     let emailService = nodemailer.createTransport(smtpConfig)
 
     let mailOptions = {
-        from: 'Project TT', // sender address
+        from: 'TaskTrackr', // sender address
         to: null, // list of receivers
         subject: null, // Subject line
         text: null, // plain text body
@@ -67,7 +67,7 @@ module.exports = function(config) {
             console.log("Relaunch application with the --testemailaddress flag.")
             return;
         }
-        mailOptions.from = 'Project TT Test', // sender address
+        mailOptions.from = 'TaskTrackr Test', // sender address
         mailOptions.to = config.testEmailAddress, // list of receivers
         mailOptions.subject = 'Hello ✔', // Subject line
         mailOptions.text = 'Hello world?', // plain text body

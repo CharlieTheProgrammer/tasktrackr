@@ -1,4 +1,4 @@
-var COMPANY_NAME = 'Project TT'
+var COMPANY_NAME = 'TaskTrackr'
 var DOMAIN_NAME = 'http://kilowebdesigns.com'
 var SUPPORT_URL = 'http://kilowebdesigns.com/support'
 
