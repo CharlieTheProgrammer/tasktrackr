@@ -1,6 +1,6 @@
-var COMPANY_NAME = 'TaskTrackr'
-var DOMAIN_NAME = 'http://kilowebdesigns.com'
-var SUPPORT_URL = 'http://kilowebdesigns.com/support'
+var COMPANY_NAME = COMPANY_NAME
+var DOMAIN_NAME = DOMAIN_NAME
+var SUPPORT_URL = SUPPORT_URL
 
 
 function PasswordReset(uuid) {

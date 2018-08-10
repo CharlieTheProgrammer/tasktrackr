@@ -3,22 +3,15 @@ import App from './App.vue';
 import VueRouter from 'vue-router';
 import { routes } from './routes'
 import axios from 'axios'
-
-import BootstrapVue from 'bootstrap-vue'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
-
-
-Vue.use(BootstrapVue);
-
-// This just imports the JS and Popper
-//import 'bootstrap';
-// This one imports the styles
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-//import store from './store/store'
 import { store } from './store/store'
 
+require('file-loader?name=[name].[ext]!./index.html');
+
+import bAlert  from 'bootstrap-vue/es/components/alert/alert'
+Vue.component('b-alert', bAlert);
+
+// This one imports the BS styles.
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 Vue.use(VueRouter);
 
@@ -33,12 +26,8 @@ store.subscribe((mutation, state) => {
 })
 
 // Axios Configuration  ========================================================
-if (store.state.testMode) {
-	axios.defaults.baseURL = 'http://localhost:3000'
-	axios.defaults.withCredentials = true;
-} else {
-	axios.defaults.baseURL = 'http://kilowebdesigns.com'
-}
+axios.defaults.baseURL = AXIOS_BASE_URL;
+axios.defaults.withCredentials = AXIOS_WITH_CREDENTIALS;
 
 
 export const ErrorsBus = new Vue({

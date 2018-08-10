@@ -41,7 +41,7 @@ const store = new Vuex.Store({
         },
         currentProjectId: false,
         isAuthenticated: false,
-        testMode: true
+        testMode: FE_TEST_MODE
     },
     mutations: {
         // Check for existing state in local storage
