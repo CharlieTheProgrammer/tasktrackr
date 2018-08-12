@@ -3,13 +3,14 @@ const path         = require('path');
 const ARGS         = require('minimist')(process.argv.slice(2))
 
 // ENV HANDLING  ==============================================================
-if (ARGS.env == 'test' || ARGS.env == 'prod') {
+if (ARGS.env == 'dev' || ARGS.env == 'prod' || ARGS.env == 'qa') {
     var env = ARGS.env;
     console.log("*****  Connected to " + env + " environment. *****\n");
 } else {
     console.error("\nEnvironment argument must be set to valid value to launch application.");
     console.log("--- Valid Values ---");
-    console.log('test')
+    console.log('dev')
+    console.log('qa')
     console.log('prod')
     console.log('Terminating application.')
     process.exit(0)
@@ -22,7 +23,7 @@ var emailServicecConfig = {
     testEmailAddress: ARGS.testemailaddress
 };
 
-const test = {
+const dev = {
     app: {
         port: 3000,
         cors: true,
@@ -31,6 +32,18 @@ const test = {
     db: {
         path: path.resolve(__dirname, './models/data/Test.db'),
         name: 'Test.db'
+    }
+};
+
+const qa = {
+    app: {
+        port: 3001,
+        cors: false,
+        helmet: true
+    },
+    db: {
+        path: path.resolve(__dirname, './models/data/ProjectTT.db'),
+        name: 'ProjectTT.db'
     }
 };
 
@@ -47,7 +60,8 @@ const prod = {
 };
 
 const config = {
-    test: test,
+    dev: dev,
+    qa: qa,
     prod: prod
 }
 
