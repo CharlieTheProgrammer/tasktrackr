@@ -42,13 +42,28 @@
         },
         computed: {
             orderedTable: function(){
-                var orderedEntries = [];
+                var reKeyedSelectedProject = {}
+                var startTimes = []
+                var entries = this.selectedProject.entries
+                // Create new object where keys are the datestrings, ie replace the entry id with datestring
+                for (var entry in entries) {
+                    reKeyedSelectedProject[entries[entry].start_time] = entries[entry]
+                    startTimes.push(entries[entry].start_time)
+                }
+                // Create a new array from the keys, then use the sorting mechanism to create the sorted array
+                startTimes.sort(function(a, b) {
+                    var date1 = new Date(a);
+                    var date2 = new Date(b);
 
-                Object.keys(this.selectedProject.entries).reverse().forEach(element => {
-                    orderedEntries.push(this.selectedProject.entries[element]);
-                });
+                    return a > b ? -1 : a < b ? 1 : 0;
+                })
 
-                return orderedEntries;
+                var dateOrderedEntries = []
+                startTimes.forEach(startTime => {
+                    dateOrderedEntries.push(reKeyedSelectedProject[startTime])
+                })
+
+                return dateOrderedEntries;
             },
             displayEndTime: function() {
                 var settings = this.$store.getters.userSettings;
