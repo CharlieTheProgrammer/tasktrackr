@@ -1,34 +1,39 @@
 <template>
-    <div class="container-fluid">
-        <div class="row">
-            <p class="text-center display-2">At a glance</p>
+    <div class="container-fluid mb-4 pb-4">
+        <div class="row bg-light border my-4 ">
+            <p class="text-center display-3 pl-4">Dashboard</p>
         </div>
         <div class="row">
             <div class="col-lg-6 col-md-6 text-center">
-                <p class="text-center display-4">Time JUST Today</p>
-                <p class="text-center display-4">{{ times.totalTimeTodayForAllProjects }}</p>
+                <p class="text-center display-4"><u>Time Today Overall</u></p>
+                <p class="text-center display-5">{{ times.totalTimeTodayForAllProjects }}</p>
             </div>
             <div class="col-lg-6 col-md-6 text-center">
-                <p class="text-center display-4">Time Today on Current Project</p>
-                <p class="text-center display-4">{{ times.totalTimeTodayForSelectedProject }} </p>
+                <p class="text-center display-4"><u>Time Today on Current Project</u></p>
+                <p class="text-center display-5">{{ times.totalTimeTodayForSelectedProject }} </p>
             </div>
         </div>
         <div class="row my-4">
             <div class="col-lg-6 col-md-6 text-center">
-                <p class="text-center display-4">Total Time OVERALL</p>
-                <p class="text-center display-4">{{ times.totalTimeForAllProjects }} </p>
+                <p class="text-center display-4"><u>Total Time Across Projects</u></p>
+                <p class="text-center display-5">{{ times.totalTimeForAllProjects }} </p>
             </div>
             <div class="col-lg-6 col-md-6 text-center">
-                <p class="text-center display-4">Total Time on Current Project</p>
-                <p class="text-center display-4">{{ times.totalTimeForSelectedProject }} </p>
+                <p class="text-center display-4"><u>Total Time on Current Project</u></p>
+                <p class="text-center display-5">{{ times.totalTimeForSelectedProject }} </p>
             </div>
+        </div>
+        <!-- <div class="row">
+            <div class="col-lg-12 bg-light border my-4">
+                <p class="display-4">Weekly and Monthly stats here</p>
+            </div>
+            <p class="display-5 pl-4">Mins This Week</p>
         </div>
         <div class="row">
-            <div class="col-lg-12">
-                <p class="display-4">Weekly and monthly stats here</p>
+            <div>
+                <canvas id="drawTest" class="ml-4"></canvas>
             </div>
-            <p class="display-4">Nothing to display yet</p>
-        </div>
+        </div> -->
     </div>
 </template>
 
@@ -67,12 +72,15 @@ export default {
         }
     },
     methods: {
+        isoStringToLocaleDate: function(isoString) {
+            return new Date(isoString).toLocaleDateString().replace(new RegExp('/', 'g'), '-')
+        },
         totalTimeTodayForSelectedProject: function() {
             let stats = this.$store.getters.stats
             let projectId = this.$store.getters.currentProjectId
             let today = new Date(Date.now()).toISOString().split('T')[0]
             this.totalTimeTodayForSelectedProjectMins = 0
-
+    //console.log('totalTimeToday for Selected Project Date: ' + today)
             stats.forEach((entry) => {
                 if (entry.total_time != null & entry.project_id == projectId & entry.start_timeYMD == today) {
                     let startTime = new Date(entry.start_time)
@@ -116,7 +124,7 @@ export default {
         },
         totalTimeForAllProjects: function() {
             let stats = this.$store.getters.stats
-            let today = new Date(Date.now()).toISOString().split('T')[0]
+            let today = new Date(Date.now()).toLocaleDateString().replace(new RegExp('/', 'g'), '-')
             this.totalTimeForAllProjectsMins = 0
 
             stats.forEach((entry) => {
@@ -153,13 +161,68 @@ export default {
             }
 
             return timeToDisplay
+        },
+    /**
+        createChart: function (chartId, chartData) {
+            const ctx = document.getElementById('drawTest');
+            const myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune'],
+                    datasets: [
+                        { // one line graph
+                            label: 'Number of Moons',
+                            data: [0, 0, 1, 2, 67, 62, 27, 14],
+                            backgroundColor: [
+                            'rgba(54,73,93,.5)', // Blue
+                            'rgba(54,73,93,.5)',
+                            'rgba(54,73,93,.5)',
+                            'rgba(54,73,93,.5)',
+                            'rgba(54,73,93,.5)',
+                            'rgba(54,73,93,.5)',
+                            'rgba(54,73,93,.5)',
+                            'rgba(54,73,93,.5)'
+                            ],
+                            borderColor: [
+                            '#36495d',
+                            '#36495d',
+                            '#36495d',
+                            '#36495d',
+                            '#36495d',
+                            '#36495d',
+                            '#36495d',
+                            '#36495d',
+                            ],
+                            borderWidth: 3
+                        }]
+                },
+                  options: {
+                    responsive: true,
+                    lineTension: 1,
+                    scales: {
+                    yAxes: [{
+                        ticks: {
+                        beginAtZero: true,
+                        padding: 25,
+                        }
+                    }]
+                    }
+                }
+                })
+            // const myChart = new Chart(ctx, {
+            //     type: chartData.type,
+            //     data: chartData.data,
+            //     options: chartData.options,
+            //     })
         }
+    */
     },
     computed: {
         stats: function() {
             // Generate time spent on currently selected project
             this.totalTimeTodayForSelectedProject()
             this.times.totalTimeTodayForSelectedProject = this.convertToHoursandMinutes(this.totalTimeTodayForSelectedProjectMins)
+            //Vue.set(this.times, totalTimeTodayForSelectedProject, this.convertToHoursandMinutes(this.totalTimeTodayForSelectedProjectMins))
             // Generate time spent across all projects TODAY
             this.totalTimeTodayForAllProjects()
             this.times.totalTimeTodayForAllProjects = this.convertToHoursandMinutes(this.totalTimeTodayForAllProjectsMins)
@@ -175,10 +238,11 @@ export default {
             return this.$store.getters.stats
         }
     },
-    mounted: function() {
-        var today = new Date(Date.now()).toISOString().split('T')[0]
+    created: function() {
+        var today = new Date(Date.now()).toISOString().split('T')[0] // This is correct because the stored time strings in DB are ISO formatted
         console.log("GOT Stats")
         this.$store.dispatch('getStats', {date: today})
+        //this.createChart()
     },
     watch: {
         stats: function() {
@@ -187,3 +251,12 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+    .display-5 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    line-height: 1.1;
+    }
+</style>
+
