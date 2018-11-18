@@ -6,21 +6,21 @@
         <div class="row">
             <div class="col-lg-6 col-md-6 text-center">
                 <p class="text-center display-4"><u>Time Today Overall</u></p>
-                <p class="text-center display-5">{{ times.totalTimeTodayForAllProjects }}</p>
+                <p class="text-center display-5">{{ timeStats.timeSpentTodayOnAllProjects | convertToHoursandMinutes }}</p>
             </div>
             <div class="col-lg-6 col-md-6 text-center">
                 <p class="text-center display-4"><u>Time Today on Current Project</u></p>
-                <p class="text-center display-5">{{ times.totalTimeTodayForSelectedProject }} </p>
+                <p class="text-center display-5">{{ timeStats.timeSpentTodayOnSelectedProject | convertToHoursandMinutes }} </p>
             </div>
         </div>
         <div class="row my-4">
             <div class="col-lg-6 col-md-6 text-center">
                 <p class="text-center display-4"><u>Total Time Across Projects</u></p>
-                <p class="text-center display-5">{{ times.totalTimeForAllProjects }} </p>
+                <p class="text-center display-5">{{ timeStats.timeSpentOnAllProjects | convertToHoursandMinutes }} </p>
             </div>
             <div class="col-lg-6 col-md-6 text-center">
                 <p class="text-center display-4"><u>Total Time on Current Project</u></p>
-                <p class="text-center display-5">{{ times.totalTimeForSelectedProject }} </p>
+                <p class="text-center display-5">{{ timeStats.timeSpentOnSelectedProject | convertToHoursandMinutes }} </p>
             </div>
         </div>
         <!-- <div class="row">
@@ -57,85 +57,9 @@ Will probably need to use a library for chart generation.
 
 */
 export default {
-    data: function() {
-        return {
-            totalTimeTodayForSelectedProjectMins: 0,
-            totalTimeTodayForAllProjectsMins: 0,
-            totalTimeForSelectedProjectMins: 0,
-            totalTimeForAllProjectsMins: 0,
-            times: {
-                'totalTimeTodayForSelectedProject': '0',
-                'totalTimeTodayForAllProjects': '0',
-                'totalTimeForSelectedProject': '0',
-                'totalTimeForAllProjects': '0'
-            }
-        }
-    },
-    methods: {
+    filters: {
         isoStringToLocaleDate: function(isoString) {
             return new Date(isoString).toLocaleDateString().replace(new RegExp('/', 'g'), '-')
-        },
-        totalTimeTodayForSelectedProject: function() {
-            let stats = this.$store.getters.stats
-            let projectId = this.$store.getters.currentProjectId
-            let today = new Date(Date.now()).toISOString().split('T')[0]
-            this.totalTimeTodayForSelectedProjectMins = 0
-    //console.log('totalTimeToday for Selected Project Date: ' + today)
-            stats.forEach((entry) => {
-                if (entry.total_time != null & entry.project_id == projectId & entry.start_timeYMD == today) {
-                    let startTime = new Date(entry.start_time)
-                    let totalTime = new Date(entry.total_time)
-                    let timeDiff = totalTime.getTime() - startTime.getTime();
-                    let t = new Date(timeDiff)
-                    this.totalTimeTodayForSelectedProjectMins += Math.round(t / 1000 / 60)
-                }
-            })
-        },
-        totalTimeTodayForAllProjects: function() {
-            let stats = this.$store.getters.stats
-            let today = new Date(Date.now()).toISOString().split('T')[0]
-            this.totalTimeTodayForAllProjectsMins = 0
-
-            stats.forEach((entry) => {
-                if (entry.total_time != null & entry.start_timeYMD == today) {
-                    let startTime = new Date(entry.start_time)
-                    let totalTime = new Date(entry.total_time)
-                    let timeDiff = totalTime.getTime() - startTime.getTime();
-                    let t = new Date(timeDiff)
-                    this.totalTimeTodayForAllProjectsMins += Math.round(t / 1000 / 60)
-                }
-            })
-        },
-        totalTimeForSelectedProject: function() {
-            let stats = this.$store.getters.stats
-            let projectId = this.$store.getters.currentProjectId
-            let today = new Date(Date.now()).toISOString().split('T')[0]
-            this.totalTimeForSelectedProjectMins = 0
-
-            stats.forEach((entry) => {
-                if (entry.total_time != null & entry.project_id == projectId) {
-                    let startTime = new Date(entry.start_time)
-                    let totalTime = new Date(entry.total_time)
-                    let timeDiff = totalTime.getTime() - startTime.getTime();
-                    let t = new Date(timeDiff)
-                    this.totalTimeForSelectedProjectMins += Math.round(t / 1000 / 60)
-                }
-            })
-        },
-        totalTimeForAllProjects: function() {
-            let stats = this.$store.getters.stats
-            let today = new Date(Date.now()).toLocaleDateString().replace(new RegExp('/', 'g'), '-')
-            this.totalTimeForAllProjectsMins = 0
-
-            stats.forEach((entry) => {
-                if (entry.total_time != null) {
-                    let startTime = new Date(entry.start_time)
-                    let totalTime = new Date(entry.total_time)
-                    let timeDiff = totalTime.getTime() - startTime.getTime();
-                    let t = new Date(timeDiff)
-                    this.totalTimeForAllProjectsMins += Math.round(t / 1000 / 60)
-                }
-            })
         },
         convertToHoursandMinutes: function (totalTimeinMinutes) {
             var hours = (totalTimeinMinutes / 60);
@@ -218,36 +142,25 @@ export default {
     */
     },
     computed: {
-        stats: function() {
-            // Generate time spent on currently selected project
-            this.totalTimeTodayForSelectedProject()
-            this.times.totalTimeTodayForSelectedProject = this.convertToHoursandMinutes(this.totalTimeTodayForSelectedProjectMins)
-            //Vue.set(this.times, totalTimeTodayForSelectedProject, this.convertToHoursandMinutes(this.totalTimeTodayForSelectedProjectMins))
-            // Generate time spent across all projects TODAY
-            this.totalTimeTodayForAllProjects()
-            this.times.totalTimeTodayForAllProjects = this.convertToHoursandMinutes(this.totalTimeTodayForAllProjectsMins)
-
-            // Generate total time spent on currently selected project
-            this.totalTimeForSelectedProject()
-            this.times.totalTimeForSelectedProject = this.convertToHoursandMinutes(this.totalTimeForSelectedProjectMins)
-            // Generate total time spent across all projects OVERALL
-            this.totalTimeForAllProjects()
-            this.times.totalTimeForAllProjects = this.convertToHoursandMinutes(this.totalTimeForAllProjectsMins)
-
-            console.log(this.times)
-            return this.$store.getters.stats
+        timeStats: function() {
+            this.$store.dispatch('updateTimeStatsHandler')
+            return this.$store.getters.timeStats
         }
     },
     created: function() {
-        var today = new Date(Date.now()).toISOString().split('T')[0] // This is correct because the stored time strings in DB are ISO formatted
-        console.log("GOT Stats")
-        this.$store.dispatch('getStats', {date: today})
+       // var today = new Date(Date.now()).toISOString().split('T')[0] // This is correct because the stored time strings in DB are ISO formatted
+        // Actually, this causes a bug where ISO time goes forward before user does, so this shouldn't be done in ISO time
+        let today = new Date()
+        let month = today.getMonth() + 1
+        let date = today.getDate()
+        let year = today.getFullYear()
+
+        let fullDate = year + '-' + month + '-' + date
+
+        console.log("Requesting Stats with " + fullDate + 'as date')
+        this.$store.dispatch('getStats', {date: fullDate})
+
         //this.createChart()
-    },
-    watch: {
-        stats: function() {
-            // For some odd reason, the code under the computed stats block only runs if this is here ???
-        }
     }
 }
 </script>
