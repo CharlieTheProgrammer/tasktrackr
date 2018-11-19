@@ -58,16 +58,13 @@ Will probably need to use a library for chart generation.
 */
 export default {
     filters: {
-        isoStringToLocaleDate: function(isoString) {
-            return new Date(isoString).toLocaleDateString().replace(new RegExp('/', 'g'), '-')
-        },
         convertToHoursandMinutes: function (totalTimeinMinutes) {
             var hours = (totalTimeinMinutes / 60);
             var rhours = Math.floor(hours);
             var minutes = (hours - rhours) * 60;
             var rminutes = Math.round(minutes);
 
-            console.log(totalTimeinMinutes + " minutes = " + rhours + " hour(s) and " + rminutes + " minute(s).")
+            //console.log(totalTimeinMinutes + " minutes = " + rhours + " hour(s) and " + rminutes + " minute(s).")
 
             let timeToDisplay = 0
             if (rhours === 0 && rminutes === 0) {
@@ -85,7 +82,7 @@ export default {
             }
 
             return timeToDisplay
-        },
+        }
     /**
         createChart: function (chartId, chartData) {
             const ctx = document.getElementById('drawTest');
@@ -143,13 +140,10 @@ export default {
     },
     computed: {
         timeStats: function() {
-            this.$store.dispatch('updateTimeStatsHandler')
             return this.$store.getters.timeStats
         }
     },
     created: function() {
-       // var today = new Date(Date.now()).toISOString().split('T')[0] // This is correct because the stored time strings in DB are ISO formatted
-        // Actually, this causes a bug where ISO time goes forward before user does, so this shouldn't be done in ISO time
         let today = new Date()
         let month = today.getMonth() + 1
         let date = today.getDate()
@@ -159,6 +153,13 @@ export default {
 
         console.log("Requesting Stats with " + fullDate + 'as date')
         this.$store.dispatch('getStats', {date: fullDate})
+            .then(results =>{
+                this.$store.dispatch('updateTimeStatsHandler')
+            })
+            .catch(error => {
+                console.log("Error occurred updating time statistics")
+                console.log(error)
+            })
 
         //this.createChart()
     }

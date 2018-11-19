@@ -4,13 +4,48 @@ import axios from 'axios';
 
 Vue.use(Vuex);
 
-// Don't have a place for this yet
+// Don't have a place for these functions yet
 let calculateTimeDiffinMins = function (startTime, endTime) {
     startTime = new Date(startTime)
     let totalTime = new Date(endTime)
     let timeDiff = new Date(totalTime.getTime() - startTime.getTime())
 
     return timeDiff / 1000 / 60
+}
+
+let convertISODatetimeToLocalTime = function(ISODatetime) {
+    if (ISODatetime === null) {
+        return null
+    }
+
+    return new Date(ISODatetime)
+}
+
+let formatDateforTimestats = function(date) {
+    if (date === null) {
+        return null
+    }
+
+    let month = date.getMonth() + 1
+    let day = date.getDate()
+    let year = date.getFullYear()
+
+    return year + '-' + month + '-' + day
+}
+
+/**
+ * Used specifically by timestats to convert times in entry object, which are in ISO 8601
+ * to user's local time.
+ * @param {Object} entry Time entry comprised of start time, end total time
+ */
+let localDateTimeHandler = function(entry) {
+    let localDateTime = {}
+
+    localDateTime.totalTime = convertISODatetimeToLocalTime(entry.total_time)
+    localDateTime.startTime = convertISODatetimeToLocalTime (entry.start_time)
+    localDateTime.startTimeYMD = formatDateforTimestats(localDateTime.startTime)
+
+    return localDateTime
 }
 
 const store = new Vuex.Store({
@@ -563,7 +598,7 @@ const store = new Vuex.Store({
             });
         },
         updateTimeStatsHandler: function ({ commit, dispatch }) {
-            console.log('WHAT')
+            console.log('updateTimeStatsHandler')
             dispatch('updateTimeSpentTodayOnAllProjects')
             dispatch('updateTimeSpentTodayOnSelectedProject')
             dispatch('updateTimeSpentOnAllProjects')
@@ -571,11 +606,13 @@ const store = new Vuex.Store({
         },
         updateTimeSpentTodayOnAllProjects: function ({state}) {
             let timeSpentTodayOnAllProjects = 0
-            let today = new Date(Date.now()).toISOString().split('T')[0]
+            let today = formatDateforTimestats(new Date(Date.now()))
 
             state.rawStats.forEach((entry) => {
-                if (entry.total_time != null & entry.start_timeYMD == today) {
-                    timeSpentTodayOnAllProjects += Math.round(calculateTimeDiffinMins(entry.start_time, entry.total_time))
+                let localDateTime = localDateTimeHandler(entry)
+
+                if (localDateTime.totalTime != null && localDateTime.startTimeYMD == today) {
+                    timeSpentTodayOnAllProjects += Math.round(calculateTimeDiffinMins(localDateTime.startTime, localDateTime.totalTime))
                 }
             })
             this.commit('UPDATE_TIME_SPENT_TODAY_ON_ALL_PROJECTS', timeSpentTodayOnAllProjects)
@@ -583,11 +620,13 @@ const store = new Vuex.Store({
         updateTimeSpentTodayOnSelectedProject: function ({state}) {
             let timeSpentTodayOnSelectedProject = 0
             let projectId = state.currentProjectId
-            let today = new Date(Date.now()).toISOString().split('T')[0]
+            let today = formatDateforTimestats(new Date(Date.now()))
 
             state.rawStats.forEach((entry) => {
-                if (entry.total_time != null & entry.project_id == projectId & entry.start_timeYMD == today) {
-                    timeSpentTodayOnSelectedProject += Math.round(calculateTimeDiffinMins(entry.start_time, entry.total_time))
+                let localDateTime = localDateTimeHandler(entry)
+
+                if (entry.total_time != null && entry.project_id == projectId && localDateTime.startTimeYMD == today) {
+                    timeSpentTodayOnSelectedProject += Math.round(calculateTimeDiffinMins(localDateTime.startTime, localDateTime.totalTime))
                 }
             })
             this.commit('UPDATE_TIME_SPENT_TODAY_ON_SELECTED_PROJECT', timeSpentTodayOnSelectedProject)
@@ -596,20 +635,23 @@ const store = new Vuex.Store({
             let timeSpentOnAllProjects = 0
 
             state.rawStats.forEach((entry) => {
+                let localDateTime = localDateTimeHandler(entry)
+
                 if (entry.total_time != null) {
-                    timeSpentOnAllProjects += Math.round(calculateTimeDiffinMins(entry.start_time, entry.total_time))
+                    timeSpentOnAllProjects += Math.round(calculateTimeDiffinMins(localDateTime.startTime, localDateTime.totalTime))
                 }
             })
             this.commit('UPDATE_TIME_SPENT_ON_ALL_PROJECTS', timeSpentOnAllProjects)
         },
         updateTimeSpentOnSelectedProject: function ({state}) {
-            console.log('CALLED IT')
             let timeSpentOnSelectedProject = 0
             let projectId = state.currentProjectId
 
             state.rawStats.forEach((entry) => {
-                if (entry.total_time != null & entry.project_id == projectId) {
-                    timeSpentOnSelectedProject += Math.round(calculateTimeDiffinMins(entry.start_time, entry.total_time))
+                let localDateTime = localDateTimeHandler(entry)
+
+                if (entry.total_time != null && entry.project_id == projectId) {
+                    timeSpentOnSelectedProject += Math.round(calculateTimeDiffinMins(localDateTime.startTime, localDateTime.totalTime))
                 }
             })
             this.commit('UPDATE_TIME_SPENT_ON_SELECTED_PROJECT', timeSpentOnSelectedProject)
