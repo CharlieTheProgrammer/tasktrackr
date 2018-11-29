@@ -127,10 +127,10 @@ const v = {
     ],
     PasswordResetValidators: [
         check('password')
-        .isLength({ min:8 }).withMessage(ERRS.USER.PASSWORD.RESET.MINIMUM_LENGTH)
-        .matches('[0-9]').withMessage(ERRS.USER.PASSWORD.RESET.NUMBER_REQUIRED)
-        .matches('[a-z]').withMessage(ERRS.USER.PASSWORD.RESET.LOWERCASE_LETTER_REQUIRED)
-        .matches('[A-Z]').withMessage(ERRS.USER.PASSWORD.RESET.UPPERCASE_LETTER_REQUIRED),
+            .isLength({ min:8 }).withMessage(ERRS.USER.PASSWORD.RESET.MINIMUM_LENGTH)
+            .matches('[0-9]').withMessage(ERRS.USER.PASSWORD.RESET.NUMBER_REQUIRED)
+            .matches('[a-z]').withMessage(ERRS.USER.PASSWORD.RESET.LOWERCASE_LETTER_REQUIRED)
+            .matches('[A-Z]').withMessage(ERRS.USER.PASSWORD.RESET.UPPERCASE_LETTER_REQUIRED),
 
         check('confirmPassword')
             .custom((value, {req, loc, path}) => {
@@ -138,6 +138,22 @@ const v = {
                     throw new Error("Bad");
                 } else { return value}
             }).withMessage(ERRS.USER.PASSWORD.RESET.PASSWORDS_NO_MATCH)
+    ],
+    setUserSettingsValidators: [
+        check('userSettings')
+            .custom((value, {req}) => {
+                if (value instanceof String) {
+                    return value
+                } else {
+                    throw new Error();
+                }
+            }).withMessage(ERRS.USER.SETTINGS.DEFAULTS.BAD_FORMAT)
+    ],
+    getStatsValidators: [
+        check('date')
+            .exists().withMessage(ERRS.USER.STATS.DEFAULTS.DATE_REQUIRED)
+            .matches('^\\d{4}\\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$')
+                .withMessage(ERRS.USER.STATS.DEFAULTS.BAD_FORMAT)
     ],
     errorFormatter: ({location, msg, param, value, nestedErrors}) => {
         return msg

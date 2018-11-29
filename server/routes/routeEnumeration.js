@@ -25,7 +25,8 @@ module.exports = {
         entries: '/get/entries',
         allUserEntries: '/get/allUserEntries',
         user: '/get/user',
-        userSettings: '/get/usersettings'
+        userSettings: '/get/usersettings',
+        stats: '/get/stats'
     },
     login: '/login',
     logout: '/logout',

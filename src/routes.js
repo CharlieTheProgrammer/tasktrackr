@@ -5,6 +5,7 @@ import Login from './components/userMgt/Login.vue'
 import PasswordResetInit from './components/userMgt/PasswordResetInit.vue'
 import PasswordNew from './components/userMgt/PasswordNew.vue'
 import Signup from './components/userMgt/Signup.vue'
+import Error from './components/Error.vue'
 
 // OTHER
 import Landing from './components/Landing.vue'
@@ -14,6 +15,7 @@ import FirstProjectWelcome from './components/FirstProject.vue'
 import ProjectSelect from './components/project/ProjectSelect.vue'
 import Processing from './components/Processing.vue'
 import Docs from './components/Docs.vue'
+import Dashboard from './components/Dashboard.vue'
 
 import { store } from './store/store'
 
@@ -31,6 +33,8 @@ var authorizationCheck = (to, from, next) => {
 // Create routes for each component
 export const routes = [
     { path : '/', component: Landing },
+    { path : '/dashboard', component: Dashboard },
+    { path : '/error', component: Error },
     { path : '/docs', component: Docs },
     { path : '/login', component: Login},
     { path : '/requestpasswordreset', component: PasswordResetInit},

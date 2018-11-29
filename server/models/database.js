@@ -523,4 +523,22 @@ function DataAPI() {
         getQuery(sql, session_id, _callback);
     };
 
+
+
+    // Dashboard Queries
+    this.getEntriesByDate = function(user_id, date, _callback) {
+        let sql = 'SELECT project_id, project_name, start_time, total_time, start_timeYMD, total_timeYMD '
+        sql +=    'FROM v_TimeStats '
+        sql +=    'WHERE user_id = ? AND start_timeYMD = DATE(?) AND hidden = 0'
+
+        getAllQuery(sql, [user_id, date], _callback);
+    }
+    this.getEntryTimes = function(user_id, date, _callback) {
+        let sql = 'SELECT project_id, project_name, start_time, total_time, start_timeYMD, total_timeYMD '
+        sql +=    'FROM v_TimeStats '
+        sql +=    'WHERE user_id = ? AND hidden = 0'
+
+        getAllQuery(sql, user_id, _callback);
+    }
 };
+

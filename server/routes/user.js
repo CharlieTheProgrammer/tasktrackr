@@ -268,4 +268,25 @@ app.post(route_enum.update.userSettings, function(req, res) {
     })
 })
 
+app.post(route_enum.get.stats, v.getStatsValidators, function(req, res) {
+    const errors= validationResult(req).formatWith(v.errorFormatter);
+    if (!errors.isEmpty()) {
+        console.log(errors.array());
+        var errs = errors.array();
+        //res.status(400).json(errs)    These errors are not meant to be sent to the user
+        res.sendStatus(500)
+        return;
+    }
+
+    appDB.getEntryTimes(13, req.body.date, function (error, response) {
+        if (error) {
+            console.log(error);
+            res.sendStatus(500);
+            return;
+        }
+
+        res.status(200).send(response)
+    })
+})
+
 module.exports = app;
