@@ -7,9 +7,9 @@
         >
         <div class="container-fluid">
             <router-link :to="calcRoute" tag="a" class="h3 mr-auto text-light">TaskTrackr</router-link>
+            <button href="#" class="btn btn-secondary m-2" v-if="showGoBackButton" @click="$router.go(-1)">Go Back</button>
             <router-link to="/dashboard" tag="a" class="btn btn-info m-2" v-if="isAuthenticated">Dashboard</router-link>
             <router-link to="/error" tag="a" class="btn btn-primary m-2" v-if="testMode">Error Page</router-link>
-            <button href="#" class="btn btn-secondary m-2" v-if="showGoBackButton" @click="$router.go(-1)">Go Back</button>
             <router-link to="/docs" class="btn btn-info m-2 px-4">Docs</router-link>
             <router-link to="/settings" tag="a" class="btn btn-primary m-2" v-if="isAuthenticated">Settings</router-link>
             <router-link to="/login" class="btn btn-primary m-2 px-4" v-if="!isAuthenticated">Log In</router-link>
