@@ -278,7 +278,7 @@ app.post(route_enum.get.stats, v.getStatsValidators, function(req, res) {
         return;
     }
 
-    appDB.getEntryTimes(13, req.body.date, function (error, response) {
+    appDB.getEntryTimes(req.user.user_id, req.body.date, function (error, response) {
         if (error) {
             console.log(error);
             res.sendStatus(500);
