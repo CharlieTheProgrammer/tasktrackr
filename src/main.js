@@ -134,28 +134,28 @@ export const TimerBus = new Vue({
 			hour: '00',
 			minute: '00',
 			second: '00',
-			tInterval: false
+			tInterval: false,
+			initialDatetime: ''
 		}
 	},
 	methods: {
 		setInterval: function() {
 			if (!this.timer.tInterval) {
-				this.timer.tInterval = setInterval(this.startTimer, 1000);
-			};
+				this.initialDatetime = new Date()
+				this.timer.tInterval = setInterval(this.startTimer, 300)
+			}
 		},
 		startTimer: function() {
-			this.setInterval();
+			this.setInterval()
+			let timeDiff = new Date() - this.initialDatetime
+			let totalSeconds = Math.floor(timeDiff / 1000)
 
-			this.timer.second++;
-			if (this.timer.second >= 60) {
-				this.timer.second = 0;
-				this.timer.minute++;
-				if (this.timer.minute >= 60) {
-					this.timer.minute = 0;
-					this.timer.hour++;
-				}
-			};
+			// Calculate timer time
+			this.timer.second = Math.round(((totalSeconds / 60) % 1) * 60)
+			this.timer.minute = Math.round((Math.floor(totalSeconds / 60) / 60 % 1) * 60)
+			this.timer.hour = Math.floor(timeDiff / 1000 / 3600)
 
+			// Format the time
 			this.timer.hour = ("0" + this.timer.hour).slice(-2);
 			this.timer.minute = ("0" + this.timer.minute).slice(-2);
 			this.timer.second = ("0" + this.timer.second).slice(-2);
