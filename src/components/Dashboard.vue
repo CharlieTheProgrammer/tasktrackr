@@ -145,8 +145,8 @@ export default {
     },
     created: function() {
         let today = new Date()
-        let month = today.getMonth() + 1
-        let date = today.getDate()
+        let month = ("0" + (today.getMonth() + 1)).slice(-2)
+        let date = ("0" + today.getDate()).slice(-2)
         let year = today.getFullYear()
 
         let fullDate = year + '-' + month + '-' + date
