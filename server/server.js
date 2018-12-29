@@ -1,6 +1,6 @@
 // server.js
-const path         = require('path');
-const ARGS         = require('minimist')(process.argv.slice(2))
+const path = require('path');
+const ARGS = require('minimist')(process.argv.slice(2))
 
 // ENV HANDLING  ==============================================================
 if (ARGS.env == 'dev' || ARGS.env == 'prod' || ARGS.env == 'qa') {
@@ -68,18 +68,18 @@ const config = {
 
 // Set up ======================================================================
 const EmailService = require('./config/email')(emailServicecConfig);
-const express      = require('express');
-const appBackend   = express();
-const morgan       = require('morgan');
-const bodyParser   = require('body-parser');
-const session      = require('express-session');
-const helmet       = require('helmet');
-const history      = require('connect-history-api-fallback');
+const express = require('express');
+const appBackend = express();
+const morgan = require('morgan');
+const bodyParser = require('body-parser');
+const session = require('express-session');
+const helmet = require('helmet');
+const history = require('connect-history-api-fallback');
 
 // Database Config =============================================================
 const DB_PATH = config[env].db.path;
-const DB           = require('./models/database.js');
-const appDB        = new DB.DataAPI();
+const DB = require('./models/database.js');
+const appDB = new DB.DataAPI();
 appDB.initDB(DB_PATH);
 
 // Passport Setup ==============================================================
@@ -98,7 +98,7 @@ const sessionOptions = {
         table: 'sessions',
         dir: path.dirname(DB_PATH),
     }),
-    cookie : {
+    cookie: {
         maxAge: 86400000,  // configure when sessions expires. Set to 24 hours.
         httpOnly: true,
         secure: false
@@ -113,8 +113,8 @@ module.exports = { passport, appDB, EmailService }
 // Route Imports ===============================================================
 const usersRoutes = require('./routes/user');
 const projectRoutes = require('./routes/project');
-const entryRoutes= require('./routes/entry');
-const categoryRoutes= require('./routes/category');
+const entryRoutes = require('./routes/entry');
+const categoryRoutes = require('./routes/category');
 const globalBeforeRouter = require('./globalroutehandlers_before');
 
 // Express Middleware Config ===================================================
@@ -146,14 +146,14 @@ appBackend.use(passport.initialize());
 appBackend.use(passport.session());
 
 // For Testing =================================================================
-var TESTING = false;
+var TESTING = true;
 
-appBackend.use('/', function(req, res, next) {
-    if (TESTING) {
-        req.user = { user_id : 1 };
-    }
-    next();
-});
+// appBackend.use('/', function (req, res, next) {
+//     if (TESTING) {
+//         req.user = { user_id: 16 };
+//     }
+//     next();
+// });
 //appBackend.use(globalBeforeRouter);
 appBackend.use(usersRoutes);
 appBackend.use(entryRoutes);
