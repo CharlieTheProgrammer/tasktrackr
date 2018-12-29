@@ -1,13 +1,13 @@
 <template>
     <div>
-        <table class="table w-75 mx-auto" @change="onChanged">
+        <table class="table w-xl-75 w-lg-100 w-md-100 mx-auto" @change="onChanged">
             <thead>
                 <tr>
-                    <th id="category-column"     class="w-sm-5 w-md-10 w-lg-20 w-xl-20" scope="col">Category</th>
-                    <th id="date-column"         class="w-sm-5 w-md-10 w-lg-10 w-xl-10" scope="col">Date</th>
+                    <th id="category-column"     class="w-sm-5 w-md-20 w-lg-20 w-xl-20" scope="col">Category</th>
+                    <th id="date-column"         class="w-sm-5 w-md-10 w-lg-10 w-xl-10 d-none d-sm-table-cell" scope="col">Date</th>
                     <th id="description-column"  class="w-sm-10 w-md-40 w-lg-40 w-xl-40 text-center" scope="col">Description</th>
                     <th id="starttime-column"    class="w-sm-3 w-md-5 w-lg-10 w-xl-10 text-center" scope="col">Start Time</th>
-                    <th id="endtime-column"    class="w-sm-3 w-md-5 w-lg-10 w-xl-10 text-center" scope="col" v-if="displayEndTime">End Time</th>
+                    <th id="endtime-column"    class="w-sm-3 w-md-5 w-lg-10 w-xl-10 text-center d-none d-sm-table-cell" scope="col" v-if="displayEndTime">End Time</th>
                     <th id="totaltime-column"    class="w-sm-3 w-md-5 w-lg-10 w-xl-10 text-center" scope="col">Total Time &nbsp;(mins)</th>
                 </tr>
             </thead>

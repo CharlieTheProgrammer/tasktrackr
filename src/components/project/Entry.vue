@@ -15,7 +15,7 @@
             </select>
         </td>
         <td
-            class="text-center"
+            class="text-center d-none d-sm-table-cell"
             :data-entry_id="entry.entry_id"
             data-cat="entry_date">{{ entry.entry_date }}</td>
         <td>
@@ -33,7 +33,7 @@
         </td>
         <td
             v-if="displayEndTime"
-            class="text-center"
+            class="text-center d-none d-sm-table-cell"
             :data-entry_id="entry.entry_id">{{ entry.total_time | toTimeFormat }}
         </td>
         <td

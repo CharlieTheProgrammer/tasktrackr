@@ -32,7 +32,7 @@
 
 #parent {
     /* 100% height - footer height (fixed) - header height (dyn) */
-    height: calc(100vh - 40px - 70px);
+    height: calc(100vh - 70px);
     /* border: 0px solid red; */
 }
 </style>

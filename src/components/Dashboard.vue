@@ -1,25 +1,25 @@
 <template>
     <div class="container-fluid mb-4 pb-4">
         <div class="row bg-light border my-4 ">
-            <p class="text-center display-3 pl-4">Dashboard</p>
+            <p class="text-center display-4 pl-4">Dashboard</p>
         </div>
         <div class="row">
             <div class="col-lg-6 col-md-6 text-center">
-                <p class="text-center display-4"><u>Time Today Overall</u></p>
+                <p class="text-center display-5"><u>Time Today Overall</u></p>
                 <p class="text-center display-5">{{ timeStats.timeSpentTodayOnAllProjects | convertToHoursandMinutes }}</p>
             </div>
             <div class="col-lg-6 col-md-6 text-center">
-                <p class="text-center display-4"><u>Time Today on Current Project</u></p>
+                <p class="text-center display-5"><u>Time Today on Current Project</u></p>
                 <p class="text-center display-5">{{ timeStats.timeSpentTodayOnSelectedProject | convertToHoursandMinutes }} </p>
             </div>
         </div>
         <div class="row my-4">
             <div class="col-lg-6 col-md-6 text-center">
-                <p class="text-center display-4"><u>Total Time Across Projects</u></p>
+                <p class="text-center display-5"><u>Total Time Across Projects</u></p>
                 <p class="text-center display-5">{{ timeStats.timeSpentOnAllProjects | convertToHoursandMinutes }} </p>
             </div>
             <div class="col-lg-6 col-md-6 text-center">
-                <p class="text-center display-4"><u>Total Time on Current Project</u></p>
+                <p class="text-center display-5"><u>Total Time on Current Project</u></p>
                 <p class="text-center display-5">{{ timeStats.timeSpentOnSelectedProject | convertToHoursandMinutes }} </p>
             </div>
         </div>

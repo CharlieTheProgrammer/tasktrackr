@@ -4,9 +4,9 @@
             <app-header :isAuthenticated="isAuthenticated"></app-header>
             <router-view></router-view>
         </div>
-    <footer class="footer">
+    <footer class="footer" :style="footerStyle">
         <div class="container text-center">
-            <span class="text-light">&copy; 2018 Charlie The Programmer</span>
+            <span :class="footerClasses" >&copy; 2018 Charlie The Programmer</span>
         </div>
     </footer>
   </div>
@@ -29,6 +29,20 @@ export default {
     computed: {
         isAuthenticated: function() {
             return this.$store.getters.isAuthenticated;
+        },
+        footerClasses: function() {
+            if (this.$route.path == '/') {
+                return 'text-light'
+            } else {
+                return 'text-dark'
+            }
+        },
+        footerStyle: function() {
+            if (this.$route.path == '/') {
+                return 'position: fixed;'
+            } else {
+                return 'position: relative;'
+            }
         }
     },
     methods: {
@@ -41,16 +55,16 @@ export default {
 
 <style scoped>
 .footer {
-    position: fixed;
+
     bottom: 0;
     width: 100%;
     /* Set the fixed height of the footer here */
     height: 40px;
     line-height: 40px; /* Vertically center the text there */
-    background-color: #002B59;
+    /* background-color: #002B59;
     -webkit-box-shadow: -3px 0px 5px 0px rgba(0,4,40,1);
     -moz-box-shadow: -3px 0px 5px 0px rgba(0,4,40,1);
-    box-shadow: -3px 0px 5px 0px rgba(0,4,40,1);
+    box-shadow: -3px 0px 5px 0px rgba(0,4,40,1); */
   }
 </style>
 
