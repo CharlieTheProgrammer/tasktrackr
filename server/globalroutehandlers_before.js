@@ -34,5 +34,8 @@ module.exports = [function(req, res, next){
 },
 function(req, res, next) {
     console.log("This is the last middleware in my global route handlers to run.");
-    next();
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect('/');
 }]

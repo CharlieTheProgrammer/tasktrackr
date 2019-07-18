@@ -36,7 +36,8 @@
         4: "Category Error",
         5: "Entry Error",
         6: "Network Error",
-        7: "Password Reset Error"
+        7: "Password Reset Error",
+        8: "Internal Error" // Meant for developers
     }
 
 const ERRS = {
@@ -182,6 +183,29 @@ const ERRS = {
                         type: TYPE_ENUM[3],
                         title: TITLE_ENUM[7],
                         message: "Invalid Token",
+                    }
+                }
+            },
+            SETTINGS: {
+                DEFAULTS: {
+                    BAD_FORMAT: {
+                        type: TYPE_ENUM[3],
+                        title: TITLE_ENUM[8],
+                        message: "Invalid user settings format."
+                    }
+                }
+            },
+            STATS: {
+                DEFAULTS: {
+                    DATE_REQUIRED: {
+                        type: TYPE_ENUM[3],
+                        title: TITLE_ENUM[8],
+                        message: "Date is a required field."
+                    },
+                    BAD_FORMAT: {
+                        type: TYPE_ENUM[3],
+                        title: TITLE_ENUM[8],
+                        message: "Date must be in yyyy-mm-dd format."
                     }
                 }
             }
